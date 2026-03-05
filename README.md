@@ -130,6 +130,21 @@ Offline conversion export:
 - `php artisan test`
 - `powershell -ExecutionPolicy Bypass -File scripts/run-quality-gate.ps1`
 
+## Prelaunch Audit ve Release Gate
+Staging prelaunch audit:
+- `pwsh ./scripts/run_prelaunch_audit.ps1 -ProjectRoot . -BaseUrl http://127.0.0.1:4050 -Target staging`
+
+Production prelaunch audit:
+- `pwsh ./scripts/run_prelaunch_audit.ps1 -ProjectRoot . -BaseUrl https://lunarambalaj.com -Target production`
+
+Release publish gate (dry-run):
+- `pwsh ./scripts/run_release_publish_gate.ps1 -ProjectRoot . -Remote origin -MainBranch main`
+
+Not:
+- Her iki script de raporları `docs/release/` altına yazar.
+- Blocker varsa non-zero exit code döner (CI fail).
+- Push/tag sadece `-ExecutePush` ile çalışır.
+
 ## Admin Is Akisi
 - Lead Pipeline (Kanban): `/admin/lead-pipeline`
 - Durumlar: `new`, `read`, `replied`, `archived`
