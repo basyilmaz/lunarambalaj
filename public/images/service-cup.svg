@@ -1,0 +1,8 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="800" height="600" fill="#F1F5F9"/>
+<path d="M290 180H510L470 420H330L290 180Z" fill="#FFFFFF" stroke="#334155" stroke-width="8"/>
+<path d="M280 180H520" stroke="#0F172A" stroke-width="10"/>
+<path d="M330 300H470" stroke="#F59E0B" stroke-width="14" stroke-linecap="round"/>
+<path d="M350 350H450" stroke="#F59E0B" stroke-width="14" stroke-linecap="round"/>
+<text x="290" y="110" fill="#0F172A" font-family="Cabin, Arial" font-size="44" font-weight="700">Cup Printing</text>
+</svg>

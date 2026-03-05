@@ -1,0 +1,17 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="1600" height="900" fill="url(#bg)"/>
+<circle cx="1310" cy="170" r="230" fill="#F59E0B" fill-opacity="0.15"/>
+<circle cx="260" cy="740" r="260" fill="#F59E0B" fill-opacity="0.15"/>
+<rect x="360" y="190" width="60" height="470" rx="30" transform="rotate(-17 360 190)" fill="#FFFFFF"/>
+<rect x="560" y="170" width="60" height="520" rx="30" transform="rotate(-12 560 170)" fill="#F8FAFC"/>
+<rect x="770" y="160" width="60" height="540" rx="30" transform="rotate(-7 770 160)" fill="#E2E8F0"/>
+<rect x="980" y="180" width="60" height="500" rx="30" transform="rotate(-3 980 180)" fill="#FFFFFF"/>
+<text x="120" y="170" fill="#F8FAFC" font-family="Cabin, Arial" font-size="64" font-weight="700">Printed Straw Solutions</text>
+<text x="120" y="230" fill="#CBD5E1" font-family="Cabin, Arial" font-size="30">Lunar Ambalaj / Lunar Packaging</text>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+<stop stop-color="#0F172A"/>
+<stop offset="1" stop-color="#1E293B"/>
+</linearGradient>
+</defs>
+</svg>

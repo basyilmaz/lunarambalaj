@@ -1,0 +1,13 @@
+﻿Add-Type -AssemblyName System.Drawing
+$bmp = New-Object System.Drawing.Bitmap(800, 600)
+$gfx = [System.Drawing.Graphics]::FromImage($bmp)
+$gfx.Clear([System.Drawing.Color]::FromArgb(15, 23, 42))
+$font1 = New-Object System.Drawing.Font("Arial", 40, [System.Drawing.FontStyle]::Bold)
+$font2 = New-Object System.Drawing.Font("Arial", 30, [System.Drawing.FontStyle]::Regular)
+$brushW = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
+$brushY = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::Gold)
+$gfx.DrawString("B2B Ambalaj", $font1, $brushW, 50, 200)
+$gfx.DrawString("Tedarik Zinciri ve MOQ", $font2, $brushY, 50, 300)
+$bmp.Save("c:\YazilimProjeler\lunarambalaj\public\images\catalog\asset-27.jpg", [System.Drawing.Imaging.ImageFormat]::Jpeg)
+$gfx.Dispose()
+$bmp.Dispose()

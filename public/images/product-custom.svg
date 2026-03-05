@@ -1,0 +1,8 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="800" height="600" fill="#F5F3FF"/>
+<rect x="230" y="120" width="70" height="360" rx="25" transform="rotate(-15 230 120)" fill="#FFFFFF"/>
+<rect x="360" y="110" width="70" height="380" rx="25" transform="rotate(-10 360 110)" fill="#FFFFFF"/>
+<rect x="490" y="120" width="70" height="360" rx="25" transform="rotate(-5 490 120)" fill="#FFFFFF"/>
+<path d="M220 500H580" stroke="#8B5CF6" stroke-width="10" stroke-linecap="round"/>
+<text x="220" y="90" fill="#5B21B6" font-family="Cabin, Arial" font-size="38" font-weight="700">Custom Size Straw</text>
+</svg>

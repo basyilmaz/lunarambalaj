@@ -1,0 +1,7 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="800" height="600" fill="#F8FAFC"/>
+<rect x="250" y="130" width="70" height="350" rx="25" transform="rotate(-11 250 130)" fill="#FFFFFF"/>
+<rect x="390" y="125" width="70" height="355" rx="25" transform="rotate(-8 390 125)" fill="#FFFFFF"/>
+<rect x="530" y="130" width="70" height="350" rx="25" transform="rotate(-5 530 130)" fill="#FFFFFF"/>
+<text x="210" y="90" fill="#0F172A" font-family="Cabin, Arial" font-size="38" font-weight="700">Unprinted Paper Straw</text>
+</svg>

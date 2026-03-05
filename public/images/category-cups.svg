@@ -1,0 +1,15 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="t d">
+  <title id="t">Cups Category</title>
+  <desc id="d">Illustration for paper and PET cups category</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#111827"/><stop offset="100%" stop-color="#0ea5e9"/></linearGradient></defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g transform="translate(250 170)">
+    <path d="M100 80h220l-30 360H130z" fill="#f8fafc"/>
+    <path d="M420 40h240l-35 400H455z" fill="#dbeafe"/>
+    <rect x="110" y="160" width="200" height="35" fill="#ef4444"/>
+    <rect x="430" y="150" width="220" height="35" fill="#f59e0b"/>
+  </g>
+  
+</svg>
+
+

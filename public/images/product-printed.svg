@@ -1,0 +1,10 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="800" height="600" fill="#F8FAFC"/>
+<rect x="230" y="130" width="70" height="350" rx="25" transform="rotate(-12 230 130)" fill="#FFFFFF"/>
+<rect x="360" y="120" width="70" height="360" rx="25" transform="rotate(-8 360 120)" fill="#FFFFFF"/>
+<rect x="490" y="130" width="70" height="350" rx="25" transform="rotate(-4 490 130)" fill="#FFFFFF"/>
+<path d="M245 230L290 220" stroke="#EF4444" stroke-width="8"/>
+<path d="M375 220L420 210" stroke="#EF4444" stroke-width="8"/>
+<path d="M505 230L550 220" stroke="#EF4444" stroke-width="8"/>
+<text x="190" y="90" fill="#0F172A" font-family="Cabin, Arial" font-size="38" font-weight="700">Printed Paper Straw</text>
+</svg>

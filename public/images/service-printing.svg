@@ -1,0 +1,10 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="800" height="600" fill="#FFF7ED"/>
+<rect x="180" y="150" width="440" height="300" rx="24" fill="#FED7AA"/>
+<rect x="240" y="200" width="60" height="200" rx="16" fill="#FFFFFF"/>
+<rect x="330" y="200" width="60" height="200" rx="16" fill="#FFFFFF"/>
+<rect x="420" y="200" width="60" height="200" rx="16" fill="#FFFFFF"/>
+<rect x="510" y="200" width="60" height="200" rx="16" fill="#FFFFFF"/>
+<path d="M240 250H570" stroke="#F97316" stroke-width="10" stroke-dasharray="12 14"/>
+<text x="235" y="105" fill="#9A3412" font-family="Cabin, Arial" font-size="42" font-weight="700">Custom Printing</text>
+</svg>
