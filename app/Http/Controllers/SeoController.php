@@ -13,7 +13,9 @@ class SeoController extends Controller
 {
     public function robots()
     {
-        return response("User-agent: *\nDisallow: /admin\nSitemap: https://lunarambalaj.com.tr/sitemap.xml\n", 200)
+        $baseUrl = rtrim(config('site.canonical_url', config('app.url', 'https://lunarambalaj.com')), '/');
+
+        return response("User-agent: *\nDisallow: /admin\nSitemap: {$baseUrl}/sitemap.xml\n", 200)
             ->header('Content-Type', 'text/plain');
     }
 
@@ -46,6 +48,8 @@ class SeoController extends Controller
                 return '- ' . trim(($tr ?: 'Category') . ($en ? ' / ' . $en : ''));
             })->all();
 
+        $baseUrl = rtrim(config('site.canonical_url', config('app.url', 'https://lunarambalaj.com')), '/');
+
         $content = implode("\n", [
             '# Lunar Ambalaj',
             '',
@@ -69,16 +73,16 @@ class SeoController extends Controller
             ...$categories,
             '',
             '## Important URLs',
-            '- TR Home: https://lunarambalaj.com.tr/',
-            '- EN Home: https://lunarambalaj.com.tr/en',
-            '- TR Products: https://lunarambalaj.com.tr/urunler',
-            '- EN Products: https://lunarambalaj.com.tr/en/products',
-            '- TR Solutions: https://lunarambalaj.com.tr/cozumler',
-            '- EN Solutions: https://lunarambalaj.com.tr/en/solutions',
-            '- TR Quote: https://lunarambalaj.com.tr/teklif-al',
-            '- EN Quote: https://lunarambalaj.com.tr/en/get-quote',
-            '- Sitemap: https://lunarambalaj.com.tr/sitemap.xml',
-            '- Robots: https://lunarambalaj.com.tr/robots.txt',
+            '- TR Home: ' . $baseUrl . '/',
+            '- EN Home: ' . $baseUrl . '/en',
+            '- TR Products: ' . $baseUrl . '/urunler',
+            '- EN Products: ' . $baseUrl . '/en/products',
+            '- TR Solutions: ' . $baseUrl . '/cozumler',
+            '- EN Solutions: ' . $baseUrl . '/en/solutions',
+            '- TR Quote: ' . $baseUrl . '/teklif-al',
+            '- EN Quote: ' . $baseUrl . '/en/get-quote',
+            '- Sitemap: ' . $baseUrl . '/sitemap.xml',
+            '- Robots: ' . $baseUrl . '/robots.txt',
             '',
             '## Notes',
             '- Default locale: tr',
@@ -93,10 +97,10 @@ class SeoController extends Controller
     public function sitemap()
     {
         $urls = [
-            '/', '/hakkimizda', '/hizmetler', '/urunler', '/cozumler', '/galeri', '/referanslar', '/sss', '/blog', '/iletisim', '/teklif-al', '/kvkk', '/cerez-politikasi', '/gizlilik-politikasi',
-            '/en', '/en/about', '/en/services', '/en/products', '/en/solutions', '/en/gallery', '/en/references', '/en/faq', '/en/blog', '/en/contact', '/en/get-quote', '/en/kvkk', '/en/cookie-policy', '/en/privacy-policy',
-            '/ru', '/ru/about', '/ru/services', '/ru/products', '/ru/solutions', '/ru/gallery', '/ru/references', '/ru/faq', '/ru/blog', '/ru/contact', '/ru/get-quote', '/ru/kvkk', '/ru/cookie-policy', '/ru/privacy-policy',
-            '/ar', '/ar/about', '/ar/services', '/ar/products', '/ar/solutions', '/ar/gallery', '/ar/references', '/ar/faq', '/ar/blog', '/ar/contact', '/ar/get-quote', '/ar/kvkk', '/ar/cookie-policy', '/ar/privacy-policy',
+            '/', '/hakkimizda', '/hizmetler', '/urunler', '/cozumler', '/galeri', '/referanslar', '/sss', '/blog', '/iletisim', '/teklif-al', '/kvkk', '/cerez-politikasi', '/gizlilik-politikasi', '/mesafeli-satis-sozlesmesi', '/kullanim-sartlari',
+            '/en', '/en/about', '/en/services', '/en/products', '/en/solutions', '/en/gallery', '/en/references', '/en/faq', '/en/blog', '/en/contact', '/en/get-quote', '/en/kvkk', '/en/cookie-policy', '/en/privacy-policy', '/en/distance-sales-contract', '/en/terms-of-use',
+            '/ru', '/ru/about', '/ru/services', '/ru/products', '/ru/solutions', '/ru/gallery', '/ru/references', '/ru/faq', '/ru/blog', '/ru/contact', '/ru/get-quote', '/ru/kvkk', '/ru/cookie-policy', '/ru/privacy-policy', '/ru/distance-sales-contract', '/ru/terms-of-use',
+            '/ar', '/ar/about', '/ar/services', '/ar/products', '/ar/solutions', '/ar/gallery', '/ar/references', '/ar/faq', '/ar/blog', '/ar/contact', '/ar/get-quote', '/ar/kvkk', '/ar/cookie-policy', '/ar/privacy-policy', '/ar/distance-sales-contract', '/ar/terms-of-use',
         ];
 
         ProductTranslation::query()

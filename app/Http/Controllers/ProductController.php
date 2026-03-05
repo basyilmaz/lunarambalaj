@@ -76,11 +76,24 @@ class ProductController extends Controller
             ->firstOrFail();
 
         $product = $translation->product;
-        $trSlug = optional($product->translations->firstWhere('lang', 'tr'))->slug;
-        $enSlug = optional($product->translations->firstWhere('lang', 'en'))->slug;
+        $paths = [
+            'tr' => '/urunler/' . (optional($product->translations->firstWhere('lang', 'tr'))->slug ?: ''),
+            'en' => '/en/products/' . (optional($product->translations->firstWhere('lang', 'en'))->slug ?: ''),
+            'ru' => '/ru/products/' . (optional($product->translations->firstWhere('lang', 'ru'))->slug ?: ''),
+            'ar' => '/ar/products/' . (optional($product->translations->firstWhere('lang', 'ar'))->slug ?: ''),
+        ];
 
-        $trPath = $trSlug ? '/urunler/' . $trSlug : '/urunler';
-        $enPath = $enSlug ? '/en/products/' . $enSlug : '/en/products';
+        foreach ($paths as $locale => $path) {
+            if (str_ends_with($path, '/')) {
+                $paths[$locale] = match ($locale) {
+                    'tr' => '/urunler',
+                    'en' => '/en/products',
+                    'ru' => '/ru/products',
+                    'ar' => '/ar/products',
+                    default => '/urunler',
+                };
+            }
+        }
 
         // Enhanced Product Schema with offers and availability
         $jsonLd = [[
@@ -144,11 +157,13 @@ class ProductController extends Controller
             'seo' => $this->seo(
                 $seoTitle,
                 $seoDescription,
-                LocaleUrls::abs($lang === 'tr' ? $trPath : $enPath),
+                LocaleUrls::abs($paths[$lang] ?? $paths['tr']),
                 [
-                    'tr-TR' => LocaleUrls::abs($trPath),
-                    'en' => LocaleUrls::abs($enPath),
-                    'x-default' => LocaleUrls::abs($trPath),
+                    'tr-TR' => LocaleUrls::abs($paths['tr']),
+                    'en' => LocaleUrls::abs($paths['en']),
+                    'ru' => LocaleUrls::abs($paths['ru']),
+                    'ar' => LocaleUrls::abs($paths['ar']),
+                    'x-default' => LocaleUrls::abs($paths['tr']),
                 ],
                 $jsonLd,
                 'product',

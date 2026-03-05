@@ -27,6 +27,6 @@ class LocaleUrls
 
     public static function abs(string $path): string
     {
-        return rtrim(config('app.url'), '/') . $path;
+        return rtrim(config('site.canonical_url', config('app.url')), '/') . $path;
     }
 }

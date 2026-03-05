@@ -79,17 +79,55 @@
     @php
         $locale = app()->getLocale();
         $menu = __('site.menu');
-        // Define route prefixes for languages
-        $prefix = $locale === 'tr' ? '' : '/' . $locale;
-        
-        // Helper function for menu urls (basic approximation, ideal would be named routes but names differ per lang)
-        // For simplicity, we construct URLs manually as in original code but using prefix
-        $url = function($path) use ($locale) {
-            if ($locale === 'tr') return $path;
-            // Check if path starts with /, if so remove it
-            $path = ltrim($path, '/');
-            return '/' . $locale . '/' . $path;
-        };
+        $defaultLanguageLinks = [
+            'tr' => '/',
+            'en' => '/en',
+            'ru' => '/ru',
+            'ar' => '/ar',
+        ];
+        $languageLinks = $defaultLanguageLinks;
+        $alternateLinks = $seo['alternates'] ?? [];
+
+        if (isset($alternateLinks['tr-TR'])) {
+            $languageLinks['tr'] = parse_url((string) $alternateLinks['tr-TR'], PHP_URL_PATH) ?: '/';
+        }
+        if (isset($alternateLinks['en'])) {
+            $languageLinks['en'] = parse_url((string) $alternateLinks['en'], PHP_URL_PATH) ?: '/en';
+        }
+        if (isset($alternateLinks['ru'])) {
+            $languageLinks['ru'] = parse_url((string) $alternateLinks['ru'], PHP_URL_PATH) ?: '/ru';
+        }
+        if (isset($alternateLinks['ar'])) {
+            $languageLinks['ar'] = parse_url((string) $alternateLinks['ar'], PHP_URL_PATH) ?: '/ar';
+        }
+
+        $legalFooterLabels = [
+            'tr' => [
+                'kvkk' => 'KVKK',
+                'privacy' => 'Gizlilik Politikası',
+                'cookie' => 'Çerez Politikası',
+                'terms' => 'Kullanım Şartları',
+            ],
+            'en' => [
+                'kvkk' => 'KVKK / Privacy Notice',
+                'privacy' => 'Privacy Policy',
+                'cookie' => 'Cookie Policy',
+                'terms' => 'Terms of Use',
+            ],
+            'ru' => [
+                'kvkk' => 'Уведомление о защите данных',
+                'privacy' => 'Политика конфиденциальности',
+                'cookie' => 'Политика cookie',
+                'terms' => 'Условия использования',
+            ],
+            'ar' => [
+                'kvkk' => 'إشعار حماية البيانات',
+                'privacy' => 'سياسة الخصوصية',
+                'cookie' => 'سياسة ملفات تعريف الارتباط',
+                'terms' => 'شروط الاستخدام',
+            ],
+        ];
+        $legalLabels = $legalFooterLabels[$locale] ?? $legalFooterLabels['en'];
     @endphp
 
     <!-- Top Bar -->
@@ -115,16 +153,10 @@
                 @if($siteSetting?->linkedin) <a href="{{ $siteSetting->linkedin }}" target="_blank" class="hover:text-primary-yellow transition-colors"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path><circle cx="4" cy="4" r="2"></circle></svg></a> @endif
 
                 <div class="ml-4 flex items-center gap-2 border-l border-slate-700 pl-4">
-                     @php
-                        $trLink = '/';
-                        $enLink = '/en';
-                        $ruLink = '/ru';
-                        $arLink = '/ar';
-                    @endphp
-                    <a href="{{ $trLink }}" class="{{ $locale==='tr' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">TR</a>
-                    <a href="{{ $enLink }}" class="{{ $locale==='en' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">EN</a>
-                    <a href="{{ $ruLink }}" class="{{ $locale==='ru' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">RU</a>
-                    <a href="{{ $arLink }}" class="{{ $locale==='ar' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">AR</a>
+                    <a href="{{ $languageLinks['tr'] }}" class="{{ $locale==='tr' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">TR</a>
+                    <a href="{{ $languageLinks['en'] }}" class="{{ $locale==='en' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">EN</a>
+                    <a href="{{ $languageLinks['ru'] }}" class="{{ $locale==='ru' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">RU</a>
+                    <a href="{{ $languageLinks['ar'] }}" class="{{ $locale==='ar' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">AR</a>
                 </div>
             </div>
         </div>
@@ -189,10 +221,10 @@
 
                 <!-- Language Switcher -->
                 <div class="mt-8 flex gap-4">
-                    <a href="/" class="{{ $locale==='tr' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">TR</a>
-                    <a href="/en" class="{{ $locale==='en' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">EN</a>
-                    <a href="/ru" class="{{ $locale==='ru' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">RU</a>
-                    <a href="/ar" class="{{ $locale==='ar' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">AR</a>
+                    <a href="{{ $languageLinks['tr'] }}" class="{{ $locale==='tr' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">TR</a>
+                    <a href="{{ $languageLinks['en'] }}" class="{{ $locale==='en' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">EN</a>
+                    <a href="{{ $languageLinks['ru'] }}" class="{{ $locale==='ru' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">RU</a>
+                    <a href="{{ $languageLinks['ar'] }}" class="{{ $locale==='ar' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">AR</a>
                 </div>
 
                 <!-- Mobile CTA -->
@@ -327,9 +359,10 @@
             <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
                 <p>&copy; {{ date('Y') }} {{ $siteSetting?->{'company_name_'.$locale} ?: 'Lunar Ambalaj' }}. {{ __('site.footer.rights_reserved') }}</p>
                 <div class="flex gap-6">
-                    <a href="{{ $locale === 'tr' ? '/kvkk' : '/'.$locale.'/kvkk' }}" class="hover:text-primary-yellow transition-colors">{{ __('site.footer.kvkk') }}</a>
-                    <a href="{{ $locale === 'tr' ? '/cerez-politikasi' : '/'.$locale.'/cookie-policy' }}" class="hover:text-primary-yellow transition-colors">{{ __('site.footer.cookie_policy') }}</a>
-                    <a href="{{ $locale === 'tr' ? '/gizlilik-politikasi' : '/'.$locale.'/privacy-policy' }}" class="hover:text-primary-yellow transition-colors">{{ __('site.footer.privacy_policy') }}</a>
+                    <a href="{{ $locale === 'tr' ? '/kvkk' : '/'.$locale.'/kvkk' }}" class="hover:text-primary-yellow transition-colors">{{ $legalLabels['kvkk'] }}</a>
+                    <a href="{{ $locale === 'tr' ? '/gizlilik-politikasi' : '/'.$locale.'/privacy-policy' }}" class="hover:text-primary-yellow transition-colors">{{ $legalLabels['privacy'] }}</a>
+                    <a href="{{ $locale === 'tr' ? '/cerez-politikasi' : '/'.$locale.'/cookie-policy' }}" class="hover:text-primary-yellow transition-colors">{{ $legalLabels['cookie'] }}</a>
+                    <a href="{{ $locale === 'tr' ? '/kullanim-sartlari' : '/'.$locale.'/terms-of-use' }}" class="hover:text-primary-yellow transition-colors">{{ $legalLabels['terms'] }}</a>
                 </div>
             </div>
         </div>

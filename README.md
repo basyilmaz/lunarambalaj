@@ -24,7 +24,9 @@ Not: Bu proje localde 4050 portunda da calistirilabilir:
 
 ## ENV Konfig
 Temel alanlar:
-- `APP_URL=https://lunarambalaj.com.tr`
+- `APP_URL=https://lunarambalaj.com`
+- `CANONICAL_URL=https://lunarambalaj.com`
+- `CANONICAL_HOST=lunarambalaj.com`
 - `APP_LOCALE=tr`
 - `APP_FALLBACK_LOCALE=en`
 - `DB_DATABASE=lunarambalaj`
@@ -61,7 +63,7 @@ Not: GTM ve Pixel ID alanlari env veya admin `settings` uzerinden verilebilir.
 
 ## SEO Checklist
 - [x] Canonical tag (dil bazli)
-- [x] `hreflang`: `tr-TR`, `en`, `x-default`
+- [x] `hreflang`: `tr-TR`, `en`, `ru`, `ar`, `x-default`
 - [x] Meta title (60) + meta description (160) limiti
 - [x] OpenGraph + Twitter card
 - [x] JSON-LD: Organization, LocalBusiness, Product, FAQPage, BreadcrumbList

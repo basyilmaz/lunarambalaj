@@ -14,8 +14,8 @@ class EnforceCanonicalDomain
             return $next($request);
         }
 
-        $canonicalUrl = config('app.url', 'https://lunarambalaj.com.tr');
-        $canonicalHost = parse_url($canonicalUrl, PHP_URL_HOST) ?: 'lunarambalaj.com.tr';
+        $canonicalUrl = config('site.canonical_url', config('app.url', 'https://lunarambalaj.com'));
+        $canonicalHost = parse_url($canonicalUrl, PHP_URL_HOST) ?: config('site.canonical_host', 'lunarambalaj.com');
         $host = $request->getHost();
 
         if ($request->getScheme() !== 'https' || $host !== $canonicalHost) {

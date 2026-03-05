@@ -60,11 +60,24 @@ class BlogController extends Controller
             ->firstOrFail();
 
         $post = $translation->post;
-        $trSlug = optional($post->translations->firstWhere('lang', 'tr'))->slug;
-        $enSlug = optional($post->translations->firstWhere('lang', 'en'))->slug;
+        $paths = [
+            'tr' => '/blog/' . (optional($post->translations->firstWhere('lang', 'tr'))->slug ?: ''),
+            'en' => '/en/blog/' . (optional($post->translations->firstWhere('lang', 'en'))->slug ?: ''),
+            'ru' => '/ru/blog/' . (optional($post->translations->firstWhere('lang', 'ru'))->slug ?: ''),
+            'ar' => '/ar/blog/' . (optional($post->translations->firstWhere('lang', 'ar'))->slug ?: ''),
+        ];
 
-        $trPath = $trSlug ? '/blog/' . $trSlug : '/blog';
-        $enPath = $enSlug ? '/en/blog/' . $enSlug : '/en/blog';
+        foreach ($paths as $locale => $path) {
+            if (str_ends_with($path, '/')) {
+                $paths[$locale] = match ($locale) {
+                    'tr' => '/blog',
+                    'en' => '/en/blog',
+                    'ru' => '/ru/blog',
+                    'ar' => '/ar/blog',
+                    default => '/blog',
+                };
+            }
+        }
 
         // Get related posts from same category or latest posts
         $relatedPosts = Post::query()
@@ -127,11 +140,13 @@ class BlogController extends Controller
             'seo' => $this->seo(
                 $seoTitle,
                 $seoDescription,
-                LocaleUrls::abs($lang === 'tr' ? $trPath : $enPath),
+                LocaleUrls::abs($paths[$lang] ?? $paths['tr']),
                 [
-                    'tr-TR' => LocaleUrls::abs($trPath),
-                    'en' => LocaleUrls::abs($enPath),
-                    'x-default' => LocaleUrls::abs($trPath),
+                    'tr-TR' => LocaleUrls::abs($paths['tr']),
+                    'en' => LocaleUrls::abs($paths['en']),
+                    'ru' => LocaleUrls::abs($paths['ru']),
+                    'ar' => LocaleUrls::abs($paths['ar']),
+                    'x-default' => LocaleUrls::abs($paths['tr']),
                 ],
                 $jsonLd,
                 'article',

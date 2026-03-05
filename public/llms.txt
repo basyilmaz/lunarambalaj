@@ -21,8 +21,8 @@ Paper straws are available as contract manufacturing.
 - Stick Sugar
 
 ## Important URLs
-- Website: https://lunarambalaj.com.tr/
-- Quote: https://lunarambalaj.com.tr/teklif-al
-- Contact: https://lunarambalaj.com.tr/iletisim
-- Sitemap: https://lunarambalaj.com.tr/sitemap.xml
-- Robots: https://lunarambalaj.com.tr/robots.txt
+- Website: https://lunarambalaj.com/
+- Quote: https://lunarambalaj.com/teklif-al
+- Contact: https://lunarambalaj.com/iletisim
+- Sitemap: https://lunarambalaj.com/sitemap.xml
+- Robots: https://lunarambalaj.com/robots.txt
