@@ -24,7 +24,7 @@
     <meta name="twitter:description" content="{{ $seo['description'] ?? '' }}">
     <meta name="twitter:image" content="{{ $seo['image'] ?? asset('images/hero-straw.svg') }}">
 
-    @if($gtmId)
+    @if(app()->environment('production') && $gtmId)
     <script>
         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
         var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -33,7 +33,7 @@
     </script>
     @endif
 
-    @if($metaPixelId)
+    @if(app()->environment('production') && $metaPixelId)
     <script>
         !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
         n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
@@ -72,7 +72,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-50 text-slate-900">
-    @if($gtmId)
+    @if(app()->environment('production') && $gtmId)
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtmId }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     @endif
 

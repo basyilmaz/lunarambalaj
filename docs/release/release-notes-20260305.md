@@ -9,6 +9,7 @@
 - Added static `public/robots.txt` with `/admin` disallow and sitemap reference.
 - Added static `public/llms.txt` with company summary and sitemap/robots links.
 - Updated `.gitignore` to exclude local-only artifacts.
+- Scoped GTM/Meta injection in layout to production environment only.
 
 ## Validation
 - Prelaunch audit: blockers resolved (`Blockers=0`).
