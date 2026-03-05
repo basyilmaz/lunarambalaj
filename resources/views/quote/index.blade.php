@@ -67,7 +67,25 @@
 
         <p class="text-xs text-slate-500">{{ app()->getLocale()==='tr' ? 'Not: 5000 adet altı talepler de değerlendirilir; birim maliyet değişebilir.' : 'Note: Requests below 5000 units can still be evaluated; unit cost may vary.' }}</p>
 
-        <label class="flex items-start gap-2 text-sm"><input type="checkbox" name="kvkk" value="1" required> {{ app()->getLocale()==='tr' ? 'KVKK metnini okudum, kabul ediyorum.' : 'I have read and accept the privacy notice.' }}</label>
+        @php
+            $locale = app()->getLocale();
+            $kvkkLinks = [
+                'tr' => '/kvkk',
+                'en' => '/en/kvkk',
+                'ru' => '/ru/kvkk',
+                'ar' => '/ar/kvkk',
+            ];
+            $kvkkConsentText = [
+                'tr' => "KVKK kapsamında kişisel verilerimin işlenmesine izin veriyorum. <a class=\"underline\" href=\"{$kvkkLinks['tr']}\" target=\"_blank\" rel=\"noopener\">KVKK Aydınlatma Metni</a>'ni okudum.",
+                'en' => "I consent to the processing of my personal data under KVKK. I have read the <a class=\"underline\" href=\"{$kvkkLinks['en']}\" target=\"_blank\" rel=\"noopener\">Privacy Notice (KVKK)</a>.",
+                'ru' => "Я даю согласие на обработку моих персональных данных в рамках KVKK. Я ознакомился(лась) с <a class=\"underline\" href=\"{$kvkkLinks['ru']}\" target=\"_blank\" rel=\"noopener\">Уведомлением о защите данных (KVKK)</a>.",
+                'ar' => "أوافق على معالجة بياناتي الشخصية وفقًا لـ KVKK، وقد قرأت <a class=\"underline\" href=\"{$kvkkLinks['ar']}\" target=\"_blank\" rel=\"noopener\">إشعار حماية البيانات (KVKK)</a>.",
+            ];
+        @endphp
+        <label class="flex items-start gap-2 text-sm">
+            <input type="checkbox" name="kvkk" value="1" required>
+            <span>{!! $kvkkConsentText[$locale] ?? $kvkkConsentText['en'] !!}</span>
+        </label>
         <button class="rounded-md bg-amber-500 px-4 py-2 font-semibold text-white">{{ app()->getLocale()==='tr' ? 'Teklif Gönder' : 'Submit Quote' }}</button>
     </form>
 </section>
