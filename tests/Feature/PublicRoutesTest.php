@@ -23,10 +23,10 @@ class PublicRoutesTest extends TestCase
         $paths = ['/', '/robots.txt', '/sitemap.xml', '/llms.txt'];
 
         $localeRoutes = [
-            'tr' => ['/hakkimizda', '/hizmetler', '/urunler', '/cozumler', '/galeri', '/referanslar', '/sss', '/blog', '/iletisim', '/teklif-al', '/teklif-al/tesekkurler', '/kvkk', '/cerez-politikasi', '/gizlilik-politikasi'],
-            'en' => ['/en', '/en/about', '/en/services', '/en/products', '/en/solutions', '/en/gallery', '/en/references', '/en/faq', '/en/blog', '/en/contact', '/en/get-quote', '/en/get-quote/thank-you', '/en/kvkk', '/en/cookie-policy', '/en/privacy-policy'],
-            'ru' => ['/ru', '/ru/about', '/ru/services', '/ru/products', '/ru/solutions', '/ru/gallery', '/ru/references', '/ru/faq', '/ru/blog', '/ru/contact', '/ru/get-quote', '/ru/get-quote/thank-you', '/ru/kvkk', '/ru/cookie-policy', '/ru/privacy-policy'],
-            'ar' => ['/ar', '/ar/about', '/ar/services', '/ar/products', '/ar/solutions', '/ar/gallery', '/ar/references', '/ar/faq', '/ar/blog', '/ar/contact', '/ar/get-quote', '/ar/get-quote/thank-you', '/ar/kvkk', '/ar/cookie-policy', '/ar/privacy-policy'],
+            'tr' => ['/hakkimizda', '/hizmetler', '/urunler', '/cozumler', '/galeri', '/referanslar', '/sss', '/blog', '/iletisim', '/teklif-al', '/teklif-al/tesekkurler', '/kvkk', '/cerez-politikasi', '/gizlilik-politikasi', '/mesafeli-satis-sozlesmesi', '/kullanim-sartlari'],
+            'en' => ['/en', '/en/about', '/en/services', '/en/products', '/en/solutions', '/en/gallery', '/en/references', '/en/faq', '/en/blog', '/en/contact', '/en/get-quote', '/en/get-quote/thank-you', '/en/kvkk', '/en/cookie-policy', '/en/privacy-policy', '/en/distance-sales-contract', '/en/terms-of-use'],
+            'ru' => ['/ru', '/ru/about', '/ru/services', '/ru/products', '/ru/solutions', '/ru/gallery', '/ru/references', '/ru/faq', '/ru/blog', '/ru/contact', '/ru/get-quote', '/ru/get-quote/thank-you', '/ru/kvkk', '/ru/cookie-policy', '/ru/privacy-policy', '/ru/distance-sales-contract', '/ru/terms-of-use'],
+            'ar' => ['/ar', '/ar/about', '/ar/services', '/ar/products', '/ar/solutions', '/ar/gallery', '/ar/references', '/ar/faq', '/ar/blog', '/ar/contact', '/ar/get-quote', '/ar/get-quote/thank-you', '/ar/kvkk', '/ar/cookie-policy', '/ar/privacy-policy', '/ar/distance-sales-contract', '/ar/terms-of-use'],
         ];
 
         $dynamicRoutes = [

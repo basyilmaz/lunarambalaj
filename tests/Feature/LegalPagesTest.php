@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\PageTranslation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -14,63 +13,57 @@ class LegalPagesTest extends TestCase
     {
         parent::setUp();
         $this->seed();
+        config(['app.url' => 'https://lunarambalaj.com']);
     }
 
-    public function test_legal_pages_are_accessible_in_all_locales(): void
+    public function test_legal_pages_have_notice_in_all_languages(): void
     {
-        $paths = [
-            '/kvkk',
-            '/cerez-politikasi',
-            '/gizlilik-politikasi',
-            '/en/kvkk',
-            '/en/cookie-policy',
-            '/en/privacy-policy',
-            '/ru/kvkk',
-            '/ru/cookie-policy',
-            '/ru/privacy-policy',
-            '/ar/kvkk',
-            '/ar/cookie-policy',
-            '/ar/privacy-policy',
+        $cases = [
+            ['/kvkk', 'Bu metin bilgilendirme amaçlı bir taslaktır.'],
+            ['/gizlilik-politikasi', 'Bu metin bilgilendirme amaçlı bir taslaktır.'],
+            ['/cerez-politikasi', 'Bu metin bilgilendirme amaçlı bir taslaktır.'],
+            ['/mesafeli-satis-sozlesmesi', 'Bu metin bilgilendirme amaçlı bir taslaktır.'],
+            ['/kullanim-sartlari', 'Bu metin bilgilendirme amaçlı bir taslaktır.'],
+            ['/en/kvkk', 'This text is a draft for informational purposes only.'],
+            ['/en/privacy-policy', 'This text is a draft for informational purposes only.'],
+            ['/en/cookie-policy', 'This text is a draft for informational purposes only.'],
+            ['/en/distance-sales-contract', 'This text is a draft for informational purposes only.'],
+            ['/en/terms-of-use', 'This text is a draft for informational purposes only.'],
+            ['/ru/kvkk', 'Этот текст является информационным проектом.'],
+            ['/ru/privacy-policy', 'Этот текст является информационным проектом.'],
+            ['/ru/cookie-policy', 'Этот текст является информационным проектом.'],
+            ['/ru/distance-sales-contract', 'Этот текст является информационным проектом.'],
+            ['/ru/terms-of-use', 'Этот текст является информационным проектом.'],
+            ['/ar/kvkk', 'هذا النص مسودة لأغراض معلوماتية فقط'],
+            ['/ar/privacy-policy', 'هذا النص مسودة لأغراض معلوماتية فقط'],
+            ['/ar/cookie-policy', 'هذا النص مسودة لأغراض معلوماتية فقط'],
+            ['/ar/distance-sales-contract', 'هذا النص مسودة لأغراض معلوماتية فقط'],
+            ['/ar/terms-of-use', 'هذا النص مسودة لأغراض معلوماتية فقط'],
         ];
 
-        foreach ($paths as $path) {
-            $this->get($path)
-                ->assertOk()
-                ->assertSee('min-h-[70vh]', false);
+        foreach ($cases as [$url, $notice]) {
+            $this->get($url)->assertOk()->assertSee($notice, false);
         }
     }
 
-    public function test_legal_page_contains_cross_links(): void
+    public function test_arabic_legal_page_uses_rtl_and_has_full_hreflang_set(): void
     {
-        $this->get('/kvkk')
+        $this->get('/ar/kvkk')
             ->assertOk()
-            ->assertSee('/kvkk', false)
-            ->assertSee('/cerez-politikasi', false)
-            ->assertSee('/gizlilik-politikasi', false);
-
-        $this->get('/en/kvkk')
-            ->assertOk()
-            ->assertSee('/en/kvkk', false)
-            ->assertSee('/en/cookie-policy', false)
-            ->assertSee('/en/privacy-policy', false);
+            ->assertSee('lang="ar"', false)
+            ->assertSee('dir="rtl"', false)
+            ->assertSee('hreflang="tr-TR"', false)
+            ->assertSee('hreflang="en"', false)
+            ->assertSee('hreflang="ru"', false)
+            ->assertSee('hreflang="ar"', false)
+            ->assertSee('hreflang="x-default"', false);
     }
 
-    public function test_legal_pages_have_non_empty_long_form_content_for_all_locales(): void
+    public function test_legal_page_canonical_uses_primary_domain(): void
     {
-        $translations = PageTranslation::query()
-            ->whereIn('page_id', function ($query): void {
-                $query->select('id')
-                    ->from('pages')
-                    ->whereIn('type', ['kvkk', 'cookie', 'privacy']);
-            })
-            ->get();
-
-        foreach ($translations as $translation) {
-            $this->assertGreaterThan(
-                400,
-                mb_strlen(strip_tags((string) $translation->body)),
-                "Legal content too short for lang={$translation->lang}, translation_id={$translation->id}"
-            );
-        }
+        $this->get('/en/privacy-policy')
+            ->assertOk()
+            ->assertSee('rel="canonical" href="https://lunarambalaj.com/en/privacy-policy"', false);
     }
 }
+

@@ -3,7 +3,8 @@
 return [
     'locales' => ['tr', 'en', 'ru', 'ar'],
     'default_locale' => 'tr',
-    'canonical_host' => 'lunarambalaj.com.tr',
+    'canonical_url' => env('CANONICAL_URL', 'https://lunarambalaj.com'),
+    'canonical_host' => env('CANONICAL_HOST', 'lunarambalaj.com'),
     'route_translations' => [
         'about' => ['tr' => '/hakkimizda', 'en' => '/en/about', 'ru' => '/ru/about', 'ar' => '/ar/about'],
         'services' => ['tr' => '/hizmetler', 'en' => '/en/services', 'ru' => '/ru/services', 'ar' => '/ar/services'],
@@ -18,5 +19,7 @@ return [
         'kvkk' => ['tr' => '/kvkk', 'en' => '/en/kvkk', 'ru' => '/ru/kvkk', 'ar' => '/ar/kvkk'],
         'cookie' => ['tr' => '/cerez-politikasi', 'en' => '/en/cookie-policy', 'ru' => '/ru/cookie-policy', 'ar' => '/ar/cookie-policy'],
         'privacy' => ['tr' => '/gizlilik-politikasi', 'en' => '/en/privacy-policy', 'ru' => '/ru/privacy-policy', 'ar' => '/ar/privacy-policy'],
+        'distance_sales' => ['tr' => '/mesafeli-satis-sozlesmesi', 'en' => '/en/distance-sales-contract', 'ru' => '/ru/distance-sales-contract', 'ar' => '/ar/distance-sales-contract'],
+        'terms' => ['tr' => '/kullanim-sartlari', 'en' => '/en/terms-of-use', 'ru' => '/ru/terms-of-use', 'ar' => '/ar/terms-of-use'],
     ],
 ];

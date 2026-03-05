@@ -13,6 +13,7 @@ class Page extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'key',
         'type',
         'is_published',
     ];

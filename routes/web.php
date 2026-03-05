@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LegalPageController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuoteController;
@@ -39,9 +40,11 @@ Route::middleware('site-locale:tr')->group(function (): void {
     Route::get('/teklif-al', [QuoteController::class, 'index'])->name('tr.quote');
     Route::post('/teklif-al', [QuoteController::class, 'store'])->name('tr.quote.store');
     Route::get('/teklif-al/tesekkurler', [QuoteController::class, 'thankyou'])->name('tr.quote.thankyou');
-    Route::get('/kvkk', [PageController::class, 'kvkk'])->name('tr.kvkk');
-    Route::get('/cerez-politikasi', [PageController::class, 'cookie'])->name('tr.cookie');
-    Route::get('/gizlilik-politikasi', [PageController::class, 'privacy'])->name('tr.privacy');
+    Route::get('/kvkk', [LegalPageController::class, 'kvkk'])->name('tr.kvkk');
+    Route::get('/cerez-politikasi', [LegalPageController::class, 'cookie'])->name('tr.cookie');
+    Route::get('/gizlilik-politikasi', [LegalPageController::class, 'privacy'])->name('tr.privacy');
+    Route::get('/mesafeli-satis-sozlesmesi', [LegalPageController::class, 'distanceSales'])->name('tr.distance-sales');
+    Route::get('/kullanim-sartlari', [LegalPageController::class, 'terms'])->name('tr.terms');
 });
 
 Route::prefix('en')->middleware('site-locale:en')->group(function (): void {
@@ -61,9 +64,11 @@ Route::prefix('en')->middleware('site-locale:en')->group(function (): void {
     Route::get('/get-quote', [QuoteController::class, 'index'])->name('en.quote');
     Route::post('/get-quote', [QuoteController::class, 'store'])->name('en.quote.store');
     Route::get('/get-quote/thank-you', [QuoteController::class, 'thankyou'])->name('en.quote.thankyou');
-    Route::get('/kvkk', [PageController::class, 'kvkk'])->name('en.kvkk');
-    Route::get('/cookie-policy', [PageController::class, 'cookie'])->name('en.cookie');
-    Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('en.privacy');
+    Route::get('/kvkk', [LegalPageController::class, 'kvkk'])->name('en.kvkk');
+    Route::get('/cookie-policy', [LegalPageController::class, 'cookie'])->name('en.cookie');
+    Route::get('/privacy-policy', [LegalPageController::class, 'privacy'])->name('en.privacy');
+    Route::get('/distance-sales-contract', [LegalPageController::class, 'distanceSales'])->name('en.distance-sales');
+    Route::get('/terms-of-use', [LegalPageController::class, 'terms'])->name('en.terms');
 });
 
 Route::prefix('ru')->middleware('site-locale:ru')->group(function (): void {
@@ -83,9 +88,11 @@ Route::prefix('ru')->middleware('site-locale:ru')->group(function (): void {
     Route::get('/get-quote', [QuoteController::class, 'index'])->name('ru.quote');
     Route::post('/get-quote', [QuoteController::class, 'store'])->name('ru.quote.store');
     Route::get('/get-quote/thank-you', [QuoteController::class, 'thankyou'])->name('ru.quote.thankyou');
-    Route::get('/kvkk', [PageController::class, 'kvkk'])->name('ru.kvkk');
-    Route::get('/cookie-policy', [PageController::class, 'cookie'])->name('ru.cookie');
-    Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('ru.privacy');
+    Route::get('/kvkk', [LegalPageController::class, 'kvkk'])->name('ru.kvkk');
+    Route::get('/cookie-policy', [LegalPageController::class, 'cookie'])->name('ru.cookie');
+    Route::get('/privacy-policy', [LegalPageController::class, 'privacy'])->name('ru.privacy');
+    Route::get('/distance-sales-contract', [LegalPageController::class, 'distanceSales'])->name('ru.distance-sales');
+    Route::get('/terms-of-use', [LegalPageController::class, 'terms'])->name('ru.terms');
 });
 
 Route::prefix('ar')->middleware('site-locale:ar')->group(function (): void {
@@ -105,7 +112,9 @@ Route::prefix('ar')->middleware('site-locale:ar')->group(function (): void {
     Route::get('/get-quote', [QuoteController::class, 'index'])->name('ar.quote');
     Route::post('/get-quote', [QuoteController::class, 'store'])->name('ar.quote.store');
     Route::get('/get-quote/thank-you', [QuoteController::class, 'thankyou'])->name('ar.quote.thankyou');
-    Route::get('/kvkk', [PageController::class, 'kvkk'])->name('ar.kvkk');
-    Route::get('/cookie-policy', [PageController::class, 'cookie'])->name('ar.cookie');
-    Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('ar.privacy');
+    Route::get('/kvkk', [LegalPageController::class, 'kvkk'])->name('ar.kvkk');
+    Route::get('/cookie-policy', [LegalPageController::class, 'cookie'])->name('ar.cookie');
+    Route::get('/privacy-policy', [LegalPageController::class, 'privacy'])->name('ar.privacy');
+    Route::get('/distance-sales-contract', [LegalPageController::class, 'distanceSales'])->name('ar.distance-sales');
+    Route::get('/terms-of-use', [LegalPageController::class, 'terms'])->name('ar.terms');
 });
