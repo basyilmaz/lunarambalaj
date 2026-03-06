@@ -9,40 +9,50 @@ use App\Models\ServiceItem;
 use App\Models\Setting;
 use App\Models\Testimonial;
 use App\Support\LocaleUrls;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
     public function index()
     {
         $lang = app()->getLocale();
+        $cacheTtl = now()->addMinutes(10);
 
-        $services = ServiceItem::query()
-            ->where('is_active', true)
-            ->with('translations')
-            ->orderBy('order')
-            ->get();
+        $services = Cache::remember("home:{$lang}:services", $cacheTtl, function () {
+            return ServiceItem::query()
+                ->where('is_active', true)
+                ->with('translations')
+                ->orderBy('order')
+                ->get();
+        });
 
-        $categories = ProductCategory::query()
-            ->where('is_active', true)
-            ->with('translations')
-            ->orderBy('order')
-            ->get();
+        $categories = Cache::remember("home:{$lang}:categories", $cacheTtl, function () {
+            return ProductCategory::query()
+                ->where('is_active', true)
+                ->with('translations')
+                ->orderBy('order')
+                ->get();
+        });
 
-        $products = Product::query()
-            ->where('is_active', true)
-            ->with(['translations', 'category.translations'])
-            ->latest()
-            ->take(6)
-            ->get();
+        $products = Cache::remember("home:{$lang}:products", $cacheTtl, function () {
+            return Product::query()
+                ->where('is_active', true)
+                ->with(['translations', 'category.translations'])
+                ->latest()
+                ->take(6)
+                ->get();
+        });
 
-        $posts = Post::query()
-            ->where('is_active', true)
-            ->whereNotNull('published_at')
-            ->where('published_at', '<=', now())
-            ->with('translations')
-            ->latest('published_at')
-            ->take(3)
-            ->get();
+        $posts = Cache::remember("home:{$lang}:posts", $cacheTtl, function () {
+            return Post::query()
+                ->where('is_active', true)
+                ->whereNotNull('published_at')
+                ->where('published_at', '<=', now())
+                ->with('translations')
+                ->latest('published_at')
+                ->take(3)
+                ->get();
+        });
 
         $canonical = LocaleUrls::abs($lang === 'tr' ? '/' : '/' . $lang);
         $alternates = [
@@ -52,7 +62,9 @@ class HomeController extends Controller
             'ar' => LocaleUrls::abs('/ar'),
             'x-default' => LocaleUrls::abs('/'),
         ];
-        $setting = Setting::query()->first();
+        $setting = Cache::remember('site:settings:first', $cacheTtl, function () {
+            return Setting::query()->first();
+        });
         
         // Attempt to get setting for lang, fallback to default translation key
         $dbHeroTitle = $setting?->{'hero_h1_' . $lang} ?? null;
@@ -295,11 +307,13 @@ class HomeController extends Controller
         ];
 
         // Testimonials
-        $testimonials = Testimonial::query()
-            ->where('is_active', true)
-            ->with('translations')
-            ->orderBy('order')
-            ->get();
+        $testimonials = Cache::remember("home:{$lang}:testimonials", $cacheTtl, function () {
+            return Testimonial::query()
+                ->where('is_active', true)
+                ->with('translations')
+                ->orderBy('order')
+                ->get();
+        });
 
         return view('home', [
             'services' => $services,
@@ -325,4 +339,3 @@ class HomeController extends Controller
         ]);
     }
 }
-

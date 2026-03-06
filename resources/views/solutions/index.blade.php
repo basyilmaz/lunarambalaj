@@ -52,13 +52,13 @@
                     <div class="h-56 relative overflow-hidden bg-slate-200">
                         @php
                             $bgImages = [
-                                'cafe' => 'images/lifestyle-iced-coffee.jpg',
-                                'fastfood' => 'images/product-kraft-bag.png',
+                                'cafe' => 'images/lifestyle-iced-coffee.webp',
+                                'fastfood' => 'images/product-kraft-bag.webp',
                                 'hotel' => 'images/catalog/asset-19.jpg',
-                                'event' => 'images/lifestyle-cocktail.jpg',
-                                'retail' => 'images/social-coffee.png',
+                                'event' => 'images/lifestyle-cocktail.webp',
+                                'retail' => 'images/social-coffee.webp',
                             ];
-                            $imageSrc = asset($bgImages[$solution['key']] ?? 'images/lifestyle-drinks.png');
+                            $imageSrc = asset($bgImages[$solution['key']] ?? 'images/lifestyle-drinks.webp');
                         @endphp
                         <img
                             src="{{ $imageSrc }}"

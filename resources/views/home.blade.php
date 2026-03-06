@@ -7,7 +7,7 @@
     <div class="swiper-wrapper">
         @foreach($heroSlides as $slide)
             <div class="swiper-slide">
-                <div class="relative bg-slate-900 overflow-hidden min-h-[700px] flex items-center">
+                <div class="relative bg-slate-900 overflow-hidden min-h-[560px] md:min-h-[700px] flex items-center">
                     <!-- Background Image -->
                     <div class="absolute inset-0">
                         <img
@@ -241,18 +241,18 @@
             <div class="grid grid-cols-2 gap-4" data-aos="fade-up">
                 <div class="space-y-4">
                     <div class="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 group">
-                        <img src="{{ asset('images/product-cup-colorful.png') }}" alt="Lunar Ambalaj Bardak" loading="lazy" width="640" height="640" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ asset('images/product-cup-colorful.webp') }}" alt="Lunar Ambalaj Bardak" loading="lazy" fetchpriority="low" width="640" height="800" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
                     </div>
                     <div class="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 group">
-                        <img src="{{ asset('images/lifestyle-cocktail.jpg') }}" alt="Lunar Pipet" loading="lazy" width="640" height="640" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ asset('images/lifestyle-cocktail.webp') }}" alt="Lunar Pipet" loading="lazy" fetchpriority="low" width="640" height="640" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
                     </div>
                 </div>
                 <div class="space-y-4 pt-12">
                     <div class="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 group">
-                        <img src="{{ asset('images/product-kraft-bag.png') }}" alt="Lunar Ambalaj Kraft Torba" loading="lazy" width="640" height="640" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ asset('images/product-kraft-bag.webp') }}" alt="Lunar Ambalaj Kraft Torba" loading="lazy" fetchpriority="low" width="640" height="800" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
                     </div>
                     <div class="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 group">
-                        <img src="{{ asset('images/product-cup-white.png') }}" alt="Lunar Bardak Beyaz" loading="lazy" width="640" height="640" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ asset('images/product-cup-white.webp') }}" alt="Lunar Bardak Beyaz" loading="lazy" fetchpriority="low" width="640" height="800" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
                     </div>
                 </div>
             </div>
@@ -260,7 +260,7 @@
             <!-- Right: Lifestyle Images & Text -->
             <div class="flex flex-col justify-center" data-aos="fade-up" data-aos-delay="100">
                 <div class="mb-8 overflow-hidden rounded-lg shadow-2xl">
-                    <img src="{{ asset('images/lifestyle-iced-coffee.jpg') }}" alt="Lunar Ambalaj Ürünleri" loading="lazy" width="1200" height="800" decoding="async" class="w-full h-auto object-cover">
+                    <img src="{{ asset('images/lifestyle-iced-coffee.webp') }}" alt="Lunar Ambalaj Ürünleri" loading="lazy" fetchpriority="low" width="900" height="1125" decoding="async" class="w-full h-auto object-cover">
                 </div>
 
                 <div class="space-y-6">

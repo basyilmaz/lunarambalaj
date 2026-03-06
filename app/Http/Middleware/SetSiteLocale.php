@@ -31,7 +31,10 @@ class SetSiteLocale
         }
 
         App::setLocale($locale);
-        Cookie::queue(cookie('site_lang', $locale, 60 * 24 * 365));
+
+        if ($request->cookie('site_lang') !== $locale) {
+            Cookie::queue(cookie('site_lang', $locale, 60 * 24 * 365));
+        }
 
         return $next($request);
     }
