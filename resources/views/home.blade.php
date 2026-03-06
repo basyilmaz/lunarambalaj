@@ -1,6 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $locale = app()->getLocale();
+    $homeUi = [
+        'services_subtitle' => ['tr' => 'Neler Yapıyoruz', 'en' => 'What We Do', 'ru' => 'Что мы делаем', 'ar' => 'ماذا نقدم'],
+        'solutions_subtitle' => ['tr' => 'Sektörel Çözümler', 'en' => 'Industry Solutions', 'ru' => 'Отраслевые решения', 'ar' => 'حلول حسب القطاع'],
+        'solutions_title' => ['tr' => 'İşletmenize Özel Paketler', 'en' => 'Tailored Packages for Your Business', 'ru' => 'Пакеты под ваш бизнес', 'ar' => 'باقات مخصصة لنشاطك'],
+        'all_solutions' => ['tr' => 'Tüm Çözümleri Gör', 'en' => 'View All Solutions', 'ru' => 'Все решения', 'ar' => 'عرض كل الحلول'],
+        'references_subtitle' => ['tr' => 'Referanslarımız', 'en' => 'Our References', 'ru' => 'Наши референсы', 'ar' => 'مراجعنا'],
+        'references_title' => ['tr' => 'Müşterilerimiz Ne Diyor?', 'en' => 'What Our Clients Say', 'ru' => 'Что говорят клиенты?', 'ar' => 'ماذا يقول عملاؤنا؟'],
+        'lifestyle_subtitle' => ['tr' => 'Ürünlerimiz Hayatınızda', 'en' => 'Our Products in Your Life', 'ru' => 'Наши продукты в вашей жизни', 'ar' => 'منتجاتنا في حياتكم'],
+        'lifestyle_title' => ['tr' => 'Kalite ve Tasarım Bir Arada', 'en' => 'Quality Meets Design', 'ru' => 'Качество и дизайн вместе', 'ar' => 'الجودة والتصميم معًا'],
+        'corporate_print' => ['tr' => 'Kurumsal Baskı', 'en' => 'Corporate Printing', 'ru' => 'Корпоративная печать', 'ar' => 'طباعة مؤسسية'],
+        'corporate_print_desc' => ['tr' => 'Logonuz ve markanız tüm ürünlerde', 'en' => 'Your logo and brand on all products', 'ru' => 'Ваш логотип и бренд на всех продуктах', 'ar' => 'شعاركم وعلامتكم على كل المنتجات'],
+        'fast_production' => ['tr' => 'Hızlı Üretim', 'en' => 'Fast Production', 'ru' => 'Быстрое производство', 'ar' => 'إنتاج سريع'],
+        'fast_production_desc' => ['tr' => '20 gün ortalama termin süresi', 'en' => '20-day average lead time', 'ru' => 'Средний срок: 20 дней', 'ar' => 'متوسط مدة التنفيذ: 20 يومًا'],
+        'quality_guarantee' => ['tr' => 'Kalite Garantisi', 'en' => 'Quality Guarantee', 'ru' => 'Гарантия качества', 'ar' => 'ضمان الجودة'],
+        'quality_guarantee_desc' => ['tr' => 'ISO 9001 sertifikalı üretim', 'en' => 'ISO 9001 certified production', 'ru' => 'Сертифицированное производство ISO 9001', 'ar' => 'إنتاج معتمد ISO 9001'],
+        'explore_products' => ['tr' => 'Tüm Ürünleri Keşfedin', 'en' => 'Explore All Products', 'ru' => 'Смотреть все продукты', 'ar' => 'استكشف كل المنتجات'],
+        'blog_subtitle' => ['tr' => 'Blog ve Haberler', 'en' => 'Blog & News', 'ru' => 'Блог и новости', 'ar' => 'المدونة والأخبار'],
+        'blog_title' => ['tr' => 'Son Yazılar', 'en' => 'Latest Articles', 'ru' => 'Последние статьи', 'ar' => 'أحدث المقالات'],
+        'all_posts' => ['tr' => 'Tüm Yazıları Gör', 'en' => 'View All Articles', 'ru' => 'Смотреть все статьи', 'ar' => 'عرض كل المقالات'],
+        'cta_title' => ['tr' => 'Ambalaj İhtiyacınız İçin Hemen Teklif Alın', 'en' => 'Get Your Quote for Packaging Needs Now', 'ru' => 'Получите расчет для ваших упаковочных задач', 'ar' => 'احصل على عرض سعر لاحتياجات التعبئة الآن'],
+        'cta_desc' => ['tr' => '24 saat içinde özel fiyat teklifi ve hızlı termin bilgisi', 'en' => 'Get custom pricing and fast lead time information within 24 hours', 'ru' => 'Индивидуальный расчет и сроки в течение 24 часов', 'ar' => 'سعر مخصص ومعلومات التنفيذ خلال 24 ساعة'],
+    ];
+@endphp
 
 <!-- Hero Slider -->
 <section class="hero-swiper swiper relative">
@@ -149,7 +174,7 @@
 <section class="py-24 bg-dark-charcoal">
     <div class="mx-auto max-w-7xl px-4">
         <x-section-header
-            :subtitle="app()->getLocale() === 'tr' ? 'Neler Yapıyoruz' : 'What We Do'"
+            :subtitle="$homeUi['services_subtitle'][$locale] ?? $homeUi['services_subtitle']['en']"
             :title="__('site.menu.services')"
             align="center"
             class="!text-white [&_h2]:!text-white [&_span]:!text-primary-yellow [&_p]:!text-light-gray"
@@ -167,8 +192,8 @@
 <section class="py-24 bg-white">
     <div class="mx-auto max-w-7xl px-4">
         <x-section-header
-            :subtitle="app()->getLocale() === 'tr' ? 'Sektörel Çözümler' : 'Industry Solutions'"
-            :title="app()->getLocale() === 'tr' ? 'İşletmenize Özel Paketler' : 'Tailored Packages for Your Business'"
+            :subtitle="$homeUi['solutions_subtitle'][$locale] ?? $homeUi['solutions_subtitle']['en']"
+            :title="$homeUi['solutions_title'][$locale] ?? $homeUi['solutions_title']['en']"
             align="center"
         />
 
@@ -187,7 +212,7 @@
 
         <div class="mt-12 text-center">
             <x-button variant="primary" :href="route(app()->getLocale() . '.solutions')">
-                {{ app()->getLocale() === 'tr' ? 'Tüm Çözümleri Gör' : 'View All Solutions' }}
+                {{ $homeUi['all_solutions'][$locale] ?? $homeUi['all_solutions']['en'] }}
             </x-button>
         </div>
     </div>
@@ -198,8 +223,8 @@
 <section class="py-24 bg-slate-50">
     <div class="mx-auto max-w-7xl px-4">
         <x-section-header
-            :subtitle="app()->getLocale() === 'tr' ? 'Referanslarımız' : 'Our References'"
-            :title="app()->getLocale() === 'tr' ? 'Müşterilerimiz Ne Diyor?' : 'What Our Clients Say'"
+            :subtitle="$homeUi['references_subtitle'][$locale] ?? $homeUi['references_subtitle']['en']"
+            :title="$homeUi['references_title'][$locale] ?? $homeUi['references_title']['en']"
             align="center"
         />
 
@@ -231,8 +256,8 @@
 <section class="py-24 bg-gradient-to-br from-slate-50 via-white to-slate-50">
     <div class="mx-auto max-w-7xl px-4">
         <x-section-header
-            :subtitle="app()->getLocale() === 'tr' ? 'Ürünlerimiz Hayatınızda' : 'Our Products in Your Life'"
-            :title="app()->getLocale() === 'tr' ? 'Kalite ve Tasarım Bir Arada' : 'Quality Meets Design'"
+            :subtitle="$homeUi['lifestyle_subtitle'][$locale] ?? $homeUi['lifestyle_subtitle']['en']"
+            :title="$homeUi['lifestyle_title'][$locale] ?? $homeUi['lifestyle_title']['en']"
             align="center"
         />
 
@@ -270,10 +295,10 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-slate-900 font-heading uppercase mb-1">
-                                {{ app()->getLocale() === 'tr' ? 'Kurumsal Baskı' : 'Corporate Printing' }}
+                                {{ $homeUi['corporate_print'][$locale] ?? $homeUi['corporate_print']['en'] }}
                             </h3>
                             <p class="text-text-gray text-sm">
-                                {{ app()->getLocale() === 'tr' ? 'Logonuz ve markanız tüm ürünlerde' : 'Your logo and brand on all products' }}
+                                {{ $homeUi['corporate_print_desc'][$locale] ?? $homeUi['corporate_print_desc']['en'] }}
                             </p>
                         </div>
                     </div>
@@ -284,10 +309,10 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-slate-900 font-heading uppercase mb-1">
-                                {{ app()->getLocale() === 'tr' ? 'Hızlı Üretim' : 'Fast Production' }}
+                                {{ $homeUi['fast_production'][$locale] ?? $homeUi['fast_production']['en'] }}
                             </h3>
                             <p class="text-text-gray text-sm">
-                                {{ app()->getLocale() === 'tr' ? '15 gün ortalama termin süresi' : '15-day average lead time' }}
+                                {{ $homeUi['fast_production_desc'][$locale] ?? $homeUi['fast_production_desc']['en'] }}
                             </p>
                         </div>
                     </div>
@@ -298,10 +323,10 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-slate-900 font-heading uppercase mb-1">
-                                {{ app()->getLocale() === 'tr' ? 'Kalite Garantisi' : 'Quality Guarantee' }}
+                                {{ $homeUi['quality_guarantee'][$locale] ?? $homeUi['quality_guarantee']['en'] }}
                             </h3>
                             <p class="text-text-gray text-sm">
-                                {{ app()->getLocale() === 'tr' ? 'ISO 9001 sertifikalı üretim' : 'ISO 9001 certified production' }}
+                                {{ $homeUi['quality_guarantee_desc'][$locale] ?? $homeUi['quality_guarantee_desc']['en'] }}
                             </p>
                         </div>
                     </div>
@@ -309,7 +334,7 @@
 
                 <div class="mt-8">
                     <x-button variant="primary" :href="route(app()->getLocale() . '.products')">
-                        {{ app()->getLocale() === 'tr' ? 'Tüm Ürünleri Keşfedin' : 'Explore All Products' }}
+                        {{ $homeUi['explore_products'][$locale] ?? $homeUi['explore_products']['en'] }}
                     </x-button>
                 </div>
             </div>
@@ -321,8 +346,8 @@
 <section class="py-24 bg-white">
     <div class="mx-auto max-w-7xl px-4">
         <x-section-header
-            :subtitle="app()->getLocale() === 'tr' ? 'Blog ve Haberler' : 'Blog & News'"
-            :title="app()->getLocale() === 'tr' ? 'Son Yazılar' : 'Latest Articles'"
+            :subtitle="$homeUi['blog_subtitle'][$locale] ?? $homeUi['blog_subtitle']['en']"
+            :title="$homeUi['blog_title'][$locale] ?? $homeUi['blog_title']['en']"
             align="center"
         />
 
@@ -334,7 +359,7 @@
 
         <div class="mt-12 text-center">
             <x-button variant="outline" :href="route(app()->getLocale() . '.blog')">
-                {{ app()->getLocale() === 'tr' ? 'Tüm Yazıları Gör' : 'View All Articles' }}
+                {{ $homeUi['all_posts'][$locale] ?? $homeUi['all_posts']['en'] }}
             </x-button>
         </div>
     </div>
@@ -344,11 +369,11 @@
 <section class="py-20 bg-primary-yellow">
     <div class="mx-auto max-w-7xl px-4 text-center">
         <h2 class="text-4xl md:text-5xl font-bold text-dark-charcoal font-heading uppercase mb-6" data-aos="fade-up">
-            {{ app()->getLocale() === 'tr' ? 'Ambalaj İhtiyacınız İçin Hemen Teklif Alın' : 'Get Your Quote for Packaging Needs Now' }}
+            {{ $homeUi['cta_title'][$locale] ?? $homeUi['cta_title']['en'] }}
         </h2>
 
         <p class="text-lg text-dark-charcoal/80 mb-10 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-            {{ app()->getLocale() === 'tr' ? '24 saat içinde özel fiyat teklifi ve hızlı termin bilgisi' : 'Get custom pricing and fast lead time information within 24 hours' }}
+            {{ $homeUi['cta_desc'][$locale] ?? $homeUi['cta_desc']['en'] }}
         </p>
 
         <div class="flex flex-wrap gap-5 justify-center" data-aos="fade-up" data-aos-delay="200">

@@ -1,6 +1,32 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $locale = app()->getLocale();
+    $ui = [
+        'hero_badge' => ['tr' => 'Sektöre Özel', 'en' => 'Industry Solutions', 'ru' => 'Отраслевой фокус', 'ar' => 'حلول قطاعية'],
+        'hero_title' => ['tr' => 'Sektöre Göre Çözümler', 'en' => 'Solutions by Segment', 'ru' => 'Решения по сегментам', 'ar' => 'حلول حسب القطاع'],
+        'hero_desc' => [
+            'tr' => 'Kafe, otel, fast-food, catering ve etkinlik operasyonları için ürün kombinasyonlarını tek tedarik modeliyle planlıyoruz.',
+            'en' => 'We plan product bundles for cafe, hotel, fast-food, catering and event operations with a single-supplier model.',
+            'ru' => 'Планируем продуктовые наборы для кафе, отелей, fast-food, кейтеринга и мероприятий по модели единого поставщика.',
+            'ar' => 'نخطط مجموعات المنتجات للمقاهي والفنادق والوجبات السريعة والتموين والفعاليات بنموذج المورد الواحد.',
+        ],
+        'set_label' => ['tr' => 'Önerilen Set:', 'en' => 'Suggested Set:', 'ru' => 'Рекомендуемый набор:', 'ar' => 'الطقم المقترح:'],
+        'cta_fast_quote' => ['tr' => 'Hızlı Teklif Al', 'en' => 'Get Fast Quote', 'ru' => 'Быстрый расчет', 'ar' => 'احصل على عرض سريع'],
+        'process_badge' => ['tr' => 'Süreç', 'en' => 'Process', 'ru' => 'Процесс', 'ar' => 'العملية'],
+        'process_title' => ['tr' => 'Nasıl Çalışıyoruz?', 'en' => 'How We Work', 'ru' => 'Как мы работаем?', 'ar' => 'كيف نعمل؟'],
+        'final_title' => ['tr' => 'Özel Çözüm Paketi Hazırlayalım', 'en' => 'Let\'s Prepare a Custom Solution Package', 'ru' => 'Подготовим индивидуальный пакет решений', 'ar' => 'لنجهّز باقة حلول مخصصة'],
+        'final_desc' => [
+            'tr' => 'Proje bazlı taleplerde numune, termin ve sevkiyat planlaması ile ilerliyoruz. Kategori setinizi belirtin, 24 saat içinde detaylı teklif alalım.',
+            'en' => 'Project-based requests are handled with sampling, lead-time and shipment planning. Specify your category set and get a detailed quote within 24 hours.',
+            'ru' => 'Для проектных запросов работаем с образцами, сроками и планом отгрузки. Укажите категории и получите расчет за 24 часа.',
+            'ar' => 'في الطلبات القائمة على المشاريع نعمل عبر العينات والتوقيت وخطة الشحن. حدّدوا الفئات واحصلوا على عرض خلال 24 ساعة.',
+        ],
+        'final_quote' => ['tr' => '24 Saatte Teklif Alın', 'en' => 'Get Quote in 24h', 'ru' => 'Расчет за 24 часа', 'ar' => 'عرض سعر خلال 24 ساعة'],
+        'final_products' => ['tr' => 'Ürünleri İncele', 'en' => 'Browse Products', 'ru' => 'Смотреть продукты', 'ar' => 'استعرض المنتجات'],
+    ];
+@endphp
 
 <!-- Hero Section -->
 <section class="relative bg-gradient-to-br from-primary-yellow via-amber-400 to-yellow-500 min-h-[450px] flex items-center overflow-hidden">
@@ -12,15 +38,15 @@
     <!-- Content -->
     <div class="relative max-w-7xl mx-auto px-4 py-20 w-full">
         <div class="inline-block mb-4 px-4 py-1.5 border-l-4 border-dark-charcoal bg-dark-charcoal/10 backdrop-blur text-dark-charcoal text-xs font-bold uppercase tracking-[0.2em]">
-            {{ app()->getLocale() === 'tr' ? 'Sektöre Özel' : 'Industry Solutions' }}
+            {{ $ui['hero_badge'][$locale] ?? $ui['hero_badge']['en'] }}
         </div>
 
         <h1 class="text-4xl md:text-5xl font-bold text-dark-charcoal font-heading leading-tight mb-6">
-            {{ app()->getLocale() === 'tr' ? 'Sektöre Göre Çözümler' : 'Solutions by Segment' }}
+            {{ $ui['hero_title'][$locale] ?? $ui['hero_title']['en'] }}
         </h1>
 
         <p class="text-xl text-dark-charcoal/80 max-w-3xl font-light leading-relaxed">
-            {{ app()->getLocale() === 'tr' ? 'Kafe, otel, fast-food, catering ve etkinlik operasyonları için ürün kombinasyonlarını tek tedarik modeliyle planlıyoruz.' : 'We plan product bundles for cafe, hotel, fast-food, catering and event operations with a single-supplier model.' }}
+            {{ $ui['hero_desc'][$locale] ?? $ui['hero_desc']['en'] }}
         </p>
     </div>
 </section>
@@ -77,31 +103,31 @@
                         </div>
                     </div>
 
-                    <!-- Content -->
-                    <div class="p-6 flex flex-col flex-1">
-                        <h2 class="text-xl font-bold text-slate-900 font-heading uppercase mb-3 group-hover:text-primary-yellow transition-colors">
-                            {{ app()->getLocale() === 'tr' ? $solution['title_tr'] : $solution['title_en'] }}
-                        </h2>
+                        <!-- Content -->
+                        <div class="p-6 flex flex-col flex-1">
+                            <h2 class="text-xl font-bold text-slate-900 font-heading uppercase mb-3 group-hover:text-primary-yellow transition-colors">
+                                {{ data_get($solution, "title.$locale") ?? data_get($solution, 'title.en') }}
+                            </h2>
 
-                        <p class="text-slate-600 leading-relaxed mb-4 text-sm flex-1">
-                            {{ app()->getLocale() === 'tr' ? $solution['body_tr'] : $solution['body_en'] }}
-                        </p>
+                            <p class="text-slate-600 leading-relaxed mb-4 text-sm flex-1">
+                                {{ data_get($solution, "body.$locale") ?? data_get($solution, 'body.en') }}
+                            </p>
 
-                        <!-- Suggested Set -->
-                        <div class="pt-4 border-t border-slate-200 mt-4">
-                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
-                                {{ app()->getLocale() === 'tr' ? 'Önerilen Set:' : 'Suggested Set:' }}
-                            </p>
-                            <p class="text-sm font-medium text-slate-800">
-                                {{ app()->getLocale() === 'tr' ? $solution['set_tr'] : $solution['set_en'] }}
-                            </p>
-                        </div>
+                            <!-- Suggested Set -->
+                            <div class="pt-4 border-t border-slate-200 mt-4">
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+                                    {{ $ui['set_label'][$locale] ?? $ui['set_label']['en'] }}
+                                </p>
+                                <p class="text-sm font-medium text-slate-800">
+                                    {{ data_get($solution, "set.$locale") ?? data_get($solution, 'set.en') }}
+                                </p>
+                            </div>
 
                         <!-- CTA Button -->
                         <div class="mt-6">
                             <a href="{{ route(app()->getLocale() . '.quote') }}"
                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary-yellow text-dark-charcoal font-bold text-sm uppercase tracking-wide hover:bg-primary-yellow/90 transition-colors shadow-md group-hover:shadow-lg">
-                                {{ app()->getLocale() === 'tr' ? 'Hızlı Teklif Al' : 'Get Fast Quote' }}
+                                {{ $ui['cta_fast_quote'][$locale] ?? $ui['cta_fast_quote']['en'] }}
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                                 </svg>
@@ -119,20 +145,36 @@
     <div class="mx-auto max-w-7xl px-4">
         <div class="text-center mb-12">
             <div class="inline-block mb-4 px-4 py-1.5 border-l-4 border-primary-yellow bg-slate-100 text-slate-900 text-xs font-bold uppercase tracking-[0.2em]">
-                {{ app()->getLocale() === 'tr' ? 'Süreç' : 'Process' }}
+                {{ $ui['process_badge'][$locale] ?? $ui['process_badge']['en'] }}
             </div>
             <h2 class="text-3xl md:text-4xl font-bold text-slate-900 font-heading uppercase">
-                {{ app()->getLocale() === 'tr' ? 'Nasıl Çalışıyoruz?' : 'How We Work' }}
+                {{ $ui['process_title'][$locale] ?? $ui['process_title']['en'] }}
             </h2>
         </div>
 
         <div class="grid md:grid-cols-4 gap-6">
             @php
                 $steps = [
-                    ['num' => '01', 'title_tr' => 'İhtiyaç Analizi', 'title_en' => 'Requirement Analysis', 'desc_tr' => 'Kategori, adet ve kullanım senaryonuzu değerlendiriyoruz', 'desc_en' => 'We evaluate your category, quantity and usage scenarios'],
-                    ['num' => '02', 'title_tr' => 'Numune / Onay', 'title_en' => 'Sampling / Approval', 'desc_tr' => 'Baskı proofları ve ürün numuneleriyle önizleme süreci', 'desc_en' => 'Preview process with print proofs and product samples'],
-                    ['num' => '03', 'title_tr' => 'Üretim Planlama', 'title_en' => 'Production Planning', 'desc_tr' => 'Termin ve sevkiyat takvimi netleştirilir', 'desc_en' => 'Lead-time and shipment calendar confirmed'],
-                    ['num' => '04', 'title_tr' => 'Sevkiyat ve Takip', 'title_en' => 'Shipment & Follow-up', 'desc_tr' => 'Teslimat sonrası destek ve stok yönetimi', 'desc_en' => 'Post-delivery support and stock management'],
+                    [
+                        'num' => '01',
+                        'title' => ['tr' => 'İhtiyaç Analizi', 'en' => 'Requirement Analysis', 'ru' => 'Анализ потребности', 'ar' => 'تحليل الاحتياج'],
+                        'desc' => ['tr' => 'Kategori, adet ve kullanım senaryonuzu değerlendiriyoruz.', 'en' => 'We evaluate your category, quantity and usage scenarios.', 'ru' => 'Оцениваем категорию, объем и сценарий использования.', 'ar' => 'نقيّم الفئة والكمية وسيناريو الاستخدام.'],
+                    ],
+                    [
+                        'num' => '02',
+                        'title' => ['tr' => 'Numune / Onay', 'en' => 'Sampling / Approval', 'ru' => 'Образец / Подтверждение', 'ar' => 'العينة / الاعتماد'],
+                        'desc' => ['tr' => 'Baskı proofları ve ürün numuneleriyle önizleme süreci.', 'en' => 'Preview process with print proofs and product samples.', 'ru' => 'Проверка на основе print-proof и образцов продукта.', 'ar' => 'مرحلة معاينة عبر بروفات الطباعة وعينات المنتج.'],
+                    ],
+                    [
+                        'num' => '03',
+                        'title' => ['tr' => 'Üretim Planlama', 'en' => 'Production Planning', 'ru' => 'Планирование производства', 'ar' => 'تخطيط الإنتاج'],
+                        'desc' => ['tr' => 'Termin ve sevkiyat takvimi netleştirilir.', 'en' => 'Lead-time and shipment calendar confirmed.', 'ru' => 'Подтверждаем срок выполнения и календарь отгрузки.', 'ar' => 'نؤكد مدة التنفيذ وجدول الشحن.'],
+                    ],
+                    [
+                        'num' => '04',
+                        'title' => ['tr' => 'Sevkiyat ve Takip', 'en' => 'Shipment & Follow-up', 'ru' => 'Отгрузка и сопровождение', 'ar' => 'الشحن والمتابعة'],
+                        'desc' => ['tr' => 'Teslimat sonrası destek ve stok yönetimi.', 'en' => 'Post-delivery support and stock management.', 'ru' => 'Поддержка после поставки и управление запасами.', 'ar' => 'دعم ما بعد التسليم وإدارة المخزون.'],
+                    ],
                 ];
             @endphp
 
@@ -143,10 +185,10 @@
                     </div>
                     <div class="relative z-10">
                         <h3 class="text-lg font-bold text-slate-900 mb-2">
-                            {{ app()->getLocale() === 'tr' ? $step['title_tr'] : $step['title_en'] }}
+                            {{ data_get($step, "title.$locale") ?? data_get($step, 'title.en') }}
                         </h3>
                         <p class="text-sm text-slate-600">
-                            {{ app()->getLocale() === 'tr' ? $step['desc_tr'] : $step['desc_en'] }}
+                            {{ data_get($step, "desc.$locale") ?? data_get($step, 'desc.en') }}
                         </p>
                     </div>
                 </div>
@@ -159,22 +201,22 @@
 <section class="py-16 bg-gradient-to-br from-primary-yellow to-amber-500">
     <div class="mx-auto max-w-4xl px-4 text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-dark-charcoal font-heading uppercase mb-4">
-            {{ app()->getLocale() === 'tr' ? 'Özel Çözüm Paketi Hazırlayalım' : 'Let\'s Prepare a Custom Solution Package' }}
+            {{ $ui['final_title'][$locale] ?? $ui['final_title']['en'] }}
         </h2>
         <p class="text-lg text-dark-charcoal/80 mb-8 max-w-2xl mx-auto">
-            {{ app()->getLocale() === 'tr' ? 'Proje bazlı taleplerde numune, termin ve sevkiyat planlaması ile ilerliyoruz. Kategori setinizi belirtin, 24 saat içinde detaylı teklif alalım.' : 'Project-based requests are handled with sampling, lead-time and shipment planning. Specify your category set and get a detailed quote within 24 hours.' }}
+            {{ $ui['final_desc'][$locale] ?? $ui['final_desc']['en'] }}
         </p>
         <div class="flex flex-wrap gap-4 justify-center">
             <a href="{{ route(app()->getLocale() . '.quote') }}"
                class="inline-flex items-center gap-2 px-8 py-4 bg-dark-charcoal text-white font-bold text-sm uppercase tracking-wide hover:bg-dark-charcoal/90 transition-colors shadow-lg">
-                {{ app()->getLocale() === 'tr' ? '24 Saatte Teklif Alın' : 'Get Quote in 24h' }}
+                {{ $ui['final_quote'][$locale] ?? $ui['final_quote']['en'] }}
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>
             </a>
             <a href="{{ route(app()->getLocale() . '.products') }}"
                class="inline-flex items-center gap-2 px-8 py-4 bg-white text-dark-charcoal font-bold text-sm uppercase tracking-wide hover:bg-slate-100 transition-colors shadow-lg">
-                {{ app()->getLocale() === 'tr' ? 'Ürünleri İncele' : 'Browse Products' }}
+                {{ $ui['final_products'][$locale] ?? $ui['final_products']['en'] }}
             </a>
         </div>
     </div>

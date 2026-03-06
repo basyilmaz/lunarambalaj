@@ -15,6 +15,7 @@ class PostTranslation extends Model
         'lang',
         'title',
         'slug',
+        'short_desc',
         'body',
         'seo_title',
         'seo_desc',

@@ -88,14 +88,14 @@ class HomeController extends Controller
                 ],
                 [
                     'subtitle' => 'Geniş Ürün Yelpazesi',
-                    'title' => '6 Kategori, Tek Tedarikçi',
-                    'description' => 'Pipet, Bardak, Peçete, Islak Mendil, Kürdan, Stick Şeker - Horeca segmentine özel',
+                    'title' => '7 Kategori, Tek Tedarikçi',
+                    'description' => 'Pipet, bardak, peçete, ıslak mendil, kürdan, stick şeker ve sticker baskı - Horeca segmentine özel',
                     'cta1' => ['text' => 'Kategorileri Gör', 'href' => '/urunler'],
                     'cta2' => ['text' => 'Teklif Al', 'href' => '/teklif-al'],
                 ],
                 [
                     'subtitle' => 'Hızlı ve Güvenilir',
-                    'title' => '24 Saatte Teklif, 15 Günde Teslimat',
+                    'title' => '24 Saatte Teklif, 20 Günde Teslimat',
                     'description' => 'Hızlı yanıt, esnek planlama, güvenilir tedarik - işinize odaklanın',
                     'cta1' => ['text' => 'Hemen Teklif Al', 'href' => '/teklif-al'],
                     'cta2' => ['text' => 'Hizmetlerimiz', 'href' => '/hizmetler'],
@@ -112,14 +112,14 @@ class HomeController extends Controller
                 ],
                 [
                     'subtitle' => 'Широкий ассортимент',
-                    'title' => '6 категорий, один поставщик',
-                    'description' => 'Трубочки, стаканы, салфетки, влажные салфетки, зубочистки, сахар - для Horeca',
+                    'title' => '7 категорий, один поставщик',
+                    'description' => 'Трубочки, стаканы, салфетки, влажные салфетки, зубочистки, сахар и стикеры - для Horeca',
                     'cta1' => ['text' => 'Категории', 'href' => '/ru/products'],
                     'cta2' => ['text' => 'Получить предложение', 'href' => '/ru/get-quote'],
                 ],
                 [
                     'subtitle' => 'Быстро и надежно',
-                    'title' => 'Предложение за 24 часа, доставка за 15 дней',
+                    'title' => 'Предложение за 24 часа, доставка за 20 дней',
                     'description' => 'Быстрый ответ, гибкое планирование, надежная поставка',
                     'cta1' => ['text' => 'Запросить предложение', 'href' => '/ru/get-quote'],
                     'cta2' => ['text' => 'Услуги', 'href' => '/ru/services'],
@@ -136,14 +136,14 @@ class HomeController extends Controller
                 ],
                 [
                     'subtitle' => 'مجموعة واسعة',
-                    'title' => '6 فئات، مورد واحد',
-                    'description' => 'ماصات، أكواب، مناديل، مناديل مبللة، أعواد أسنان، سكر - لقطاع هوريكا',
+                    'title' => '7 فئات، مورد واحد',
+                    'description' => 'ماصات، أكواب، مناديل، مناديل مبللة، أعواد أسنان، سكر وطباعة ستيكر - لقطاع هوريكا',
                     'cta1' => ['text' => 'الفئات', 'href' => '/ar/products'],
                     'cta2' => ['text' => 'احصل على عرض', 'href' => '/ar/get-quote'],
                 ],
                 [
                     'subtitle' => 'سريع وموثوق',
-                    'title' => 'عرض سعر في 24 ساعة، تسليم في 15 يومًا',
+                    'title' => 'عرض سعر في 24 ساعة، تسليم في 20 يومًا',
                     'description' => 'استجابة سريعة، تخطيط مرن، توريد موثوق',
                     'cta1' => ['text' => 'اطلب عرضًا', 'href' => '/ar/get-quote'],
                     'cta2' => ['text' => 'الخدمات', 'href' => '/ar/services'],
@@ -160,14 +160,14 @@ class HomeController extends Controller
                 ],
                 [
                     'subtitle' => 'Wide Product Range',
-                    'title' => '6 Categories, One Supplier',
-                    'description' => 'Straws, Cups, Napkins, Wet Wipes, Toothpicks, Stick Sugar - for Horeca segment',
+                    'title' => '7 Categories, One Supplier',
+                    'description' => 'Straws, cups, napkins, wet wipes, toothpicks, stick sugar and sticker printing - for Horeca segment',
                     'cta1' => ['text' => 'View Categories', 'href' => '/en/products'],
                     'cta2' => ['text' => 'Get Quote', 'href' => '/en/get-quote'],
                 ],
                 [
                     'subtitle' => 'Fast and Reliable',
-                    'title' => 'Quote in 24 Hours, Delivery in 15 Days',
+                    'title' => 'Quote in 24 Hours, Delivery in 20 Days',
                     'description' => 'Fast response, flexible planning, reliable supply - focus on your business',
                     'cta1' => ['text' => 'Request Quote', 'href' => '/en/get-quote'],
                     'cta2' => ['text' => 'Our Services', 'href' => '/en/services'],
@@ -211,28 +211,28 @@ class HomeController extends Controller
              $uspCards = [
                 '10M+ Yıllık Üretim | Stok Garantisi',
                 '24 Saat İçinde Teklif Yanıtı',
-                '15 Gün Ortalama Termin',
+                '20 Gün Ortalama Termin',
                 'ISO 9001 Sertifikalı Üretim',
             ];
         } elseif ($lang === 'ru') {
              $uspCards = [
                 '10M+ Годовое Производство | Гарантия Запасов',
                 'Ответ на предложение за 24 часа',
-                'Средний срок доставки 15 дней',
+                'Средний срок доставки 20 дней',
                 'Сертифицированное производство ISO 9001',
             ];
         } elseif ($lang === 'ar') {
              $uspCards = [
                 '10 مليون+ إنتاج سنوي | ضمان المخزون',
                 'رد العرض في 24 ساعة',
-                'متوسط ​​مدة التسليم 15 يومًا',
+                'متوسط ​​مدة التسليم 20 يومًا',
                 'إنتاج معتمد ISO 9001',
             ];
         } else {
             $uspCards = [
                 '10M+ Annual Production | Stock Guarantee',
                 'Quote Response in 24 Hours',
-                '15-Day Average Lead Time',
+                '20-Day Average Lead Time',
                 'ISO 9001 Certified Production',
             ];
         }

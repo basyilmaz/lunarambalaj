@@ -34,19 +34,19 @@ class ProductController extends Controller
 
         $products = $productsQuery->paginate(12)->withQueryString();
 
-        // SEO-optimized for products listing
+        // SEO copy for products listing
         $seoTitles = [
-            'tr' => 'Ambalaj Ürünleri | 6 Kategori | Lunar Ambalaj',
-            'en' => 'Packaging Products | 6 Categories | Lunar Packaging',
-            'ru' => 'Продукция для упаковки | 6 категорий | Lunar Packaging',
-            'ar' => 'منتجات التعبئة | 6 فئات | Lunar Packaging',
+            'tr' => 'Ambalaj Ürünleri | Lunar Ambalaj',
+            'en' => 'Packaging Products | Lunar Packaging',
+            'ru' => 'Упаковочная продукция | Lunar Packaging',
+            'ar' => 'منتجات التعبئة | Lunar Packaging',
         ];
 
         $seoDescs = [
-            'tr' => 'Pipet, bardak, peçete, ıslak mendil, kürdan, stick şeker - 10M+ yıllık üretim, 24 saatte teklif, 15 gün termin. ISO 9001 sertifikalı B2B tedarik.',
-            'en' => 'Straws, cups, napkins, wet wipes, toothpicks, stick sugar - 10M+ annual production, 24h quote, 15-day delivery. ISO 9001 certified B2B supply.',
-            'ru' => 'Трубочки, стаканы, салфетки, влажные салфетки, зубочистки, сахар в стиках - 10М+ годовое производство, предложение за 24 часа, доставка за 15 дней. Поставка B2B с сертификатом ISO 9001.',
-            'ar' => 'مصاصات، أكواب، مناديل، مناديل مبللة، أعواد أسنان، سكر في عصي - 10 مليون+ إنتاج سنوي، عرض أسعار خلال 24 ساعة، تسليم خلال 15 يومًا. توريد B2B معتمد من ISO 9001.',
+            'tr' => 'Plastik frozen, körüklü ve bubble pipet odaklı; bardak, peçete, ıslak mendil, bayraklı kürdan, stick şeker ve sticker baskı çözümleri.',
+            'en' => 'Frozen, corrugated and bubble straw focused catalog with cups, napkins, wet wipes, flag toothpicks, stick sugar and sticker printing.',
+            'ru' => 'Каталог с фокусом на frozen, гофрированные и bubble-трубочки, а также стаканы, салфетки, влажные салфетки и стикеры.',
+            'ar' => 'كتالوج يركز على مصاصات فروزن ومرنة وبابل مع حلول الأكواب والمناديل والمناديل المبللة والكردان وطباعة الستيكر.',
         ];
 
         $seoTitle = $seoTitles[$lang] ?? $seoTitles['en'];
@@ -133,6 +133,10 @@ class ProductController extends Controller
             ->limit(3)
             ->get();
 
+        $specRows = $this->resolveSpecRows($product->specs, $lang);
+        $leadTimeDays = $this->resolveLeadTimeDays($product->specs, $specRows);
+        $leadTimeDisplay = $this->formatLeadTime($leadTimeDays, $lang);
+
         // SEO-optimized title and description with character limits
         $categoryName = optional($product->category->translation($lang))->name;
         $seoTitle = $translation->seo_title ?: mb_substr($translation->name . ' | ' . $categoryName . ' | Lunar Ambalaj', 0, 60);
@@ -141,10 +145,10 @@ class ProductController extends Controller
         if (!$seoDescription) {
             $shortDesc = $translation->short_desc ?: $translation->name;
             $moqTexts = [
-                'tr' => "MOQ: {$product->min_order}. 24 saatte teklif, 15 gün termin.",
-                'en' => "MOQ: {$product->min_order}. Quote in 24h, 15-day delivery.",
-                'ru' => "MOQ: {$product->min_order}. Предложение за 24ч, доставка за 15 дней.",
-                'ar' => "MOQ: {$product->min_order}. عرض أسعار خلال 24 ساعة، تسليم خلال 15 يومًا.",
+                'tr' => "MOQ: {$product->min_order}. 24 saatte teklif, termin: {$leadTimeDisplay}.",
+                'en' => "MOQ: {$product->min_order}. Quote in 24h, lead time: {$leadTimeDisplay}.",
+                'ru' => "MOQ: {$product->min_order}. Расчет за 24 часа, срок: {$leadTimeDisplay}.",
+                'ar' => "MOQ: {$product->min_order}. عرض سعر خلال 24 ساعة، المدة: {$leadTimeDisplay}.",
             ];
             $moqText = $moqTexts[$lang] ?? $moqTexts['en'];
             $seoDescription = mb_substr($shortDesc . ' ' . $moqText, 0, 160);
@@ -153,6 +157,8 @@ class ProductController extends Controller
         return view('products.show', [
             'product' => $product,
             'translation' => $translation,
+            'specRows' => $specRows,
+            'leadTimeDisplay' => $leadTimeDisplay,
             'relatedProducts' => $relatedProducts,
             'seo' => $this->seo(
                 $seoTitle,
@@ -169,5 +175,76 @@ class ProductController extends Controller
                 'product',
             ),
         ]);
+    }
+
+    /**
+     * @param array<string, mixed>|null $specs
+     * @return array<string, string>
+     */
+    private function resolveSpecRows(?array $specs, string $lang): array
+    {
+        if (!$specs) {
+            return [];
+        }
+
+        $localeRows = null;
+        if (isset($specs[$lang]) && is_array($specs[$lang])) {
+            $localeRows = $specs[$lang];
+        } elseif (isset($specs['tr']) && is_array($specs['tr'])) {
+            $localeRows = $specs['tr'];
+        } elseif (isset($specs['en']) && is_array($specs['en'])) {
+            $localeRows = $specs['en'];
+        }
+
+        if (is_array($localeRows)) {
+            return collect($localeRows)
+                ->filter(static fn ($value): bool => is_scalar($value) && $value !== '')
+                ->mapWithKeys(static fn ($value, $key): array => [(string) $key => (string) $value])
+                ->all();
+        }
+
+        return collect($specs)
+            ->except(['lead_time_days', 'tr', 'en', 'ru', 'ar'])
+            ->filter(static fn ($value): bool => is_scalar($value) && $value !== '')
+            ->mapWithKeys(static fn ($value, $key): array => [(string) $key => (string) $value])
+            ->all();
+    }
+
+    /**
+     * @param array<string, mixed>|null $specs
+     * @param array<string, string> $rows
+     */
+    private function resolveLeadTimeDays(?array $specs, array $rows): int
+    {
+        if (isset($specs['lead_time_days']) && is_numeric($specs['lead_time_days'])) {
+            return max(1, (int) $specs['lead_time_days']);
+        }
+
+        foreach ($rows as $key => $value) {
+            $normalized = mb_strtolower($key);
+            if (!str_contains($normalized, 'termin')
+                && !str_contains($normalized, 'lead')
+                && !str_contains($normalized, 'срок')
+                && !str_contains($normalized, 'مدة')
+            ) {
+                continue;
+            }
+
+            if (preg_match('/(\d{1,3})/', $value, $matches) === 1) {
+                return max(1, (int) $matches[1]);
+            }
+        }
+
+        return 20;
+    }
+
+    private function formatLeadTime(int $days, string $lang): string
+    {
+        return match ($lang) {
+            'tr' => $days . ' iş günü',
+            'ru' => $days . ' рабочих дней',
+            'ar' => $days . ' يوم عمل',
+            default => $days . ' business days',
+        };
     }
 }
