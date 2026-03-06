@@ -2,15 +2,27 @@
 
 @php
 $translation = $service->translation($locale);
+$fallbackIcons = [
+    1 => 'images/service-manufacturing.svg',
+    2 => 'images/service-printing.svg',
+    3 => 'images/service-wrapping.svg',
+    4 => 'images/service-cup.svg',
+    5 => 'images/service-wrapping.svg',
+    6 => 'images/service-printing.svg',
+];
+$iconPath = $service->icon;
+if (!$iconPath || str_contains($iconPath, 'images/catalog/asset-')) {
+    $iconPath = $fallbackIcons[$service->order] ?? 'images/service-manufacturing.svg';
+}
 @endphp
 
 @if($translation)
 <div class="group bg-white p-8 shadow-sm border-b-4 border-transparent hover:border-primary-yellow transition-all duration-300" data-aos="fade-up">
     <!-- Service Icon -->
-    @if($service->icon)
+    @if($iconPath)
         <div class="mb-6 w-16 h-16">
             <img
-                src="{{ asset($service->icon) }}"
+                src="{{ asset($iconPath) }}"
                 alt="{{ $translation->title }}"
                 class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity"
                 width="64"

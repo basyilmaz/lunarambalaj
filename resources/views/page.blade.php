@@ -67,7 +67,7 @@
     <section class="relative min-h-[300px] overflow-hidden bg-dark-charcoal py-16">
         <div class="absolute inset-0">
             <img
-                src="{{ asset('images/hero-bg.png') }}"
+                src="{{ asset('images/hero-bg.webp') }}"
                 alt="About Background"
                 class="h-full w-full object-cover opacity-20"
                 loading="lazy"

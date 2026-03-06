@@ -27,7 +27,7 @@
         $isHomeRoute = request()->routeIs('tr.home', 'en.home', 'ru.home', 'ar.home');
     @endphp
     @if($isHomeRoute)
-        <link rel="preload" as="image" href="{{ asset('images/hero-bg.png') }}" fetchpriority="high">
+        <link rel="preload" as="image" href="{{ asset('images/hero-bg.webp') }}" fetchpriority="high">
     @endif
 
     @if(app()->environment('production') && $gtmId)
@@ -175,7 +175,7 @@
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur transition-shadow">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
             <a href="{{ $locale === 'tr' ? '/' : '/'.$locale }}" class="flex items-center gap-2">
-                <img src="{{ asset('images/logo-new.png') }}" alt="{{ $siteSetting?->{'company_name_'.$locale} }}" class="h-16 w-auto" width="220" height="96" decoding="async">
+                <img src="{{ asset('images/logo-new.webp') }}" alt="{{ $siteSetting?->{'company_name_'.$locale} }}" class="h-16 w-auto" width="162" height="192" decoding="async">
             </a>
 
             <nav class="hidden gap-8 text-[15px] font-medium lg:flex font-heading uppercase tracking-wide text-slate-800">
@@ -208,7 +208,7 @@
         <div class="flex flex-col h-full">
             <!-- Mobile Menu Header -->
             <div class="flex items-center justify-between p-4 border-b border-slate-700">
-                <img src="{{ asset('images/logo-new.png') }}" alt="Lunar Ambalaj" class="h-12 w-auto" width="170" height="72" decoding="async">
+                <img src="{{ asset('images/logo-new.webp') }}" alt="Lunar Ambalaj" class="h-12 w-auto" width="162" height="192" decoding="async">
                 <button id="mobile-menu-close" class="text-white hover:text-primary-yellow transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -274,7 +274,7 @@
             <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4 mb-12">
                 <!-- Column 1: About -->
                 <div>
-                    <img src="{{ asset('images/logo-new.png') }}" alt="Lunar Ambalaj" class="h-12 w-auto mb-4 brightness-0 invert opacity-80" width="170" height="72" decoding="async">
+                    <img src="{{ asset('images/logo-new.webp') }}" alt="Lunar Ambalaj" class="h-12 w-auto mb-4 brightness-0 invert opacity-80" width="162" height="192" decoding="async">
                     <h4 class="mb-3 font-bold text-white font-heading uppercase text-sm tracking-wider">{{ app()->getLocale()==='tr' ? ($siteSetting?->company_name_tr ?: 'Lunar Ambalaj') : ($siteSetting?->company_name_en ?: 'Lunar Packaging') }}</h4>
                     @if(app()->getLocale()==='tr' && $siteSetting?->footer_short_tr)
                         <p class="mb-3 text-sm leading-relaxed">{{ $siteSetting->footer_short_tr }}</p>

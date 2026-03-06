@@ -9,7 +9,7 @@ $translation = $post->translation($locale);
     <!-- Featured Image -->
     <div class="relative h-56 overflow-hidden bg-slate-100">
         <img
-            src="{{ $post->image ? asset($post->image) : asset('images/hero-bg.png') }}"
+            src="{{ $post->image ? asset($post->image) : asset('images/hero-bg.webp') }}"
             alt="{{ $translation->title }}"
             loading="lazy"
             width="960"

@@ -19,7 +19,7 @@
             >
         @else
             <img
-                src="{{ asset('images/hero-bg.png') }}"
+                src="{{ asset('images/hero-bg.webp') }}"
                 alt="{{ $translation->title }}"
                 class="w-full h-full object-cover opacity-30"
                 width="1920"

@@ -11,7 +11,18 @@
         @foreach($services as $service)
             @php
                 $t = $service->translation(app()->getLocale());
-                $serviceImage = $service->icon ?: 'images/service-manufacturing.svg';
+                $fallbackIcons = [
+                    1 => 'images/service-manufacturing.svg',
+                    2 => 'images/service-printing.svg',
+                    3 => 'images/service-wrapping.svg',
+                    4 => 'images/service-cup.svg',
+                    5 => 'images/service-wrapping.svg',
+                    6 => 'images/service-printing.svg',
+                ];
+                $serviceImage = $service->icon;
+                if (!$serviceImage || str_contains($serviceImage, 'images/catalog/asset-')) {
+                    $serviceImage = $fallbackIcons[$service->order] ?? 'images/service-manufacturing.svg';
+                }
                 $serviceBullets = [
                     1 => [
                         app()->getLocale()==='tr' ? 'Farklı çap ve boy seçenekleri' : 'Multiple diameter and length options',

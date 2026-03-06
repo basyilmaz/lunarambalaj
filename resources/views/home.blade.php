@@ -11,9 +11,9 @@
                     <!-- Background Image -->
                     <div class="absolute inset-0">
                         <img
-                            src="{{ asset('images/hero-bg.png') }}"
+                            src="{{ asset('images/hero-bg.webp') }}"
                             alt="Lunar Ambalaj"
-                            class="w-full h-full object-cover opacity-50 blur-[2px]"
+                            class="w-full h-full object-cover opacity-50"
                             width="1920"
                             height="1080"
                             loading="{{ $loop->first ? 'eager' : 'lazy' }}"

@@ -6,7 +6,7 @@
 <section class="relative bg-dark-charcoal min-h-[450px] flex items-center overflow-hidden">
     <div class="absolute inset-0">
         <img
-            src="{{ asset('images/hero-bg.png') }}"
+            src="{{ asset('images/hero-bg.webp') }}"
             alt="References Background"
             class="w-full h-full object-cover opacity-30 grayscale blur-[2px]"
             width="1920"

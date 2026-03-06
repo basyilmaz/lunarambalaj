@@ -1,7 +1,7 @@
 @props([
     'title' => '',
     'subtitle' => '',
-    'backgroundImage' => 'images/hero-bg.png',
+    'backgroundImage' => 'images/hero-bg.webp',
     'cta1' => null,
     'cta2' => null,
     'height' => 'min-h-[700px]',
