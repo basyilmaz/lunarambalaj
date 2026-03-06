@@ -30,3 +30,4 @@ _site_*.xml
 _site_audit.json
 docs/release/prelaunch-audit-*.md
 docs/release/release-publish-gate-*.md
+docs/release/responsive-audit-*.md

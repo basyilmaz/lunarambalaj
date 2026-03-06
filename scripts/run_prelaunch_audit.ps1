@@ -4,7 +4,8 @@ param(
     [ValidateSet('local','staging','production')]
     [string]$Target = 'production',
     [string]$OutputPath = '',
-    [switch]$SkipQualityGate
+    [switch]$SkipQualityGate,
+    [switch]$SkipResponsiveAudit
 )
 
 Set-StrictMode -Version Latest
@@ -269,6 +270,37 @@ elseif (Test-Path $qualityGatePath) {
 }
 else {
     Add-Result -Severity 'BLOCKER' -Area 'QA' -Check 'run-quality-gate.ps1' -Status 'FAIL' -Evidence 'Script missing' -Action 'Add mandatory quality gate script.'
+}
+
+$responsiveAuditPath = Join-Path $ProjectRoot 'scripts\run-responsive-audit.ps1'
+if ($SkipResponsiveAudit) {
+    Add-Result -Severity 'WARNING' -Area 'QA' -Check 'run-responsive-audit.ps1' -Status 'WARN' -Evidence 'Skipped by parameter' -Action 'Use skip only for fast local diagnostics.'
+}
+elseif (Test-Path $responsiveAuditPath) {
+    Push-Location $ProjectRoot
+    try {
+        $responsiveOutput = & powershell -NoProfile -ExecutionPolicy Bypass -File $responsiveAuditPath -ProjectRoot $ProjectRoot -BaseUrl $BaseUrl 2>&1
+        $responsiveExitCode = $LASTEXITCODE
+    }
+    finally {
+        Pop-Location
+    }
+
+    $responsiveText = ($responsiveOutput | Out-String)
+    $responsiveReport = ''
+    if ($responsiveText -match '\[responsive-audit\]\s+Report:\s*(.+)') {
+        $responsiveReport = $matches[1].Trim()
+    }
+
+    if ($responsiveExitCode -ne 0) {
+        Add-Result -Severity 'BLOCKER' -Area 'QA' -Check 'run-responsive-audit.ps1' -Status 'FAIL' -Evidence "ExitCode=$responsiveExitCode Report=$responsiveReport" -Action 'Fix responsive overflow blockers and rerun.'
+    }
+    else {
+        Add-Result -Severity 'PASS' -Area 'QA' -Check 'run-responsive-audit.ps1' -Status 'OK' -Evidence "Report=$responsiveReport" -Action ''
+    }
+}
+else {
+    Add-Result -Severity 'WARNING' -Area 'QA' -Check 'run-responsive-audit.ps1' -Status 'WARN' -Evidence 'Script missing' -Action 'Add responsive audit script for browser-width regression checks.'
 }
 
 $routes = @(

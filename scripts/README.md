@@ -4,6 +4,7 @@ Repo-local release governance scripts:
 
 - `run_prelaunch_audit.ps1`
 - `run_release_publish_gate.ps1`
+- `run-responsive-audit.ps1`
 
 ## Prelaunch Audit
 
@@ -38,3 +39,16 @@ Behavior:
 - Returns non-zero exit code when `Blockers > 0`
 - Push/tag only when `-ExecutePush` is explicitly set
 
+## Responsive Audit
+
+Responsive overflow regression scan (browser-based):
+
+```powershell
+pwsh ./scripts/run-responsive-audit.ps1 -ProjectRoot . -BaseUrl http://127.0.0.1:4050
+```
+
+Behavior:
+
+- Checks horizontal overflow across critical routes and breakpoints.
+- Writes report under `docs/release/responsive-audit-YYYYMMDD-HHMMSS.md`
+- Returns non-zero exit code when any overflow blocker exists.

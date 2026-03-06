@@ -129,6 +129,8 @@ Offline conversion export:
 ## Test
 - `php artisan test`
 - `powershell -ExecutionPolicy Bypass -File scripts/run-quality-gate.ps1`
+- `powershell -ExecutionPolicy Bypass -File scripts/run-quality-gate.ps1 -BaseUrl http://127.0.0.1:4050` (responsive audit dahil)
+- `pwsh ./scripts/run-responsive-audit.ps1 -ProjectRoot . -BaseUrl http://127.0.0.1:4050`
 
 ## Prelaunch Audit ve Release Gate
 Staging prelaunch audit:

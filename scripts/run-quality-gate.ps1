@@ -1,3 +1,8 @@
+param(
+    [string]$BaseUrl = '',
+    [switch]$SkipResponsiveAudit
+)
+
 $ErrorActionPreference = 'Stop'
 
 $phpBin = 'C:/xampp/php/php.exe'
@@ -38,5 +43,13 @@ if (Test-Path "scripts/check-mojibake.py") {
 
 Write-Host "==> PHPUnit"
 Invoke-CheckedCommand "php artisan test" { & $phpBin artisan test }
+
+$responsiveAuditPath = "scripts/run-responsive-audit.ps1"
+if (-not $SkipResponsiveAudit -and -not [string]::IsNullOrWhiteSpace($BaseUrl) -and (Test-Path $responsiveAuditPath)) {
+    Write-Host "==> Responsive audit ($BaseUrl)"
+    Invoke-CheckedCommand "powershell -File $responsiveAuditPath -BaseUrl $BaseUrl" {
+        powershell -NoProfile -ExecutionPolicy Bypass -File $responsiveAuditPath -ProjectRoot . -BaseUrl $BaseUrl
+    }
+}
 
 Write-Host "Quality gate passed."
