@@ -81,7 +81,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
     @if(app()->environment('production') && $gtmId)
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtmId }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     @endif
@@ -142,27 +142,29 @@
 
     <!-- Top Bar -->
     <div class="bg-dark-charcoal text-light-gray py-2 text-xs">
-        <div class="mx-auto max-w-7xl px-4 flex justify-between items-center">
-            <div class="flex items-center gap-6">
+        <div class="mx-auto max-w-7xl px-4 flex justify-between items-center gap-2">
+            <div class="flex min-w-0 items-center gap-4">
                 @if($siteSetting?->phone)
-                    <a href="tel:{{ preg_replace('/\s+/', '', $siteSetting->phone) }}" class="hover:text-primary-yellow transition-colors flex items-center gap-2">
+                    <a href="tel:{{ preg_replace('/\s+/', '', $siteSetting->phone) }}" class="hover:text-primary-yellow transition-colors flex items-center gap-2 whitespace-nowrap">
                         <svg class="w-3 h-3 text-primary-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                         {{ $siteSetting->phone }}
                     </a>
                 @endif
                 @if($siteSetting?->email)
-                    <a href="mailto:{{ $siteSetting->email }}" class="hover:text-primary-yellow transition-colors flex items-center gap-2">
+                    <a href="mailto:{{ $siteSetting->email }}" class="hidden sm:flex hover:text-primary-yellow transition-colors items-center gap-2">
                         <svg class="w-3 h-3 text-primary-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         {{ $siteSetting->email }}
                     </a>
                 @endif
             </div>
-            <div class="flex items-center gap-4">
-                @if($siteSetting?->facebook) <a href="{{ $siteSetting->facebook }}" target="_blank" class="hover:text-primary-yellow transition-colors"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path></svg></a> @endif
-                @if($siteSetting?->instagram) <a href="{{ $siteSetting->instagram }}" target="_blank" class="hover:text-primary-yellow transition-colors"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a> @endif
-                @if($siteSetting?->linkedin) <a href="{{ $siteSetting->linkedin }}" target="_blank" class="hover:text-primary-yellow transition-colors"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path><circle cx="4" cy="4" r="2"></circle></svg></a> @endif
+            <div class="flex items-center gap-2">
+                <div class="hidden md:flex items-center gap-4">
+                    @if($siteSetting?->facebook) <a href="{{ $siteSetting->facebook }}" target="_blank" class="hover:text-primary-yellow transition-colors"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path></svg></a> @endif
+                    @if($siteSetting?->instagram) <a href="{{ $siteSetting->instagram }}" target="_blank" class="hover:text-primary-yellow transition-colors"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a> @endif
+                    @if($siteSetting?->linkedin) <a href="{{ $siteSetting->linkedin }}" target="_blank" class="hover:text-primary-yellow transition-colors"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path><circle cx="4" cy="4" r="2"></circle></svg></a> @endif
+                </div>
 
-                <div class="ml-4 flex items-center gap-2 border-l border-slate-700 pl-4">
+                <div class="ml-0 flex items-center gap-2 border-l-0 pl-0 sm:ml-3 sm:pl-3 sm:border-l sm:border-slate-700">
                     <a href="{{ $languageLinks['tr'] }}" class="{{ $locale==='tr' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">TR</a>
                     <a href="{{ $languageLinks['en'] }}" class="{{ $locale==='en' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">EN</a>
                     <a href="{{ $languageLinks['ru'] }}" class="{{ $locale==='ru' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">RU</a>
@@ -188,8 +190,8 @@
                 <a href="{{ $locale === 'tr' ? '/iletisim' : '/'.$locale.'/contact' }}" class="hover:text-primary-yellow transition-colors">{{ $menu['contact'] }}</a>
             </nav>
 
-            <div class="flex items-center gap-3">
-                <x-button variant="primary" :href="$locale === 'tr' ? '/teklif-al' : '/'.$locale.'/get-quote'" data-track="cta_quote">
+            <div class="flex items-center gap-2">
+                <x-button variant="primary" :href="$locale === 'tr' ? '/teklif-al' : '/'.$locale.'/get-quote'" data-track="cta_quote" class="hidden sm:inline-flex">
                     {{ __('site.cta_quote') }}
                 </x-button>
 
@@ -368,7 +370,7 @@
             <!-- Footer Bottom -->
             <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
                 <p>&copy; {{ date('Y') }} {{ $siteSetting?->{'company_name_'.$locale} ?: 'Lunar Ambalaj' }}. {{ __('site.footer.rights_reserved') }}</p>
-                <div class="flex gap-6">
+                <div class="flex flex-col gap-2 text-center sm:text-left sm:flex-row sm:flex-wrap sm:gap-6">
                     <a href="{{ $locale === 'tr' ? '/kvkk' : '/'.$locale.'/kvkk' }}" class="hover:text-primary-yellow transition-colors">{{ $legalLabels['kvkk'] }}</a>
                     <a href="{{ $locale === 'tr' ? '/gizlilik-politikasi' : '/'.$locale.'/privacy-policy' }}" class="hover:text-primary-yellow transition-colors">{{ $legalLabels['privacy'] }}</a>
                     <a href="{{ $locale === 'tr' ? '/cerez-politikasi' : '/'.$locale.'/cookie-policy' }}" class="hover:text-primary-yellow transition-colors">{{ $legalLabels['cookie'] }}</a>

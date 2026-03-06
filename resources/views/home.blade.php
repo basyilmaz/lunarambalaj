@@ -125,10 +125,10 @@
             </div>
 
             <!-- Navigation -->
-            <div class="categories-prev absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-primary-yellow hover:bg-dark-charcoal text-dark-charcoal hover:text-white flex items-center justify-center cursor-pointer transition-colors -ml-6">
+            <div class="categories-prev absolute left-2 md:left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-primary-yellow hover:bg-dark-charcoal text-dark-charcoal hover:text-white items-center justify-center cursor-pointer transition-colors hidden md:flex md:-ml-6">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </div>
-            <div class="categories-next absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-primary-yellow hover:bg-dark-charcoal text-dark-charcoal hover:text-white flex items-center justify-center cursor-pointer transition-colors -mr-6">
+            <div class="categories-next absolute right-2 md:right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-primary-yellow hover:bg-dark-charcoal text-dark-charcoal hover:text-white items-center justify-center cursor-pointer transition-colors hidden md:flex md:-mr-6">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </div>
 
@@ -213,10 +213,10 @@
             </div>
 
             <!-- Navigation -->
-            <div class="testimonials-prev absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-primary-yellow hover:bg-dark-charcoal text-dark-charcoal hover:text-white flex items-center justify-center cursor-pointer transition-colors -ml-6">
+            <div class="testimonials-prev absolute left-2 md:left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-primary-yellow hover:bg-dark-charcoal text-dark-charcoal hover:text-white items-center justify-center cursor-pointer transition-colors hidden md:flex md:-ml-6">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </div>
-            <div class="testimonials-next absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-primary-yellow hover:bg-dark-charcoal text-dark-charcoal hover:text-white flex items-center justify-center cursor-pointer transition-colors -mr-6">
+            <div class="testimonials-next absolute right-2 md:right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-primary-yellow hover:bg-dark-charcoal text-dark-charcoal hover:text-white items-center justify-center cursor-pointer transition-colors hidden md:flex md:-mr-6">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </div>
 
@@ -238,7 +238,7 @@
 
         <div class="grid md:grid-cols-2 gap-8 mt-12">
             <!-- Left: Product Showcase -->
-            <div class="grid grid-cols-2 gap-4" data-aos="fade-right">
+            <div class="grid grid-cols-2 gap-4" data-aos="fade-up">
                 <div class="space-y-4">
                     <div class="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 group">
                         <img src="{{ asset('images/product-cup-colorful.png') }}" alt="Lunar Ambalaj Bardak" loading="lazy" width="640" height="640" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
@@ -258,7 +258,7 @@
             </div>
 
             <!-- Right: Lifestyle Images & Text -->
-            <div class="flex flex-col justify-center" data-aos="fade-left">
+            <div class="flex flex-col justify-center" data-aos="fade-up" data-aos-delay="100">
                 <div class="mb-8 overflow-hidden rounded-lg shadow-2xl">
                     <img src="{{ asset('images/lifestyle-iced-coffee.jpg') }}" alt="Lunar Ambalaj Ürünleri" loading="lazy" width="1200" height="800" decoding="async" class="w-full h-auto object-cover">
                 </div>
