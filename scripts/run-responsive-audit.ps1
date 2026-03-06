@@ -1,7 +1,7 @@
 param(
     [string]$ProjectRoot = (Get-Location).Path,
     [string]$BaseUrl = 'http://127.0.0.1:4050',
-    [string[]]$Viewports = @('390x844'),
+    [string[]]$Viewports = @('390x844', '768x1024'),
     [string[]]$Routes = @(
         '/', '/hakkimizda', '/urunler', '/teklif-al', '/kvkk',
         '/en', '/en/products', '/en/get-quote', '/en/kvkk',
@@ -52,6 +52,13 @@ if (-not (Get-Command npx -ErrorAction SilentlyContinue)) {
 
 if (-not (Test-Path (Join-Path $ProjectRoot 'artisan'))) {
     throw "Invalid ProjectRoot: artisan not found at $ProjectRoot"
+}
+
+$requiredViewports = @('390x844', '768x1024')
+foreach ($required in $requiredViewports) {
+    if ($Viewports -notcontains $required) {
+        throw "Missing required viewport '$required'. Responsive audit mandates both 390x844 and 768x1024."
+    }
 }
 
 $now = Get-Date

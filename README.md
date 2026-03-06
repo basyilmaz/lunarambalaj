@@ -131,6 +131,7 @@ Offline conversion export:
 - `powershell -ExecutionPolicy Bypass -File scripts/run-quality-gate.ps1`
 - `powershell -ExecutionPolicy Bypass -File scripts/run-quality-gate.ps1 -BaseUrl http://127.0.0.1:4050` (responsive audit dahil)
 - `pwsh ./scripts/run-responsive-audit.ps1 -ProjectRoot . -BaseUrl http://127.0.0.1:4050`
+- `pwsh ./scripts/run-psi-report.ps1 -ProjectRoot . -Url https://lunarambalaj.com`
 
 ## Prelaunch Audit ve Release Gate
 Staging prelaunch audit:
@@ -146,6 +147,14 @@ Not:
 - Her iki script de raporları `docs/release/` altına yazar.
 - Blocker varsa non-zero exit code döner (CI fail).
 - Push/tag sadece `-ExecutePush` ile çalışır.
+
+## CI / Workflow
+- `.github/workflows/quality-gate.yml`
+  - `run-quality-gate.ps1 -BaseUrl <staging-url>` adımını çalıştırır.
+  - `STAGING_BASE_URL` repo variable tanımlı değilse local `http://127.0.0.1:4050` fallback kullanır.
+- `.github/workflows/psi-report.yml`
+  - Günlük PSI raporu üretir ve `docs/release/perf-*.md` olarak commitler.
+  - `PSI_API_KEY` (secret) verilirse API kotası daha stabil olur.
 
 ## Admin Is Akisi
 - Lead Pipeline (Kanban): `/admin/lead-pipeline`

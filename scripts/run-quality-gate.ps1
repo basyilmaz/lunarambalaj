@@ -1,14 +1,31 @@
 param(
     [string]$BaseUrl = '',
-    [switch]$SkipResponsiveAudit
+    [switch]$SkipResponsiveAudit,
+    [string]$PhpBin = ''
 )
 
 $ErrorActionPreference = 'Stop'
 
-$phpBin = 'C:/xampp/php/php.exe'
+if ([string]::IsNullOrWhiteSpace($PhpBin)) {
+    $phpCmd = Get-Command php -ErrorAction SilentlyContinue
+    if ($phpCmd) {
+        $PhpBin = $phpCmd.Source
+    }
+    elseif (Test-Path 'C:/xampp/php/php.exe') {
+        $PhpBin = 'C:/xampp/php/php.exe'
+    }
+}
 
-if (-not (Test-Path $phpBin)) {
-    throw "PHP executable not found at $phpBin"
+if ([string]::IsNullOrWhiteSpace($PhpBin) -or -not (Test-Path $PhpBin)) {
+    throw "PHP executable not found. Provide -PhpBin or install php in PATH."
+}
+
+$psCmd = Get-Command pwsh -ErrorAction SilentlyContinue
+if (-not $psCmd) {
+    $psCmd = Get-Command powershell -ErrorAction SilentlyContinue
+}
+if (-not $psCmd) {
+    throw 'No PowerShell executable found (pwsh/powershell).'
 }
 
 function Invoke-CheckedCommand {
@@ -33,7 +50,7 @@ foreach ($target in $targets) {
 }
 
 foreach ($file in $phpFiles) {
-    Invoke-CheckedCommand "php -l $file" { & $phpBin -l $file | Out-Null }
+    Invoke-CheckedCommand "php -l $file" { & $PhpBin -l $file | Out-Null }
 }
 
 if (Test-Path "scripts/check-mojibake.py") {
@@ -42,13 +59,13 @@ if (Test-Path "scripts/check-mojibake.py") {
 }
 
 Write-Host "==> PHPUnit"
-Invoke-CheckedCommand "php artisan test" { & $phpBin artisan test }
+Invoke-CheckedCommand "php artisan test" { & $PhpBin artisan test }
 
 $responsiveAuditPath = "scripts/run-responsive-audit.ps1"
 if (-not $SkipResponsiveAudit -and -not [string]::IsNullOrWhiteSpace($BaseUrl) -and (Test-Path $responsiveAuditPath)) {
     Write-Host "==> Responsive audit ($BaseUrl)"
     Invoke-CheckedCommand "powershell -File $responsiveAuditPath -BaseUrl $BaseUrl" {
-        powershell -NoProfile -ExecutionPolicy Bypass -File $responsiveAuditPath -ProjectRoot . -BaseUrl $BaseUrl
+        & $psCmd.Source -NoProfile -ExecutionPolicy Bypass -File $responsiveAuditPath -ProjectRoot . -BaseUrl $BaseUrl
     }
 }
 

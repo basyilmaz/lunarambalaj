@@ -1,0 +1,52 @@
+name: PSI Report
+
+on:
+  schedule:
+    - cron: '15 3 * * *'
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: 'Target URL for PSI report'
+        required: false
+        default: 'https://lunarambalaj.com'
+
+permissions:
+  contents: write
+
+jobs:
+  psi-report:
+    runs-on: windows-latest
+    env:
+      TARGET_URL: ${{ github.event.inputs.target_url || 'https://lunarambalaj.com' }}
+      PSI_API_KEY: ${{ secrets.PSI_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Generate PSI report
+        shell: pwsh
+        run: |
+          ./scripts/run-psi-report.ps1 -ProjectRoot . -Url $env:TARGET_URL
+
+      - name: Commit report
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/release/perf-*.md
+          if (git diff --cached --quiet) {
+            Write-Host "No report changes to commit."
+            exit 0
+          }
+          $stamp = Get-Date -Format 'yyyy-MM-dd HH:mm'
+          git commit -m "chore(reports): add PSI report $stamp"
+          git push

@@ -11,6 +11,14 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+$psCmd = Get-Command pwsh -ErrorAction SilentlyContinue
+if (-not $psCmd) {
+    $psCmd = Get-Command powershell -ErrorAction SilentlyContinue
+}
+if (-not $psCmd) {
+    throw 'No PowerShell executable found (pwsh/powershell).'
+}
+
 $results = New-Object System.Collections.Generic.List[object]
 
 function Add-Result {
@@ -254,7 +262,7 @@ if ($SkipQualityGate) {
 elseif (Test-Path $qualityGatePath) {
     Push-Location $ProjectRoot
     try {
-        & powershell -NoProfile -ExecutionPolicy Bypass -File $qualityGatePath *> $null
+        & $psCmd.Source -NoProfile -ExecutionPolicy Bypass -File $qualityGatePath *> $null
         $qualityCode = $LASTEXITCODE
     }
     finally {
@@ -279,7 +287,7 @@ if ($SkipResponsiveAudit) {
 elseif (Test-Path $responsiveAuditPath) {
     Push-Location $ProjectRoot
     try {
-        $responsiveOutput = & powershell -NoProfile -ExecutionPolicy Bypass -File $responsiveAuditPath -ProjectRoot $ProjectRoot -BaseUrl $BaseUrl 2>&1
+        $responsiveOutput = & $psCmd.Source -NoProfile -ExecutionPolicy Bypass -File $responsiveAuditPath -ProjectRoot $ProjectRoot -BaseUrl $BaseUrl 2>&1
         $responsiveExitCode = $LASTEXITCODE
     }
     finally {

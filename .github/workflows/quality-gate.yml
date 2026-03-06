@@ -1,0 +1,60 @@
+name: Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  quality-gate:
+    runs-on: windows-latest
+    env:
+      STAGING_BASE_URL: ${{ vars.STAGING_BASE_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, sqlite, pdo_sqlite, curl, dom, fileinfo, openssl
+          tools: composer:v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        shell: pwsh
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          npm ci
+
+      - name: Prepare App
+        shell: pwsh
+        run: |
+          Copy-Item .env.example .env -Force
+          php artisan key:generate --force
+          npm run build
+
+      - name: Run Quality Gate (staging/local fallback)
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:STAGING_BASE_URL)) {
+            Write-Host "STAGING_BASE_URL is not set. Running against local http://127.0.0.1:4050"
+            Start-Process -FilePath php -ArgumentList 'artisan','serve','--host=127.0.0.1','--port=4050'
+            Start-Sleep -Seconds 5
+            ./scripts/run-quality-gate.ps1 -BaseUrl http://127.0.0.1:4050
+          }
+          else {
+            Write-Host "Running quality gate against staging URL: $env:STAGING_BASE_URL"
+            ./scripts/run-quality-gate.ps1 -BaseUrl $env:STAGING_BASE_URL
+          }
