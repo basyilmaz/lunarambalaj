@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductTranslation;
 use App\Models\ServiceItem;
 use App\Models\Setting;
 use Illuminate\Database\Seeder;
@@ -397,7 +398,15 @@ class CustomerCatalogRevisionSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            $product = $this->findProductByAnySlug($item['lookup']) ?? Product::query()->create([
+            $translationSlugs = collect($item['translations'])
+                ->pluck('slug')
+                ->filter()
+                ->values()
+                ->all();
+
+            $lookupSlugs = array_values(array_unique(array_merge($item['lookup'], $translationSlugs)));
+
+            $product = $this->findProductByAnySlug($lookupSlugs) ?? Product::query()->create([
                 'category_id' => $categories[$item['category']]->id,
                 'min_order' => $item['min_order'],
                 'has_print' => $item['print'],
@@ -405,6 +414,14 @@ class CustomerCatalogRevisionSeeder extends Seeder
                 'is_active' => true,
                 'image' => $item['image'],
             ]);
+
+            // If any locale slug is already owned by another product, keep that product as the source of truth.
+            $ownedProductId = ProductTranslation::query()
+                ->whereIn('slug', $lookupSlugs)
+                ->value('product_id');
+            if ($ownedProductId && $ownedProductId !== $product->id) {
+                $product = Product::query()->find($ownedProductId) ?? $product;
+            }
 
             $product->update([
                 'category_id' => $categories[$item['category']]->id,
@@ -489,7 +506,7 @@ class CustomerCatalogRevisionSeeder extends Seeder
     private function findProductByAnySlug(array $slugs): ?Product
     {
         return Product::query()->whereHas('translations', function ($query) use ($slugs): void {
-            $query->where('lang', 'en')->whereIn('slug', $slugs);
+            $query->whereIn('slug', $slugs);
         })->first();
     }
 }
