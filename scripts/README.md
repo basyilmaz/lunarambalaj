@@ -6,6 +6,7 @@ Repo-local release governance scripts:
 - `run_release_publish_gate.ps1`
 - `run-responsive-audit.ps1`
 - `run-psi-report.ps1`
+- `test-canonical-redirect.ps1`
 
 ## Prelaunch Audit
 
@@ -67,3 +68,17 @@ Behavior:
 - Writes report under `docs/release/perf-YYYYMMDD-HHMMSS.md`
 - Uses PSI API first (if available), falls back to `npx lighthouse` when API fails/rate-limited.
 - `-FailOnError` is optional for strict CI failure behavior.
+
+## Canonical Redirect Test
+
+Use after DNS cutover for `lunarambalaj.com.tr`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\test-canonical-redirect.ps1 -SecondaryBaseUrl https://lunarambalaj.com.tr -PrimaryBaseUrl https://lunarambalaj.com -IncludeQueryStringCheck
+```
+
+Checks:
+
+- `.com.tr` route returns `301`
+- redirect target path matches `.com`
+- query string is preserved (`?x=1`)
