@@ -15,6 +15,9 @@ $translation = $product->translation($locale);
             src="{{ asset($product->image) }}"
             alt="{{ $translation->name }}"
             loading="lazy"
+            width="960"
+            height="640"
+            decoding="async"
             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         >
         <div class="absolute inset-0 bg-gradient-to-t from-dark-charcoal/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

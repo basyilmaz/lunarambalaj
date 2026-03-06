@@ -8,6 +8,9 @@
     <form method="post" enctype="multipart/form-data" class="mt-8 space-y-4 rounded-xl border border-slate-200 bg-white p-6">
         @csrf
         <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off">
+        <input type="hidden" name="fg_nonce" value="{{ $botGuard['nonce'] ?? '' }}">
+        <input type="hidden" name="fg_ts" value="{{ $botGuard['ts'] ?? '' }}">
+        <input type="hidden" name="fg_sig" value="{{ $botGuard['sig'] ?? '' }}">
         <input type="hidden" name="utm_source" value="{{ old('utm_source', request('utm_source', $attribution['utm_source'] ?? '')) }}">
         <input type="hidden" name="utm_medium" value="{{ old('utm_medium', request('utm_medium', $attribution['utm_medium'] ?? '')) }}">
         <input type="hidden" name="utm_campaign" value="{{ old('utm_campaign', request('utm_campaign', $attribution['utm_campaign'] ?? '')) }}">

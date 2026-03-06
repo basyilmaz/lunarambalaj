@@ -12,6 +12,9 @@ $translation = $post->translation($locale);
             src="{{ $post->image ? asset($post->image) : asset('images/hero-bg.png') }}"
             alt="{{ $translation->title }}"
             loading="lazy"
+            width="960"
+            height="540"
+            decoding="async"
             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         >
         <div class="absolute inset-0 bg-gradient-to-t from-dark-charcoal/60 to-transparent"></div>

@@ -15,7 +15,14 @@
 
     <div class="flex items-center gap-4 border-t border-slate-200 pt-4">
         @if(isset($testimonial['company_logo']) && $testimonial['company_logo'])
-            <img src="{{ asset($testimonial['company_logo']) }}" alt="{{ $testimonial['company_name'] ?? '' }}" class="w-12 h-12 object-contain">
+            <img
+                src="{{ asset($testimonial['company_logo']) }}"
+                alt="{{ $testimonial['company_name'] ?? '' }}"
+                class="w-12 h-12 object-contain"
+                width="48"
+                height="48"
+                decoding="async"
+            >
         @else
             <div class="w-12 h-12 rounded-full bg-primary-yellow flex items-center justify-center">
                 <span class="text-dark-charcoal font-bold text-lg">{{ substr($testimonial['author_name'] ?? 'U', 0, 1) }}</span>

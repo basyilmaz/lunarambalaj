@@ -13,6 +13,11 @@
         <img
             src="{{ asset($backgroundImage) }}"
             alt="Lunar Ambalaj"
+            width="1920"
+            height="1080"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
             class="w-full h-full object-cover opacity-50 blur-[2px]"
         >
         <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/70 to-transparent"></div>

@@ -6,8 +6,10 @@ use App\Http\Requests\StoreContactRequest;
 use App\Mail\LeadReceivedMail;
 use App\Models\Lead;
 use App\Support\AttributionLogger;
+use App\Support\FormSpamGuard;
 use App\Support\LocaleUrls;
 use App\Support\TrackingEventLogger;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -16,11 +18,12 @@ class ContactController extends Controller
 {
     public function __construct(
         protected AttributionLogger $attributionLogger,
-        protected TrackingEventLogger $trackingEventLogger
+        protected TrackingEventLogger $trackingEventLogger,
+        protected FormSpamGuard $formSpamGuard
     ) {
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $lang = app()->getLocale();
 
@@ -43,6 +46,7 @@ class ContactController extends Controller
         $seoDesc = $seoDescs[$lang] ?? $seoDescs['en'];
 
         return view('contact.index', [
+            'botGuard' => $this->formSpamGuard->issueChallenge($request, 'contact'),
             'seo' => $this->seo(
                 $seoTitle,
                 $seoDesc,
@@ -55,12 +59,23 @@ class ContactController extends Controller
     public function store(StoreContactRequest $request)
     {
         $key = 'contact:' . sha1($request->ip() . $request->userAgent());
+        $emailKey = 'contact:email:' . sha1(Str::lower((string) $request->input('email')) . '|' . $request->ip());
 
-        if (RateLimiter::tooManyAttempts($key, 5)) {
-            return back()->withErrors(['form' => __('Too many requests. Please try again soon.')])->withInput();
+        if (RateLimiter::tooManyAttempts($key, 5) || RateLimiter::tooManyAttempts($emailKey, 3)) {
+            return back()->withErrors(['form' => __('security.too_many_requests')])->withInput();
         }
 
         RateLimiter::hit($key, 60);
+        RateLimiter::hit($emailKey, 600);
+
+        if (!$this->formSpamGuard->validateSubmission($request, 'contact')) {
+            return back()->withErrors(['form' => __('security.bot_check_failed')])->withInput();
+        }
+
+        if ($this->formSpamGuard->isLikelySpam($request->input('message'))) {
+            return back()->withErrors(['form' => __('security.spam_detected')])->withInput();
+        }
+
         $attributionPayload = $this->attributionLogger->getAttributionPayload($request);
 
         $lead = Lead::query()->create([

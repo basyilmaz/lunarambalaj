@@ -66,7 +66,15 @@
 @else
     <section class="relative min-h-[300px] overflow-hidden bg-dark-charcoal py-16">
         <div class="absolute inset-0">
-            <img src="{{ asset('images/hero-bg.png') }}" alt="About Background" class="h-full w-full object-cover opacity-20" loading="lazy">
+            <img
+                src="{{ asset('images/hero-bg.png') }}"
+                alt="About Background"
+                class="h-full w-full object-cover opacity-20"
+                loading="lazy"
+                width="1920"
+                height="1080"
+                decoding="async"
+            >
             <div class="absolute inset-0 bg-gradient-to-t from-dark-charcoal via-transparent to-dark-charcoal"></div>
         </div>
 

@@ -20,8 +20,10 @@ class LeadReceivedMail extends Mailable
 
     public function envelope(): Envelope
     {
+        $typeLabel = $this->lead->type === 'quote' ? 'Teklif' : 'İletişim';
+
         return new Envelope(
-            subject: 'New ' . ucfirst($this->lead->type) . ' Lead - Lunar Ambalaj',
+            subject: "Yeni {$typeLabel} Talebi - Lunar Ambalaj",
         );
     }
 

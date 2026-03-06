@@ -60,7 +60,15 @@
                             ];
                             $imageSrc = asset($bgImages[$solution['key']] ?? 'images/lifestyle-drinks.png');
                         @endphp
-                        <img src="{{ $imageSrc }}" alt="Lunar Ambalaj Solution" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <img
+                            src="{{ $imageSrc }}"
+                            alt="Lunar Ambalaj Solution"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            width="896"
+                            height="448"
+                            loading="lazy"
+                            decoding="async"
+                        >
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-transparent"></div>
                         <div class="absolute bottom-4 left-4 text-white z-10 flex items-center gap-3">
                             <div class="p-2 bg-white/20 backdrop-blur rounded-lg">

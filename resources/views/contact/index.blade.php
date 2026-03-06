@@ -91,6 +91,9 @@
                     @csrf
                     <!-- Honeypot -->
                     <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off">
+                    <input type="hidden" name="fg_nonce" value="{{ $botGuard['nonce'] ?? '' }}">
+                    <input type="hidden" name="fg_ts" value="{{ $botGuard['ts'] ?? '' }}">
+                    <input type="hidden" name="fg_sig" value="{{ $botGuard['sig'] ?? '' }}">
 
                     <!-- UTM Parameters -->
                     <input type="hidden" name="utm_source" value="{{ old('utm_source', request('utm_source', $attribution['utm_source'] ?? '')) }}">

@@ -9,7 +9,15 @@
             @php $t = $product->translation(app()->getLocale()); @endphp
             @if($t)
                 <figure class="rounded-xl border border-slate-200 bg-white p-5">
-                    <img loading="lazy" src="{{ asset($product->image ?: 'images/product-printed.svg') }}" alt="{{ $t->name }}" class="mb-3 h-40 w-full rounded-lg object-cover">
+                    <img
+                        loading="lazy"
+                        src="{{ asset($product->image ?: 'images/product-printed.svg') }}"
+                        alt="{{ $t->name }}"
+                        class="mb-3 h-40 w-full rounded-lg object-cover"
+                        width="640"
+                        height="320"
+                        decoding="async"
+                    >
                     <figcaption class="font-semibold">{{ $t->name }}</figcaption>
                     <p class="mt-2 text-sm text-slate-600">{{ $t->short_desc }}</p>
                 </figure>

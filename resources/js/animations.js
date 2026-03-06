@@ -2,12 +2,14 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 // Initialize AOS
-AOS.init({
-    duration: 800,
-    easing: 'ease-out',
-    once: true,
-    offset: 100,
-});
+if (document.querySelector('[data-aos]')) {
+    AOS.init({
+        duration: 800,
+        easing: 'ease-out',
+        once: true,
+        offset: 100,
+    });
+}
 
 // Statistics Counter Animation
 const statsCounters = document.querySelectorAll('.stat-counter');
@@ -51,7 +53,9 @@ if (statsCounters.length > 0) {
 // Parallax Background Effect
 const parallaxSections = document.querySelectorAll('.parallax-section');
 if (parallaxSections.length > 0) {
-    window.addEventListener('scroll', () => {
+    let parallaxTicking = false;
+
+    const runParallax = () => {
         const scrolled = window.pageYOffset;
 
         parallaxSections.forEach(section => {
@@ -59,7 +63,15 @@ if (parallaxSections.length > 0) {
             const yPos = -(scrolled * speed);
             section.style.backgroundPosition = `center ${yPos}px`;
         });
-    });
+
+        parallaxTicking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+        if (parallaxTicking) return;
+        parallaxTicking = true;
+        window.requestAnimationFrame(runParallax);
+    }, { passive: true });
 }
 
 // Smooth Scroll for Anchor Links
@@ -87,11 +99,20 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Sticky Header with Shadow on Scroll
 const header = document.querySelector('header.sticky');
 if (header) {
-    window.addEventListener('scroll', () => {
+    let headerTicking = false;
+
+    const updateHeaderShadow = () => {
         if (window.scrollY > 50) {
             header.classList.add('shadow-lg');
         } else {
             header.classList.remove('shadow-lg');
         }
-    });
+        headerTicking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+        if (headerTicking) return;
+        headerTicking = true;
+        window.requestAnimationFrame(updateHeaderShadow);
+    }, { passive: true });
 }

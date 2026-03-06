@@ -10,7 +10,16 @@
                 <div class="relative bg-slate-900 overflow-hidden min-h-[700px] flex items-center">
                     <!-- Background Image -->
                     <div class="absolute inset-0">
-                        <img src="{{ asset('images/hero-bg.png') }}" alt="Lunar Ambalaj" class="w-full h-full object-cover opacity-50 blur-[2px]">
+                        <img
+                            src="{{ asset('images/hero-bg.png') }}"
+                            alt="Lunar Ambalaj"
+                            class="w-full h-full object-cover opacity-50 blur-[2px]"
+                            width="1920"
+                            height="1080"
+                            loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                            fetchpriority="{{ $loop->first ? 'high' : 'low' }}"
+                            decoding="async"
+                        >
                         <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/70 to-transparent"></div>
                     </div>
 
@@ -96,7 +105,15 @@
                             <a href="{{ route(app()->getLocale() . '.products', ['category' => $slug]) }}"
                                class="group block relative h-80 overflow-hidden bg-slate-100 shadow-sm hover:shadow-xl transition-shadow">
                                 <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-slate-900/0 transition-colors z-10"></div>
-                                <img loading="lazy" src="{{ asset($image) }}" alt="{{ $t->name }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0">
+                                <img
+                                    loading="lazy"
+                                    src="{{ asset($image) }}"
+                                    alt="{{ $t->name }}"
+                                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                                    width="640"
+                                    height="640"
+                                    decoding="async"
+                                >
                                 <div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-slate-900/90 to-transparent z-20">
                                     <h3 class="text-2xl font-bold text-white font-heading uppercase mb-2">{{ $t->name }}</h3>
                                     <div class="w-12 h-1 bg-primary-yellow group-hover:w-full transition-all duration-500"></div>
@@ -224,18 +241,18 @@
             <div class="grid grid-cols-2 gap-4" data-aos="fade-right">
                 <div class="space-y-4">
                     <div class="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 group">
-                        <img src="{{ asset('images/product-cup-colorful.png') }}" alt="Lunar Ambalaj Bardak" loading="lazy" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ asset('images/product-cup-colorful.png') }}" alt="Lunar Ambalaj Bardak" loading="lazy" width="640" height="640" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
                     </div>
                     <div class="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 group">
-                        <img src="{{ asset('images/lifestyle-cocktail.jpg') }}" alt="Lunar Pipet" loading="lazy" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ asset('images/lifestyle-cocktail.jpg') }}" alt="Lunar Pipet" loading="lazy" width="640" height="640" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
                     </div>
                 </div>
                 <div class="space-y-4 pt-12">
                     <div class="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 group">
-                        <img src="{{ asset('images/product-kraft-bag.png') }}" alt="Lunar Ambalaj Kraft Torba" loading="lazy" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ asset('images/product-kraft-bag.png') }}" alt="Lunar Ambalaj Kraft Torba" loading="lazy" width="640" height="640" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
                     </div>
                     <div class="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 group">
-                        <img src="{{ asset('images/product-cup-white.png') }}" alt="Lunar Bardak Beyaz" loading="lazy" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <img src="{{ asset('images/product-cup-white.png') }}" alt="Lunar Bardak Beyaz" loading="lazy" width="640" height="640" decoding="async" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
                     </div>
                 </div>
             </div>
@@ -243,7 +260,7 @@
             <!-- Right: Lifestyle Images & Text -->
             <div class="flex flex-col justify-center" data-aos="fade-left">
                 <div class="mb-8 overflow-hidden rounded-lg shadow-2xl">
-                    <img src="{{ asset('images/lifestyle-iced-coffee.jpg') }}" alt="Lunar Ambalaj Ürünleri" loading="lazy" class="w-full h-auto object-cover">
+                    <img src="{{ asset('images/lifestyle-iced-coffee.jpg') }}" alt="Lunar Ambalaj Ürünleri" loading="lazy" width="1200" height="800" decoding="async" class="w-full h-auto object-cover">
                 </div>
 
                 <div class="space-y-6">

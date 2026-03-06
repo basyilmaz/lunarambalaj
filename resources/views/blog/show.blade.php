@@ -7,9 +7,27 @@
     <!-- Background Image -->
     <div class="absolute inset-0">
         @if($post->cover)
-            <img src="{{ asset($post->cover) }}" alt="{{ $translation->title }}" class="w-full h-full object-cover opacity-40">
+            <img
+                src="{{ asset($post->cover) }}"
+                alt="{{ $translation->title }}"
+                class="w-full h-full object-cover opacity-40"
+                width="1920"
+                height="1080"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+            >
         @else
-            <img src="{{ asset('images/hero-bg.png') }}" alt="{{ $translation->title }}" class="w-full h-full object-cover opacity-30">
+            <img
+                src="{{ asset('images/hero-bg.png') }}"
+                alt="{{ $translation->title }}"
+                class="w-full h-full object-cover opacity-30"
+                width="1920"
+                height="1080"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+            >
         @endif
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent"></div>
     </div>

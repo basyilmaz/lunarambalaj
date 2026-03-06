@@ -47,7 +47,15 @@
             @endphp
             @if($t)
                 <article class="rounded-xl border border-slate-200 bg-white p-6">
-                    <img loading="lazy" src="{{ asset($serviceImage) }}" alt="{{ $t->title }}" class="mb-4 h-44 w-full rounded-lg object-cover">
+                    <img
+                        loading="lazy"
+                        src="{{ asset($serviceImage) }}"
+                        alt="{{ $t->title }}"
+                        class="mb-4 h-44 w-full rounded-lg object-cover"
+                        width="704"
+                        height="352"
+                        decoding="async"
+                    >
                     <h3 class="text-xl font-semibold">{{ $t->title }}</h3>
                     <p class="mt-2 text-slate-600">{{ $t->body }}</p>
                     <ul class="mt-4 space-y-1 text-sm text-slate-600">

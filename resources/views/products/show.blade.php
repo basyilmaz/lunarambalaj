@@ -34,7 +34,11 @@
                     <img src="{{ asset($product->image ?: 'images/category-straws.svg') }}"
                          alt="{{ $translation->name }}"
                          class="w-full h-full object-cover"
-                         loading="eager">
+                         loading="eager"
+                         fetchpriority="high"
+                         width="960"
+                         height="960"
+                         decoding="async">
                 </div>
                 @if($product->category)
                     @php $catT = $product->category->translation(app()->getLocale()); @endphp

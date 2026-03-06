@@ -5,7 +5,16 @@
 <!-- Hero Section -->
 <section class="relative bg-dark-charcoal min-h-[450px] flex items-center overflow-hidden">
     <div class="absolute inset-0">
-        <img src="{{ asset('images/hero-bg.png') }}" alt="References Background" class="w-full h-full object-cover opacity-30 grayscale blur-[2px]">
+        <img
+            src="{{ asset('images/hero-bg.png') }}"
+            alt="References Background"
+            class="w-full h-full object-cover opacity-30 grayscale blur-[2px]"
+            width="1920"
+            height="1080"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+        >
         <div class="absolute inset-0 bg-gradient-to-r from-dark-charcoal via-dark-charcoal/80 to-transparent"></div>
     </div>
 
@@ -95,7 +104,15 @@
             @foreach($segments as $idx => $segment)
                 <div class="group bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col hover:shadow-2xl hover:border-primary-yellow transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ $idx * 100 }}">
                     <div class="h-48 relative overflow-hidden bg-slate-100">
-                        <img src="{{ asset($segment['image']) }}" alt="{{ $segment['title'] }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <img
+                            src="{{ asset($segment['image']) }}"
+                            alt="{{ $segment['title'] }}"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            width="768"
+                            height="384"
+                            loading="lazy"
+                            decoding="async"
+                        >
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
                     </div>
                     <div class="p-8 flex flex-col flex-1 relative">

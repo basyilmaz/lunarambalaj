@@ -9,7 +9,14 @@ $translation = $service->translation($locale);
     <!-- Service Icon -->
     @if($service->icon)
         <div class="mb-6 w-16 h-16">
-            <img src="{{ asset($service->icon) }}" alt="{{ $translation->title }}" class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity">
+            <img
+                src="{{ asset($service->icon) }}"
+                alt="{{ $translation->title }}"
+                class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                width="64"
+                height="64"
+                decoding="async"
+            >
         </div>
     @else
         <div class="mb-6 w-16 h-16 bg-primary-yellow/10 rounded-full flex items-center justify-center group-hover:bg-primary-yellow/20 transition-colors">
