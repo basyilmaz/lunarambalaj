@@ -109,7 +109,7 @@
 <x-stats-counter :stats="$statistics" />
 
 <!-- Product Categories -->
-<section class="py-24 bg-white">
+<section class="cv-auto py-24 bg-white">
     <div class="mx-auto max-w-7xl px-4">
         <x-section-header
             :subtitle="__('site.sections.products')"
@@ -134,7 +134,7 @@
                                     loading="lazy"
                                     src="{{ asset($image) }}"
                                     alt="{{ $t->name }}"
-                                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     width="640"
                                     height="640"
                                     decoding="async"
@@ -171,7 +171,7 @@
 </section>
 
 <!-- Services Section -->
-<section class="py-24 bg-dark-charcoal">
+<section class="cv-auto py-24 bg-dark-charcoal">
     <div class="mx-auto max-w-7xl px-4">
         <x-section-header
             :subtitle="$homeUi['services_subtitle'][$locale] ?? $homeUi['services_subtitle']['en']"
@@ -189,7 +189,7 @@
 </section>
 
 <!-- Solutions Section -->
-<section class="py-24 bg-white">
+<section class="cv-auto py-24 bg-white">
     <div class="mx-auto max-w-7xl px-4">
         <x-section-header
             :subtitle="$homeUi['solutions_subtitle'][$locale] ?? $homeUi['solutions_subtitle']['en']"
@@ -220,7 +220,7 @@
 
 <!-- Testimonials Section (placeholder for when testimonials are added) -->
 @if(count($testimonials) > 0)
-<section class="py-24 bg-slate-50">
+<section class="cv-auto py-24 bg-slate-50">
     <div class="mx-auto max-w-7xl px-4">
         <x-section-header
             :subtitle="$homeUi['references_subtitle'][$locale] ?? $homeUi['references_subtitle']['en']"
@@ -253,7 +253,7 @@
 @endif
 
 <!-- Lifestyle & Showcase Section -->
-<section class="py-24 bg-gradient-to-br from-slate-50 via-white to-slate-50">
+<section class="cv-auto py-24 bg-gradient-to-br from-slate-50 via-white to-slate-50">
     <div class="mx-auto max-w-7xl px-4">
         <x-section-header
             :subtitle="$homeUi['lifestyle_subtitle'][$locale] ?? $homeUi['lifestyle_subtitle']['en']"
@@ -343,7 +343,7 @@
 </section>
 
 <!-- Blog Section -->
-<section class="py-24 bg-white">
+<section class="cv-auto py-24 bg-white">
     <div class="mx-auto max-w-7xl px-4">
         <x-section-header
             :subtitle="$homeUi['blog_subtitle'][$locale] ?? $homeUi['blog_subtitle']['en']"
@@ -366,7 +366,7 @@
 </section>
 
 <!-- CTA Banner -->
-<section class="py-20 bg-primary-yellow">
+<section class="cv-auto py-20 bg-primary-yellow">
     <div class="mx-auto max-w-7xl px-4 text-center">
         <h2 class="text-4xl md:text-5xl font-bold text-dark-charcoal font-heading uppercase mb-6" data-aos="fade-up">
             {{ $homeUi['cta_title'][$locale] ?? $homeUi['cta_title']['en'] }}

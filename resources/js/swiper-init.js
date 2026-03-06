@@ -1,30 +1,33 @@
 import Swiper from 'swiper';
-import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
+
+const isMobileViewport = window.matchMedia('(max-width: 767px)').matches;
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Hero Slider
 const heroSlider = document.querySelector('.hero-swiper');
 if (heroSlider) {
+    const heroModules = isMobileViewport
+        ? [Pagination, Autoplay]
+        : [Navigation, Pagination, Autoplay];
+
     new Swiper('.hero-swiper', {
-        modules: [Navigation, Pagination, Autoplay, EffectFade],
-        effect: 'fade',
-        fadeEffect: {
-            crossFade: true
-        },
-        autoplay: {
-            delay: 5000,
+        modules: heroModules,
+        autoplay: prefersReducedMotion ? false : {
+            delay: isMobileViewport ? 6500 : 5000,
             disableOnInteraction: false,
+            pauseOnMouseEnter: !isMobileViewport,
         },
-        loop: true,
-        speed: 800,
+        loop: !isMobileViewport,
+        speed: isMobileViewport ? 450 : 800,
         pagination: {
             el: '.swiper-pagination',
             clickable: true,
         },
-        navigation: {
+        navigation: isMobileViewport ? false : {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
         },
@@ -38,8 +41,8 @@ if (categoriesCarousel) {
         modules: [Navigation, Pagination],
         slidesPerView: 1,
         spaceBetween: 30,
-        loop: true,
-        speed: 600,
+        loop: false,
+        speed: 450,
         navigation: {
             nextEl: '.categories-next',
             prevEl: '.categories-prev',
@@ -66,12 +69,12 @@ if (testimonialsCarousel) {
         modules: [Navigation, Pagination, Autoplay],
         slidesPerView: 1,
         spaceBetween: 30,
-        loop: true,
-        autoplay: {
+        loop: false,
+        autoplay: prefersReducedMotion ? false : {
             delay: 7000,
             disableOnInteraction: false,
         },
-        speed: 600,
+        speed: 450,
         pagination: {
             el: '.testimonials-pagination',
             clickable: true,

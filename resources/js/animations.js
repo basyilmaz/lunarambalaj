@@ -1,27 +1,31 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-// Initialize AOS
-if (document.querySelector('[data-aos]')) {
+const isMobileViewport = window.matchMedia('(max-width: 767px)').matches;
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Initialize AOS only for non-mobile and motion-enabled contexts.
+if (document.querySelector('[data-aos]') && !prefersReducedMotion) {
     AOS.init({
-        duration: 800,
+        disable: () => isMobileViewport || prefersReducedMotion,
+        duration: 600,
         easing: 'ease-out',
         once: true,
-        offset: 100,
+        offset: 60,
     });
 }
 
 // Statistics Counter Animation
 const statsCounters = document.querySelectorAll('.stat-counter');
-if (statsCounters.length > 0) {
+if (statsCounters.length > 0 && !prefersReducedMotion) {
     const observerOptions = {
-        threshold: 0.5,
+        threshold: 0.35,
         rootMargin: '0px'
     };
 
     const animateCounter = (element) => {
         const target = parseInt(element.getAttribute('data-target'));
-        const duration = 2000; // 2 seconds
+        const duration = 1200;
         const increment = target / (duration / 16); // 60fps
         let current = 0;
 
@@ -48,30 +52,6 @@ if (statsCounters.length > 0) {
     }, observerOptions);
 
     statsCounters.forEach(counter => counterObserver.observe(counter));
-}
-
-// Parallax Background Effect
-const parallaxSections = document.querySelectorAll('.parallax-section');
-if (parallaxSections.length > 0) {
-    let parallaxTicking = false;
-
-    const runParallax = () => {
-        const scrolled = window.pageYOffset;
-
-        parallaxSections.forEach(section => {
-            const speed = section.getAttribute('data-speed') || 0.5;
-            const yPos = -(scrolled * speed);
-            section.style.backgroundPosition = `center ${yPos}px`;
-        });
-
-        parallaxTicking = false;
-    };
-
-    window.addEventListener('scroll', () => {
-        if (parallaxTicking) return;
-        parallaxTicking = true;
-        window.requestAnimationFrame(runParallax);
-    }, { passive: true });
 }
 
 // Smooth Scroll for Anchor Links
