@@ -52,7 +52,7 @@ function Get-EnvMap {
     foreach ($line in (Get-Content $EnvPath)) {
         if ($line -match '^\s*#') { continue }
         if ($line -match '^\s*$') { continue }
-        if ($line -match '^\s*([A-Z0-9_]+)=(.*)$') {
+        if ($line -cmatch '^\s*([A-Z0-9_]+)=(.*)$') {
             $k = $matches[1]
             $v = $matches[2].Trim()
             if ($v.StartsWith('"') -and $v.EndsWith('"')) {
