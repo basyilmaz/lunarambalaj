@@ -5,6 +5,7 @@ param(
     [string]$Target = 'production',
     [string]$OutputPath = '',
     [switch]$SkipQualityGate,
+    [switch]$SkipDbHealth,
     [switch]$SkipResponsiveAudit
 )
 
@@ -278,6 +279,36 @@ elseif (Test-Path $qualityGatePath) {
 }
 else {
     Add-Result -Severity 'BLOCKER' -Area 'QA' -Check 'run-quality-gate.ps1' -Status 'FAIL' -Evidence 'Script missing' -Action 'Add mandatory quality gate script.'
+}
+
+$dbHealthPath = Join-Path $ProjectRoot 'scripts\run-db-health-check.ps1'
+if ($SkipDbHealth) {
+    Add-Result -Severity 'WARNING' -Area 'DB' -Check 'run-db-health-check.ps1' -Status 'WARN' -Evidence 'Skipped by parameter' -Action 'Skip only with explicit risk acceptance.'
+}
+elseif (Test-Path $dbHealthPath) {
+    Push-Location $ProjectRoot
+    try {
+        $dbArgs = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $dbHealthPath, '-ProjectRoot', $ProjectRoot)
+        if ($Target -eq 'production') {
+            $dbArgs += '-ExpectSeeded'
+        }
+
+        $dbOutput = & $psCmd.Source @dbArgs 2>&1
+        $dbExitCode = $LASTEXITCODE
+    }
+    finally {
+        Pop-Location
+    }
+
+    if ($dbExitCode -ne 0) {
+        Add-Result -Severity 'BLOCKER' -Area 'DB' -Check 'run-db-health-check.ps1' -Status 'FAIL' -Evidence ($dbOutput | Out-String).Trim() -Action 'Fix DB schema/seed issues before release.'
+    }
+    else {
+        Add-Result -Severity 'PASS' -Area 'DB' -Check 'run-db-health-check.ps1' -Status 'OK' -Evidence 'Database health validated' -Action ''
+    }
+}
+else {
+    Add-Result -Severity 'WARNING' -Area 'DB' -Check 'run-db-health-check.ps1' -Status 'WARN' -Evidence 'Script missing' -Action 'Add DB health script to prevent runtime schema failures.'
 }
 
 $responsiveAuditPath = Join-Path $ProjectRoot 'scripts\run-responsive-audit.ps1'

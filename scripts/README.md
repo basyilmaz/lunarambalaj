@@ -4,6 +4,7 @@ Repo-local release governance scripts:
 
 - `run_prelaunch_audit.ps1`
 - `run_release_publish_gate.ps1`
+- `run-db-health-check.ps1`
 - `run-responsive-audit.ps1`
 - `run-psi-report.ps1`
 - `test-canonical-redirect.ps1`
@@ -26,6 +27,21 @@ Behavior:
 
 - Writes report under `docs/release/prelaunch-audit-YYYYMMDD-HHMMSS.md`
 - Returns non-zero exit code when `Blockers > 0`
+- Includes DB schema health check (`run-db-health-check.ps1`) and fails on missing critical tables.
+
+## Database Health Check
+
+Validate DB schema (and optionally seed baseline) before deploy:
+
+```powershell
+pwsh ./scripts/run-db-health-check.ps1 -ProjectRoot .
+pwsh ./scripts/run-db-health-check.ps1 -ProjectRoot . -ExpectSeeded
+```
+
+Behavior:
+
+- Executes `php artisan ops:db-health --json`
+- Returns non-zero exit code when required tables are missing or seed baseline fails (`-ExpectSeeded`)
 
 ## Release Publish Gate
 

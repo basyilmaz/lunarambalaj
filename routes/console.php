@@ -2,7 +2,9 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schedule;
+use Illuminate\Support\Facades\Schema;
 use App\Jobs\ExportOfflineConversionsJob;
 use App\Jobs\SyncAdsCampaignSnapshotsJob;
 use App\Services\Ads\AdsSyncService;
@@ -12,6 +14,113 @@ use Carbon\CarbonImmutable;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('ops:db-health {--expect-seeded : Validate minimum seed counts} {--json : Emit JSON output}', function () {
+    $requiredTables = [
+        'migrations',
+        'languages',
+        'settings',
+        'pages',
+        'page_translations',
+        'service_items',
+        'service_item_translations',
+        'product_categories',
+        'product_category_translations',
+        'products',
+        'product_translations',
+        'posts',
+        'post_translations',
+        'faqs',
+        'faq_translations',
+        'references',
+        'leads',
+    ];
+
+    $checks = [];
+    $pushCheck = function (string $key, bool $ok, string $message, array $meta = []) use (&$checks): void {
+        $checks[] = [
+            'key' => $key,
+            'ok' => $ok,
+            'message' => $message,
+            'meta' => $meta,
+        ];
+    };
+
+    try {
+        DB::connection()->getPdo();
+        $pushCheck('connection', true, 'Database connection established.');
+    } catch (\Throwable $e) {
+        $pushCheck('connection', false, 'Database connection failed.', ['error' => $e->getMessage()]);
+    }
+
+    $missingTables = [];
+    foreach ($requiredTables as $table) {
+        if (!Schema::hasTable($table)) {
+            $missingTables[] = $table;
+        }
+    }
+
+    $pushCheck(
+        'required_tables',
+        count($missingTables) === 0,
+        count($missingTables) === 0 ? 'All required tables exist.' : 'Missing required tables detected.',
+        ['missing' => $missingTables]
+    );
+
+    if ($this->option('expect-seeded') && count($missingTables) === 0) {
+        $seedBaselines = [
+            'languages' => 4,
+            'settings' => 1,
+            'pages' => 5,
+            'product_categories' => 6,
+            'products' => 10,
+        ];
+
+        $insufficient = [];
+        foreach ($seedBaselines as $table => $minCount) {
+            $count = (int) DB::table($table)->count();
+            if ($count < $minCount) {
+                $insufficient[] = [
+                    'table' => $table,
+                    'count' => $count,
+                    'min' => $minCount,
+                ];
+            }
+        }
+
+        $pushCheck(
+            'seed_baseline',
+            count($insufficient) === 0,
+            count($insufficient) === 0 ? 'Seed baseline requirements satisfied.' : 'Seed baseline requirements failed.',
+            ['insufficient' => $insufficient]
+        );
+    }
+
+    $failedChecks = array_values(array_filter($checks, fn (array $check): bool => !$check['ok']));
+    $ok = count($failedChecks) === 0;
+
+    $payload = [
+        'ok' => $ok,
+        'failed_count' => count($failedChecks),
+        'checks' => $checks,
+        'timestamp' => now()->toIso8601String(),
+    ];
+
+    if ($this->option('json')) {
+        $this->line(json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    } else {
+        foreach ($checks as $check) {
+            $prefix = $check['ok'] ? 'OK' : 'FAIL';
+            $this->line(sprintf('[%s] %s - %s', $prefix, $check['key'], $check['message']));
+
+            if (!$check['ok'] && !empty($check['meta'])) {
+                $this->line('  ' . json_encode($check['meta'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            }
+        }
+    }
+
+    return $ok ? 0 : 1;
+})->purpose('Validate DB schema and seed readiness');
 
 Artisan::command('ads:sync-campaign-snapshots {--platform=} {--from=} {--to=} {--queue}', function (AdsSyncService $syncService) {
     $platformOption = (string) ($this->option('platform') ?? '');
