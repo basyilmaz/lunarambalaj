@@ -118,3 +118,27 @@ Route::prefix('ar')->middleware('site-locale:ar')->group(function (): void {
     Route::get('/distance-sales-contract', [LegalPageController::class, 'distanceSales'])->name('ar.distance-sales');
     Route::get('/terms-of-use', [LegalPageController::class, 'terms'])->name('ar.terms');
 });
+
+Route::prefix('es')->middleware('site-locale:es')->group(function (): void {
+    Route::get('/', [HomeController::class, 'index'])->name('es.home');
+    Route::get('/about', [PageController::class, 'about'])->name('es.about');
+    Route::get('/services', [ServiceController::class, 'index'])->name('es.services');
+    Route::get('/products', [ProductController::class, 'index'])->name('es.products');
+    Route::get('/products/{slug}', [ProductController::class, 'show'])->name('es.products.show');
+    Route::get('/solutions', [SolutionsController::class, 'index'])->name('es.solutions');
+    Route::get('/gallery', [GalleryController::class, 'index'])->name('es.gallery');
+    Route::get('/references', [ReferenceController::class, 'index'])->name('es.references');
+    Route::get('/faq', [FaqController::class, 'index'])->name('es.faq');
+    Route::get('/blog', [BlogController::class, 'index'])->name('es.blog');
+    Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('es.blog.show');
+    Route::get('/contact', [ContactController::class, 'index'])->name('es.contact');
+    Route::post('/contact', [ContactController::class, 'store'])->name('es.contact.store');
+    Route::get('/get-quote', [QuoteController::class, 'index'])->name('es.quote');
+    Route::post('/get-quote', [QuoteController::class, 'store'])->name('es.quote.store');
+    Route::get('/get-quote/thank-you', [QuoteController::class, 'thankyou'])->name('es.quote.thankyou');
+    Route::get('/kvkk', [LegalPageController::class, 'kvkk'])->name('es.kvkk');
+    Route::get('/cookie-policy', [LegalPageController::class, 'cookie'])->name('es.cookie');
+    Route::get('/privacy-policy', [LegalPageController::class, 'privacy'])->name('es.privacy');
+    Route::get('/distance-sales-contract', [LegalPageController::class, 'distanceSales'])->name('es.distance-sales');
+    Route::get('/terms-of-use', [LegalPageController::class, 'terms'])->name('es.terms');
+});

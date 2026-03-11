@@ -289,8 +289,17 @@ elseif (Test-Path $dbHealthPath) {
     Push-Location $ProjectRoot
     try {
         $dbArgs = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $dbHealthPath, '-ProjectRoot', $ProjectRoot)
+        $dbContextNote = ''
+
         if ($Target -eq 'production') {
             $dbArgs += '-ExpectSeeded'
+        }
+        else {
+            $sqlitePath = Join-Path $ProjectRoot 'database\database.sqlite'
+            if (Test-Path $sqlitePath) {
+                $dbArgs += @('-DbConnection', 'sqlite', '-DbDatabase', $sqlitePath)
+                $dbContextNote = " (sqlite override for $Target target)"
+            }
         }
 
         $dbOutput = & $psCmd.Source @dbArgs 2>&1
@@ -301,10 +310,10 @@ elseif (Test-Path $dbHealthPath) {
     }
 
     if ($dbExitCode -ne 0) {
-        Add-Result -Severity 'BLOCKER' -Area 'DB' -Check 'run-db-health-check.ps1' -Status 'FAIL' -Evidence ($dbOutput | Out-String).Trim() -Action 'Fix DB schema/seed issues before release.'
+        Add-Result -Severity 'BLOCKER' -Area 'DB' -Check 'run-db-health-check.ps1' -Status 'FAIL' -Evidence ((($dbOutput | Out-String).Trim()) + $dbContextNote) -Action 'Fix DB schema/seed issues before release.'
     }
     else {
-        Add-Result -Severity 'PASS' -Area 'DB' -Check 'run-db-health-check.ps1' -Status 'OK' -Evidence 'Database health validated' -Action ''
+        Add-Result -Severity 'PASS' -Area 'DB' -Check 'run-db-health-check.ps1' -Status 'OK' -Evidence ("Database health validated" + $dbContextNote) -Action ''
     }
 }
 else {

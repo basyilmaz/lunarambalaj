@@ -39,6 +39,11 @@ class LegalPagesTest extends TestCase
             ['/ar/cookie-policy', 'هذا النص مسودة لأغراض معلوماتية فقط'],
             ['/ar/distance-sales-contract', 'هذا النص مسودة لأغراض معلوماتية فقط'],
             ['/ar/terms-of-use', 'هذا النص مسودة لأغراض معلوماتية فقط'],
+            ['/es/kvkk', 'Este texto es un borrador con fines informativos.'],
+            ['/es/privacy-policy', 'Este texto es un borrador con fines informativos.'],
+            ['/es/cookie-policy', 'Este texto es un borrador con fines informativos.'],
+            ['/es/distance-sales-contract', 'Este texto es un borrador con fines informativos.'],
+            ['/es/terms-of-use', 'Este texto es un borrador con fines informativos.'],
         ];
 
         foreach ($cases as [$url, $notice]) {
@@ -56,6 +61,7 @@ class LegalPagesTest extends TestCase
             ->assertSee('hreflang="en"', false)
             ->assertSee('hreflang="ru"', false)
             ->assertSee('hreflang="ar"', false)
+            ->assertSee('hreflang="es"', false)
             ->assertSee('hreflang="x-default"', false);
     }
 

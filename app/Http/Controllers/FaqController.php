@@ -28,31 +28,28 @@ class FaqController extends Controller
                     'text' => strip_tags((string) $translation?->answer),
                 ],
             ];
-        })->filter(fn (array $item): bool => ! empty($item['name']))->values()->all();
+        })->filter(static fn (array $item): bool => !empty($item['name']))->values()->all();
 
-        // SEO-optimized FAQ page
         $seoTitles = [
             'tr' => 'Sıkça Sorulan Sorular | MOQ, Termin, Baskı | Lunar Ambalaj',
             'en' => 'Frequently Asked Questions | MOQ, Lead Time, Print | Lunar Packaging',
             'ru' => 'Часто задаваемые вопросы | MOQ, Сроки, Печать | Lunar Packaging',
-            'ar' => 'الأسئلة الشائعة | الحد الأدنى للطلب، المهلة، الطباعة | Lunar Packaging',
+            'ar' => 'الأسئلة الشائعة | الحد الأدنى للطلب، المدة، الطباعة | Lunar Packaging',
+            'es' => 'Preguntas Frecuentes | MOQ, Plazo, Impresión | Lunar Ambalaj',
         ];
-
         $seoDescs = [
-            'tr' => 'Minimum sipariş, termin süreleri, baskı dosyaları, sevkiyat, fiyatlandırma hakkında sıkça sorulan sorular ve detaylı yanıtlar.',
-            'en' => 'FAQs about minimum order quantities, lead times, print files, shipping, pricing. Detailed answers for B2B packaging orders.',
-            'ru' => 'Часто задаваемые вопросы о минимальных объемах заказа, сроках, файлах печати, доставке, ценах. Подробные ответы для заказов упаковки B2B.',
-            'ar' => 'الأسئلة الشائعة حول الحد الأدنى لكميات الطلب والمهل وملفات الطباعة والشحن والتسعير. إجابات مفصلة لطلبات التعبئة B2B.',
+            'tr' => 'Minimum sipariş, termin süreleri, baskı dosyaları, sevkiyat ve fiyatlandırma hakkında sık sorulan sorular.',
+            'en' => 'FAQs about minimum order quantities, lead times, print files, shipping and pricing for B2B packaging orders.',
+            'ru' => 'Частые вопросы о минимальном заказе, сроках, файлах печати, отгрузке и ценах для B2B-поставок.',
+            'ar' => 'الأسئلة الشائعة حول الحد الأدنى للطلب والمهل وملفات الطباعة والشحن والتسعير لطلبات B2B.',
+            'es' => 'Preguntas frecuentes sobre pedido mínimo, plazos, archivos de impresión, envío y precios para operaciones B2B.',
         ];
-
-        $seoTitle = $seoTitles[$lang] ?? $seoTitles['en'];
-        $seoDesc = $seoDescs[$lang] ?? $seoDescs['en'];
 
         return view('faq.index', [
             'faqs' => $faqs,
             'seo' => $this->seo(
-                $seoTitle,
-                $seoDesc,
+                $seoTitles[$lang] ?? $seoTitles['en'],
+                $seoDescs[$lang] ?? $seoDescs['en'],
                 LocaleUrls::abs(config("site.route_translations.faq.{$lang}")),
                 LocaleUrls::static('faq'),
                 [[

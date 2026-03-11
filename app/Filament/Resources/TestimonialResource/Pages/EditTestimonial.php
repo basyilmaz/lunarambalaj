@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\TestimonialResource\Pages;
 
+use App\Filament\Support\EnforcesTranslationCoverage;
 use App\Filament\Resources\TestimonialResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditTestimonial extends EditRecord
 {
+    use EnforcesTranslationCoverage;
+
     protected static string $resource = TestimonialResource::class;
 
     protected function getHeaderActions(): array
@@ -15,5 +18,14 @@ class EditTestimonial extends EditRecord
         return [
             Actions\DeleteAction::make(),
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @return array<string, mixed>
+     */
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        return $this->enforceCoverageOnSave($this->record, $data, 'is_active', 'testimonial');
     }
 }

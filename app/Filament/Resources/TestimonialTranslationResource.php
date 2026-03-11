@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TestimonialTranslationResource\Pages;
 use App\Models\TestimonialTranslation;
+use App\Support\AdminLanguageOptions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables;
@@ -28,12 +29,7 @@ class TestimonialTranslationResource extends BaseResource
                     ->relationship('testimonial', 'author_name')
                     ->required(),
                 Forms\Components\Select::make('lang')
-                    ->options([
-                        'tr' => 'Turkce',
-                        'en' => 'English',
-                        'ru' => 'Russian',
-                        'ar' => 'Arabic',
-                    ])
+                    ->options(AdminLanguageOptions::options())
                     ->required(),
                 Forms\Components\RichEditor::make('content')
                     ->required()

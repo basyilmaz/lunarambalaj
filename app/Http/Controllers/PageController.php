@@ -39,8 +39,6 @@ class PageController extends Controller
 
         $translation = $page->translation($lang);
 
-        abort_if(! $translation, 404);
-
         $canonical = LocaleUrls::abs(config("site.route_translations.{$routeKey}.{$lang}"));
 
         return view('page', [

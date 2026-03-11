@@ -12,22 +12,15 @@ class SetSiteLocale
 {
     public function handle(Request $request, Closure $next, ?string $forcedLocale = null): Response
     {
-        // Determine locale from forced parameter or URL path
-        if ($forcedLocale) {
-            $locale = $forcedLocale;
-        } elseif ($request->is('en') || $request->is('en/*')) {
-            $locale = 'en';
-        } elseif ($request->is('ru') || $request->is('ru/*')) {
-            $locale = 'ru';
-        } elseif ($request->is('ar') || $request->is('ar/*')) {
-            $locale = 'ar';
-        } else {
-            $locale = 'tr'; // Default to Turkish
-        }
+        $supportedLocales = config('site.locales', ['tr', 'en']);
+        $defaultLocale = config('site.default_locale', 'tr');
+
+        // Determine locale from forced parameter or the first path segment.
+        $locale = $forcedLocale ?: $request->segment(1) ?: $defaultLocale;
 
         // Validate locale is supported
-        if (! in_array($locale, ['tr', 'en', 'ru', 'ar'], true)) {
-            $locale = 'tr';
+        if (! in_array($locale, $supportedLocales, true)) {
+            $locale = $defaultLocale;
         }
 
         App::setLocale($locale);

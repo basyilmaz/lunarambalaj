@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductTranslationResource\Pages;
 use App\Models\ProductTranslation;
+use App\Support\AdminLanguageOptions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables;
@@ -28,12 +29,7 @@ class ProductTranslationResource extends BaseResource
                     ->relationship('product', 'id')
                     ->required(),
                 Forms\Components\Select::make('lang')
-                    ->options([
-                        'tr' => 'Turkce',
-                        'en' => 'English',
-                        'ru' => 'Russian',
-                        'ar' => 'Arabic',
-                    ])
+                    ->options(AdminLanguageOptions::options())
                     ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required(),

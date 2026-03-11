@@ -33,13 +33,28 @@ class QuoteController extends Controller
         $products = Product::query()->where('is_active', true)->with('translations')->get();
         $categories = ProductCategory::query()->where('is_active', true)->with('translations')->orderBy('order')->get();
 
+        $seoTitles = [
+            'tr' => 'Teklif Al | Lunar Ambalaj',
+            'en' => 'Get Quote | Lunar Packaging',
+            'ru' => 'Запросить предложение | Lunar Packaging',
+            'ar' => 'طلب عرض سعر | Lunar Packaging',
+            'es' => 'Solicitar Cotización | Lunar Ambalaj',
+        ];
+        $seoDescs = [
+            'tr' => 'Kategori, ürün, adet ve baskı ihtiyaçlarınızı iletin. Ekibimiz 24 saat içinde teklif ve termin bilgisiyle dönüş yapar.',
+            'en' => 'Share category, product, quantity and print requirements. Our team replies with quote and lead-time details within 24 hours.',
+            'ru' => 'Укажите категорию, продукт, объем и параметры печати. Команда вернется с расчетом и сроками в течение 24 часов.',
+            'ar' => 'شارك الفئة والمنتج والكمية ومتطلبات الطباعة. يعود فريقنا بعرض السعر ومدة التنفيذ خلال 24 ساعة.',
+            'es' => 'Comparte categoría, producto, cantidad y requisitos de impresión. Nuestro equipo responde con precio y plazo en 24 horas.',
+        ];
+
         return view('quote.index', [
             'botGuard' => $this->formSpamGuard->issueChallenge($request, 'quote'),
             'products' => $products,
             'categories' => $categories,
             'seo' => $this->seo(
-                $lang === 'tr' ? 'Teklif Al | Lunar Ambalaj' : 'Get Quote | Lunar Packaging',
-                $lang === 'tr' ? 'Projeniz için hızlı fiyat teklifi alın.' : 'Request a fast quotation for your project.',
+                $seoTitles[$lang] ?? $seoTitles['en'],
+                $seoDescs[$lang] ?? $seoDescs['en'],
                 LocaleUrls::abs(config("site.route_translations.quote.{$lang}")),
                 LocaleUrls::static('quote'),
             ),
@@ -67,7 +82,6 @@ class QuoteController extends Controller
         }
 
         $attributionPayload = $this->attributionLogger->getAttributionPayload($request);
-
         $quantity = (int) $request->input('quantity');
         $setting = Setting::query()->first();
         $minOrder = $setting?->min_order_default ?: 5000;
@@ -116,9 +130,23 @@ class QuoteController extends Controller
 
         Mail::to(config('mail.from.address'))->send(new LeadReceivedMail($lead));
 
-        $message = app()->getLocale() === 'tr' ? 'Teklif talebiniz alındı.' : 'Your quote request has been received.';
+        $successMessages = [
+            'tr' => 'Teklif talebiniz alındı.',
+            'en' => 'Your quote request has been received.',
+            'ru' => 'Ваш запрос на предложение получен.',
+            'ar' => 'تم استلام طلب عرض السعر.',
+            'es' => 'Hemos recibido tu solicitud de cotización.',
+        ];
+        $warningTemplates = [
+            'tr' => 'Min. sipariş miktarı :min adettir.',
+            'en' => 'Minimum order quantity is :min units.',
+            'ru' => 'Минимальный объем заказа: :min единиц.',
+            'ar' => 'الحد الأدنى للطلب هو :min وحدة.',
+            'es' => 'La cantidad mínima de pedido es :min unidades.',
+        ];
+
         $warning = $quantity < $minOrder
-            ? (app()->getLocale() === 'tr' ? 'Min. sipariş miktarı ' . $minOrder . ' adettir.' : 'Minimum order quantity is ' . $minOrder . ' units.')
+            ? str_replace(':min', (string) $minOrder, $warningTemplates[app()->getLocale()] ?? $warningTemplates['en'])
             : null;
 
         $thankYouRoute = match (app()->getLocale()) {
@@ -126,11 +154,12 @@ class QuoteController extends Controller
             'en' => 'en.quote.thankyou',
             'ru' => 'ru.quote.thankyou',
             'ar' => 'ar.quote.thankyou',
+            'es' => 'es.quote.thankyou',
             default => 'tr.quote.thankyou',
         };
 
         return redirect()->route($thankYouRoute)
-            ->with('success', $message)
+            ->with('success', $successMessages[app()->getLocale()] ?? $successMessages['en'])
             ->with('warning', $warning)
             ->with('lead_submitted', true)
             ->with('lead_type', 'quote')
@@ -148,13 +177,29 @@ class QuoteController extends Controller
             'en' => '/en/get-quote/thank-you',
             'ru' => '/ru/get-quote/thank-you',
             'ar' => '/ar/get-quote/thank-you',
+            'es' => '/es/get-quote/thank-you',
         ];
+        $titleByLocale = [
+            'tr' => 'Teklif Talebi Alındı | Lunar Ambalaj',
+            'en' => 'Quote Request Received | Lunar Packaging',
+            'ru' => 'Запрос получен | Lunar Packaging',
+            'ar' => 'تم استلام الطلب | Lunar Packaging',
+            'es' => 'Solicitud Recibida | Lunar Ambalaj',
+        ];
+        $descByLocale = [
+            'tr' => 'Talebiniz başarıyla alındı. Ekibimiz en kısa sürede sizinle iletişime geçecektir.',
+            'en' => 'Your request has been received. Our team will contact you shortly.',
+            'ru' => 'Ваш запрос получен. Наша команда свяжется с вами в ближайшее время.',
+            'ar' => 'تم استلام طلبك. سيتواصل معك فريقنا قريبًا.',
+            'es' => 'Hemos recibido tu solicitud. Nuestro equipo se pondrá en contacto contigo en breve.',
+        ];
+
         $currentPath = $pathByLocale[$lang] ?? $pathByLocale['tr'];
 
         return view('quote.thankyou', [
             'seo' => $this->seo(
-                $lang === 'tr' ? 'Teklif Talebi Alındı | Lunar Ambalaj' : 'Quote Request Received | Lunar Packaging',
-                $lang === 'tr' ? 'Talebiniz başarıyla alındı. Ekibimiz en kısa sürede sizinle iletişime geçecektir.' : 'Your request has been received. Our team will contact you shortly.',
+                $titleByLocale[$lang] ?? $titleByLocale['en'],
+                $descByLocale[$lang] ?? $descByLocale['en'],
                 LocaleUrls::abs($currentPath),
                 LocaleUrls::static('quote'),
             ),

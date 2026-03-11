@@ -155,5 +155,25 @@ class LeadFormTest extends TestCase
 
         $response->assertRedirect('/ar/get-quote/thank-you');
     }
+
+    public function test_es_quote_form_redirects_to_es_thank_you(): void
+    {
+        $response = $this->post('/es/get-quote', [
+            'name' => 'ES Quote User',
+            'company' => 'Demo Cafe ES',
+            'phone' => '05550000003',
+            'email' => 'quote-es@example.com',
+            'product_category' => 'Pipet',
+            'product' => 'Baskili Kagit Pipet',
+            'quantity' => 7500,
+            'print_needed' => 'yes',
+            'wrapping_needed' => 'no',
+            'delivery_city' => 'Istanbul',
+            'message' => 'ES quote request',
+            'kvkk' => '1',
+        ]);
+
+        $response->assertRedirect('/es/get-quote/thank-you');
+    }
 }
 

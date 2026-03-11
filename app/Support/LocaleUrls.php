@@ -7,20 +7,24 @@ class LocaleUrls
     public static function static(string $key): array
     {
         $map = config("site.route_translations.{$key}", []);
+        $defaultLocale = config('site.default_locale', 'tr');
+        $supportedLocales = config('site.locales', ['tr', 'en']);
 
-        if (! isset($map['tr'])) {
+        if (! isset($map[$defaultLocale])) {
             return [];
         }
 
-        $urls = ['tr-TR' => self::abs($map['tr'])];
+        $urls = [];
 
-        foreach (['en', 'ru', 'ar'] as $locale) {
+        foreach ($supportedLocales as $locale) {
             if (isset($map[$locale])) {
-                $urls[$locale] = self::abs($map[$locale]);
+                $hreflang = $locale === 'tr' ? 'tr-TR' : $locale;
+                $urls[$hreflang] = self::abs($map[$locale]);
             }
         }
 
-        $urls['x-default'] = $urls['tr-TR'];
+        $defaultHrefLang = $defaultLocale === 'tr' ? 'tr-TR' : $defaultLocale;
+        $urls['x-default'] = $urls[$defaultHrefLang] ?? self::abs($map[$defaultLocale]);
 
         return $urls;
     }

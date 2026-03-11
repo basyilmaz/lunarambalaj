@@ -34,31 +34,29 @@ class ProductController extends Controller
 
         $products = $productsQuery->paginate(12)->withQueryString();
 
-        // SEO copy for products listing
         $seoTitles = [
             'tr' => 'Ambalaj Ürünleri | Lunar Ambalaj',
             'en' => 'Packaging Products | Lunar Packaging',
             'ru' => 'Упаковочная продукция | Lunar Packaging',
             'ar' => 'منتجات التعبئة | Lunar Packaging',
+            'es' => 'Productos de Empaque | Lunar Ambalaj',
         ];
 
         $seoDescs = [
             'tr' => 'Plastik frozen, körüklü ve bubble pipet odaklı; bardak, peçete, ıslak mendil, bayraklı kürdan, stick şeker ve sticker baskı çözümleri.',
             'en' => 'Frozen, corrugated and bubble straw focused catalog with cups, napkins, wet wipes, flag toothpicks, stick sugar and sticker printing.',
-            'ru' => 'Каталог с фокусом на frozen, гофрированные и bubble-трубочки, а также стаканы, салфетки, влажные салфетки и стикеры.',
-            'ar' => 'كتالوج يركز على مصاصات فروزن ومرنة وبابل مع حلول الأكواب والمناديل والمناديل المبللة والكردان وطباعة الستيكر.',
+            'ru' => 'Каталог с акцентом на frozen, гофрированные и bubble трубочки, а также стаканы, салфетки, влажные салфетки, флажковые зубочистки, stick sugar и стикеры.',
+            'ar' => 'كتالوج يركز على مصاصات فروزن ومرنة وبابل مع حلول الأكواب والمناديل والمناديل المبللة والكردان وطباعة الملصقات.',
+            'es' => 'Catálogo enfocado en pajitas Frozen, corrugadas y Bubble; además de vasos, servilletas, toallitas húmedas, palillos con bandera, azúcar en stick e impresión de stickers.',
         ];
-
-        $seoTitle = $seoTitles[$lang] ?? $seoTitles['en'];
-        $seoDesc = $seoDescs[$lang] ?? $seoDescs['en'];
 
         return view('products.index', [
             'categories' => $categories,
             'activeCategorySlug' => $categorySlug,
             'products' => $products,
             'seo' => $this->seo(
-                $seoTitle,
-                $seoDesc,
+                $seoTitles[$lang] ?? $seoTitles['en'],
+                $seoDescs[$lang] ?? $seoDescs['en'],
                 LocaleUrls::abs(config("site.route_translations.products.{$lang}")),
                 LocaleUrls::static('products'),
             ),
@@ -69,11 +67,25 @@ class ProductController extends Controller
     {
         $lang = app()->getLocale();
 
-        $translation = ProductTranslation::query()
-            ->where('lang', $lang)
-            ->where('slug', $slug)
-            ->with('product.category.translations', 'product.translations')
-            ->firstOrFail();
+        $lookupLocales = collect([$lang, config('app.fallback_locale', 'en'), 'tr', 'en'])
+            ->filter()
+            ->unique()
+            ->values();
+
+        $translation = null;
+        foreach ($lookupLocales as $lookupLocale) {
+            $translation = ProductTranslation::query()
+                ->where('lang', (string) $lookupLocale)
+                ->where('slug', $slug)
+                ->with('product.category.translations', 'product.translations')
+                ->first();
+
+            if ($translation !== null) {
+                break;
+            }
+        }
+
+        abort_if($translation === null, 404);
 
         $product = $translation->product;
         $paths = [
@@ -81,21 +93,24 @@ class ProductController extends Controller
             'en' => '/en/products/' . (optional($product->translations->firstWhere('lang', 'en'))->slug ?: ''),
             'ru' => '/ru/products/' . (optional($product->translations->firstWhere('lang', 'ru'))->slug ?: ''),
             'ar' => '/ar/products/' . (optional($product->translations->firstWhere('lang', 'ar'))->slug ?: ''),
+            'es' => '/es/products/' . (optional($product->translations->firstWhere('lang', 'es'))->slug ?: ''),
         ];
 
         foreach ($paths as $locale => $path) {
-            if (str_ends_with($path, '/')) {
-                $paths[$locale] = match ($locale) {
-                    'tr' => '/urunler',
-                    'en' => '/en/products',
-                    'ru' => '/ru/products',
-                    'ar' => '/ar/products',
-                    default => '/urunler',
-                };
+            if (!str_ends_with($path, '/')) {
+                continue;
             }
+
+            $paths[$locale] = match ($locale) {
+                'tr' => '/urunler',
+                'en' => '/en/products',
+                'ru' => '/ru/products',
+                'ar' => '/ar/products',
+                'es' => '/es/products',
+                default => '/urunler',
+            };
         }
 
-        // Enhanced Product Schema with offers and availability
         $jsonLd = [[
             '@context' => 'https://schema.org',
             '@type' => 'Product',
@@ -123,7 +138,6 @@ class ProductController extends Controller
             ],
         ]];
 
-        // Get related products from the same category
         $relatedProducts = Product::query()
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
@@ -137,7 +151,6 @@ class ProductController extends Controller
         $leadTimeDays = $this->resolveLeadTimeDays($product->specs, $specRows);
         $leadTimeDisplay = $this->formatLeadTime($leadTimeDays, $lang);
 
-        // SEO-optimized title and description with character limits
         $categoryName = optional($product->category->translation($lang))->name;
         $seoTitle = $translation->seo_title ?: mb_substr($translation->name . ' | ' . $categoryName . ' | Lunar Ambalaj', 0, 60);
 
@@ -149,9 +162,9 @@ class ProductController extends Controller
                 'en' => "MOQ: {$product->min_order}. Quote in 24h, lead time: {$leadTimeDisplay}.",
                 'ru' => "MOQ: {$product->min_order}. Расчет за 24 часа, срок: {$leadTimeDisplay}.",
                 'ar' => "MOQ: {$product->min_order}. عرض سعر خلال 24 ساعة، المدة: {$leadTimeDisplay}.",
+                'es' => "MOQ: {$product->min_order}. Cotización en 24 h, plazo: {$leadTimeDisplay}.",
             ];
-            $moqText = $moqTexts[$lang] ?? $moqTexts['en'];
-            $seoDescription = mb_substr($shortDesc . ' ' . $moqText, 0, 160);
+            $seoDescription = mb_substr($shortDesc . ' ' . ($moqTexts[$lang] ?? $moqTexts['en']), 0, 160);
         }
 
         return view('products.show', [
@@ -169,6 +182,7 @@ class ProductController extends Controller
                     'en' => LocaleUrls::abs($paths['en']),
                     'ru' => LocaleUrls::abs($paths['ru']),
                     'ar' => LocaleUrls::abs($paths['ar']),
+                    'es' => LocaleUrls::abs($paths['es']),
                     'x-default' => LocaleUrls::abs($paths['tr']),
                 ],
                 $jsonLd,
@@ -204,7 +218,7 @@ class ProductController extends Controller
         }
 
         return collect($specs)
-            ->except(['lead_time_days', 'tr', 'en', 'ru', 'ar'])
+            ->except(array_merge(['lead_time_days'], config('site.locales', ['tr', 'en'])))
             ->filter(static fn ($value): bool => is_scalar($value) && $value !== '')
             ->mapWithKeys(static fn ($value, $key): array => [(string) $key => (string) $value])
             ->all();
@@ -226,6 +240,7 @@ class ProductController extends Controller
                 && !str_contains($normalized, 'lead')
                 && !str_contains($normalized, 'срок')
                 && !str_contains($normalized, 'مدة')
+                && !str_contains($normalized, 'plazo')
             ) {
                 continue;
             }
@@ -244,6 +259,7 @@ class ProductController extends Controller
             'tr' => $days . ' iş günü',
             'ru' => $days . ' рабочих дней',
             'ar' => $days . ' يوم عمل',
+            'es' => $days . ' días hábiles',
             default => $days . ' business days',
         };
     }

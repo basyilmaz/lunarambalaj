@@ -49,6 +49,25 @@ class SeoController extends Controller
             })->all();
 
         $baseUrl = rtrim(config('site.canonical_url', config('app.url', 'https://lunarambalaj.com')), '/');
+        $locales = config('site.locales', ['tr', 'en']);
+
+        $importantUrls = [];
+        foreach ($locales as $locale) {
+            $prefix = $locale === 'tr' ? '' : '/' . $locale;
+            $label = strtoupper($locale);
+
+            $importantUrls[] = "- {$label} Home: {$baseUrl}" . ($prefix === '' ? '/' : $prefix);
+
+            foreach (['products', 'solutions', 'quote'] as $routeKey) {
+                $path = config("site.route_translations.{$routeKey}.{$locale}");
+                if (is_string($path) && $path !== '') {
+                    $importantUrls[] = "- {$label} " . ucfirst($routeKey) . ': ' . $baseUrl . $path;
+                }
+            }
+        }
+
+        $importantUrls[] = '- Sitemap: ' . $baseUrl . '/sitemap.xml';
+        $importantUrls[] = '- Robots: ' . $baseUrl . '/robots.txt';
 
         $content = implode("\n", [
             '# Lunar Ambalaj',
@@ -73,20 +92,11 @@ class SeoController extends Controller
             ...$categories,
             '',
             '## Important URLs',
-            '- TR Home: ' . $baseUrl . '/',
-            '- EN Home: ' . $baseUrl . '/en',
-            '- TR Products: ' . $baseUrl . '/urunler',
-            '- EN Products: ' . $baseUrl . '/en/products',
-            '- TR Solutions: ' . $baseUrl . '/cozumler',
-            '- EN Solutions: ' . $baseUrl . '/en/solutions',
-            '- TR Quote: ' . $baseUrl . '/teklif-al',
-            '- EN Quote: ' . $baseUrl . '/en/get-quote',
-            '- Sitemap: ' . $baseUrl . '/sitemap.xml',
-            '- Robots: ' . $baseUrl . '/robots.txt',
+            ...$importantUrls,
             '',
             '## Notes',
             '- Default locale: tr',
-            '- English pages use /en prefix',
+            '- Language pages use locale prefixes (except tr)',
             '- Lead forms: contact and quote',
             '',
         ]);
@@ -96,45 +106,57 @@ class SeoController extends Controller
 
     public function sitemap()
     {
-        $urls = [
-            '/', '/hakkimizda', '/hizmetler', '/urunler', '/cozumler', '/galeri', '/referanslar', '/sss', '/blog', '/iletisim', '/teklif-al', '/kvkk', '/cerez-politikasi', '/gizlilik-politikasi', '/mesafeli-satis-sozlesmesi', '/kullanim-sartlari',
-            '/en', '/en/about', '/en/services', '/en/products', '/en/solutions', '/en/gallery', '/en/references', '/en/faq', '/en/blog', '/en/contact', '/en/get-quote', '/en/kvkk', '/en/cookie-policy', '/en/privacy-policy', '/en/distance-sales-contract', '/en/terms-of-use',
-            '/ru', '/ru/about', '/ru/services', '/ru/products', '/ru/solutions', '/ru/gallery', '/ru/references', '/ru/faq', '/ru/blog', '/ru/contact', '/ru/get-quote', '/ru/kvkk', '/ru/cookie-policy', '/ru/privacy-policy', '/ru/distance-sales-contract', '/ru/terms-of-use',
-            '/ar', '/ar/about', '/ar/services', '/ar/products', '/ar/solutions', '/ar/gallery', '/ar/references', '/ar/faq', '/ar/blog', '/ar/contact', '/ar/get-quote', '/ar/kvkk', '/ar/cookie-policy', '/ar/privacy-policy', '/ar/distance-sales-contract', '/ar/terms-of-use',
-        ];
+        $locales = config('site.locales', ['tr', 'en']);
+        $routeTranslations = config('site.route_translations', []);
+
+        $urls = ['/'];
+        foreach ($locales as $locale) {
+            if ($locale !== 'tr') {
+                $urls[] = '/' . $locale;
+            }
+        }
+
+        foreach ($routeTranslations as $routeMap) {
+            if (! is_array($routeMap)) {
+                continue;
+            }
+
+            foreach ($locales as $locale) {
+                $path = $routeMap[$locale] ?? null;
+                if (is_string($path) && $path !== '') {
+                    $urls[] = $path;
+                }
+            }
+        }
+
+        $productPrefixes = collect($locales)
+            ->mapWithKeys(static fn (string $locale): array => [$locale => rtrim((string) config("site.route_translations.products.{$locale}", ''), '/') . '/'])
+            ->all();
 
         ProductTranslation::query()
-            ->whereIn('lang', ['tr', 'en', 'ru', 'ar'])
+            ->whereIn('lang', $locales)
             ->get()
-            ->each(function (ProductTranslation $translation) use (&$urls): void {
-                $prefix = match ($translation->lang) {
-                    'tr' => '/urunler/',
-                    'en' => '/en/products/',
-                    'ru' => '/ru/products/',
-                    'ar' => '/ar/products/',
-                    default => null,
-                };
-
-                if ($prefix !== null) {
-                    $urls[] = $prefix . $translation->slug;
+            ->each(function (ProductTranslation $translation) use (&$urls, $productPrefixes): void {
+                $prefix = $productPrefixes[$translation->lang] ?? null;
+                if ($prefix === null || $prefix === '/') {
+                    return;
                 }
+                $urls[] = $prefix . $translation->slug;
             });
 
-        PostTranslation::query()
-            ->whereIn('lang', ['tr', 'en', 'ru', 'ar'])
-            ->get()
-            ->each(function (PostTranslation $translation) use (&$urls): void {
-                $prefix = match ($translation->lang) {
-                    'tr' => '/blog/',
-                    'en' => '/en/blog/',
-                    'ru' => '/ru/blog/',
-                    'ar' => '/ar/blog/',
-                    default => null,
-                };
+        $blogPrefixes = collect($locales)
+            ->mapWithKeys(static fn (string $locale): array => [$locale => rtrim((string) config("site.route_translations.blog.{$locale}", ''), '/') . '/'])
+            ->all();
 
-                if ($prefix !== null) {
-                    $urls[] = $prefix . $translation->slug;
+        PostTranslation::query()
+            ->whereIn('lang', $locales)
+            ->get()
+            ->each(function (PostTranslation $translation) use (&$urls, $blogPrefixes): void {
+                $prefix = $blogPrefixes[$translation->lang] ?? null;
+                if ($prefix === null || $prefix === '/') {
+                    return;
                 }
+                $urls[] = $prefix . $translation->slug;
             });
 
         $urls = array_unique($urls);

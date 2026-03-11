@@ -27,6 +27,7 @@ class PublicRoutesTest extends TestCase
             'en' => ['/en', '/en/about', '/en/services', '/en/products', '/en/solutions', '/en/gallery', '/en/references', '/en/faq', '/en/blog', '/en/contact', '/en/get-quote', '/en/get-quote/thank-you', '/en/kvkk', '/en/cookie-policy', '/en/privacy-policy', '/en/distance-sales-contract', '/en/terms-of-use'],
             'ru' => ['/ru', '/ru/about', '/ru/services', '/ru/products', '/ru/solutions', '/ru/gallery', '/ru/references', '/ru/faq', '/ru/blog', '/ru/contact', '/ru/get-quote', '/ru/get-quote/thank-you', '/ru/kvkk', '/ru/cookie-policy', '/ru/privacy-policy', '/ru/distance-sales-contract', '/ru/terms-of-use'],
             'ar' => ['/ar', '/ar/about', '/ar/services', '/ar/products', '/ar/solutions', '/ar/gallery', '/ar/references', '/ar/faq', '/ar/blog', '/ar/contact', '/ar/get-quote', '/ar/get-quote/thank-you', '/ar/kvkk', '/ar/cookie-policy', '/ar/privacy-policy', '/ar/distance-sales-contract', '/ar/terms-of-use'],
+            'es' => ['/es', '/es/about', '/es/services', '/es/products', '/es/solutions', '/es/gallery', '/es/references', '/es/faq', '/es/blog', '/es/contact', '/es/get-quote', '/es/get-quote/thank-you', '/es/kvkk', '/es/cookie-policy', '/es/privacy-policy', '/es/distance-sales-contract', '/es/terms-of-use'],
         ];
 
         $dynamicRoutes = [
@@ -34,9 +35,13 @@ class PublicRoutesTest extends TestCase
             'en' => ['product' => '/en/products/', 'post' => '/en/blog/'],
             'ru' => ['product' => '/ru/products/', 'post' => '/ru/blog/'],
             'ar' => ['product' => '/ar/products/', 'post' => '/ar/blog/'],
+            'es' => ['product' => '/es/products/', 'post' => '/es/blog/'],
         ];
 
-        $languages = Language::query()->pluck('code')->all();
+        $languages = collect(array_merge(
+            Language::query()->pluck('code')->all(),
+            config('site.locales', ['tr', 'en']),
+        ))->unique()->values()->all();
 
         foreach ($languages as $code) {
             foreach ($localeRoutes[$code] ?? [] as $path) {
@@ -47,8 +52,10 @@ class PublicRoutesTest extends TestCase
                 continue;
             }
 
-            $product = ProductTranslation::query()->where('lang', $code)->first();
-            $post = PostTranslation::query()->where('lang', $code)->first();
+            $product = ProductTranslation::query()->where('lang', $code)->first()
+                ?: ($code === 'es' ? ProductTranslation::query()->where('lang', 'en')->first() : null);
+            $post = PostTranslation::query()->where('lang', $code)->first()
+                ?: ($code === 'es' ? PostTranslation::query()->where('lang', 'en')->first() : null);
 
             if ($product !== null) {
                 $paths[] = $dynamicRoutes[$code]['product'] . $product->slug;

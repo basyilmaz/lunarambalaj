@@ -1,21 +1,60 @@
 @extends('layouts.app')
 
 @section('content')
-
 @php
     $isLegalPage = in_array($pageType, ['kvkk', 'cookie', 'privacy'], true);
+    $locale = app()->getLocale();
+
+    $legalCopy = [
+        'tr' => [
+            'group' => 'Yasal Politikalar',
+            'note' => 'Veri talepleriniz için bizimle iletişime geçin.',
+            'contact' => 'İletişim',
+            'effective' => 'Yürürlük: 01.01.2026',
+            'updated' => 'Güncelleme: 01.03.2026',
+        ],
+        'en' => [
+            'group' => 'Legal Policies',
+            'note' => 'Contact us for data requests.',
+            'contact' => 'Contact',
+            'effective' => 'Effective: 2026-01-01',
+            'updated' => 'Updated: 2026-03-01',
+        ],
+        'ru' => [
+            'group' => 'Юридические политики',
+            'note' => 'Свяжитесь с нами по вопросам персональных данных.',
+            'contact' => 'Контакты',
+            'effective' => 'Действует с: 2026-01-01',
+            'updated' => 'Обновлено: 2026-03-01',
+        ],
+        'ar' => [
+            'group' => 'السياسات القانونية',
+            'note' => 'تواصل معنا لطلبات البيانات.',
+            'contact' => 'اتصل بنا',
+            'effective' => 'ساري من: 2026-01-01',
+            'updated' => 'آخر تحديث: 2026-03-01',
+        ],
+        'es' => [
+            'group' => 'Políticas Legales',
+            'note' => 'Contáctanos para solicitudes relacionadas con datos.',
+            'contact' => 'Contacto',
+            'effective' => 'Vigencia: 2026-01-01',
+            'updated' => 'Actualización: 2026-03-01',
+        ],
+    ];
+    $policy = $legalCopy[$locale] ?? $legalCopy['en'];
+
+    $quickQuoteCopy = [
+        'tr' => ['title' => 'Hızlı Teklif', 'desc' => 'Projeniz için kısa sürede teklif alın.'],
+        'en' => ['title' => 'Quick Quote', 'desc' => 'Request a fast quote for your project.'],
+        'ru' => ['title' => 'Быстрый расчет', 'desc' => 'Получите быстрый расчет для вашего проекта.'],
+        'ar' => ['title' => 'عرض سريع', 'desc' => 'احصل على عرض سريع لمشروعك.'],
+        'es' => ['title' => 'Cotización Rápida', 'desc' => 'Solicita una cotización rápida para tu proyecto.'],
+    ];
+    $quickQuote = $quickQuoteCopy[$locale] ?? $quickQuoteCopy['en'];
 @endphp
 
 @if($isLegalPage)
-    @php
-        $isTr = app()->getLocale() === 'tr';
-        $policyGroup = $isTr ? 'Yasal Politikalar' : 'Legal Policies';
-        $policyNote = $isTr ? 'Veri talepleriniz için bizimle iletişime geçin.' : 'Contact us for data requests.';
-        $contactLabel = $isTr ? 'İletişim' : 'Contact';
-        $effective = $isTr ? 'Yürürlük: 01.01.2026' : 'Effective: 2026-01-01';
-        $updated = $isTr ? 'Güncelleme: 01.03.2026' : 'Updated: 2026-03-01';
-    @endphp
-
     <section class="relative min-h-[70vh] bg-slate-50 py-10 md:py-16">
         <div class="mx-auto max-w-6xl px-4">
             <div class="mb-4 overflow-x-auto md:hidden">
@@ -27,9 +66,9 @@
             </div>
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-4 md:gap-8">
-                <aside class="hidden md:block md:col-span-1">
+                <aside class="hidden md:col-span-1 md:block">
                     <div class="sticky top-24 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <h3 class="mb-4 text-xs font-bold uppercase tracking-wider text-slate-400">{{ $policyGroup }}</h3>
+                        <h3 class="mb-4 text-xs font-bold uppercase tracking-wider text-slate-400">{{ $policy['group'] }}</h3>
                         <nav class="space-y-2 text-sm font-medium">
                             <a href="{{ route(app()->getLocale() . '.kvkk') }}" class="block rounded-lg px-4 py-2.5 transition-colors {{ $pageType === 'kvkk' ? 'bg-primary-yellow/10 text-amber-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">{{ __('site.footer.kvkk') }}</a>
                             <a href="{{ route(app()->getLocale() . '.privacy') }}" class="block rounded-lg px-4 py-2.5 transition-colors {{ $pageType === 'privacy' ? 'bg-primary-yellow/10 text-amber-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">{{ __('site.footer.privacy_policy') }}</a>
@@ -37,8 +76,8 @@
                         </nav>
 
                         <div class="mt-8 border-t border-slate-100 pt-6">
-                            <p class="mb-3 text-xs text-slate-500">{{ $policyNote }}</p>
-                            <a href="{{ route(app()->getLocale() . '.contact') }}" class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-xs font-bold uppercase tracking-wide text-white transition-colors hover:bg-slate-800">{{ $contactLabel }}</a>
+                            <p class="mb-3 text-xs text-slate-500">{{ $policy['note'] }}</p>
+                            <a href="{{ route(app()->getLocale() . '.contact') }}" class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-xs font-bold uppercase tracking-wide text-white transition-colors hover:bg-slate-800">{{ $policy['contact'] }}</a>
                         </div>
                     </div>
                 </aside>
@@ -50,7 +89,7 @@
                         </div>
                         <div>
                             <h1 class="mb-2 text-2xl font-bold text-slate-900 md:text-3xl">{{ $pageTitle }}</h1>
-                            <p class="text-sm text-slate-500">{{ $effective }} &bull; {{ $updated }}</p>
+                            <p class="text-sm text-slate-500">{{ $policy['effective'] }} • {{ $policy['updated'] }}</p>
                         </div>
                     </div>
 
@@ -104,13 +143,12 @@
                 </div>
 
                 <div class="rounded-xl bg-primary-yellow p-6 shadow-sm">
-                    <h3 class="mb-2 text-sm font-bold uppercase tracking-wide text-dark-charcoal">{{ app()->getLocale() === 'tr' ? 'Hızlı Teklif' : 'Quick Quote' }}</h3>
-                    <p class="mb-4 text-sm text-dark-charcoal/80">{{ app()->getLocale() === 'tr' ? 'Projeniz için kısa sürede teklif alın.' : 'Request a fast quote for your project.' }}</p>
+                    <h3 class="mb-2 text-sm font-bold uppercase tracking-wide text-dark-charcoal">{{ $quickQuote['title'] }}</h3>
+                    <p class="mb-4 text-sm text-dark-charcoal/80">{{ $quickQuote['desc'] }}</p>
                     <a href="{{ route(app()->getLocale() . '.quote') }}" class="inline-flex w-full items-center justify-center rounded-md bg-dark-charcoal px-4 py-2 text-xs font-bold uppercase tracking-wide text-white hover:bg-slate-800">{{ __('site.cta_quote') }}</a>
                 </div>
             </aside>
         </div>
     </section>
 @endif
-
 @endsection

@@ -4,6 +4,13 @@
 @php
     $locale = app()->getLocale();
     $isRtl = $locale === 'ar';
+    $legalPagesHeading = [
+        'tr' => 'Yasal Sayfalar',
+        'en' => 'Legal Pages',
+        'ru' => 'Правовые страницы',
+        'ar' => 'الصفحات القانونية',
+        'es' => 'Páginas Legales',
+    ];
 @endphp
 
 <section class="bg-slate-50 py-10 md:py-14">
@@ -12,7 +19,7 @@
             <aside class="lg:col-span-1">
                 <nav class="sticky top-24 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                     <h2 class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        {{ $locale === 'tr' ? 'Yasal Sayfalar' : ($locale === 'ru' ? 'Правовые страницы' : ($locale === 'ar' ? 'الصفحات القانونية' : 'Legal Pages')) }}
+                        {{ $legalPagesHeading[$locale] ?? $legalPagesHeading['en'] }}
                     </h2>
                     <ul class="space-y-2">
                         @foreach($legalLinks as $link)

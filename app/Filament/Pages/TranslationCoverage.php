@@ -45,7 +45,7 @@ class TranslationCoverage extends Page
     {
         $this->languages = Language::query()->pluck('code')->all();
         if (empty($this->languages)) {
-            $this->languages = ['tr', 'en', 'ru', 'ar'];
+            $this->languages = config('site.locales', ['tr', 'en']);
         }
 
         $this->buildCoverage();

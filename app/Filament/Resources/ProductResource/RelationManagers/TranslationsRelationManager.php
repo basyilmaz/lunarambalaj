@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProductResource\RelationManagers;
 
+use App\Support\AdminLanguageOptions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -18,12 +19,7 @@ class TranslationsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\Select::make('lang')
                     ->label('Language')
-                    ->options([
-                        'tr' => 'Turkish',
-                        'en' => 'English',
-                        'ru' => 'Russian',
-                        'ar' => 'Arabic',
-                    ])
+                    ->options(AdminLanguageOptions::options())
                     ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()

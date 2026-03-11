@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TestimonialResource\RelationManagers;
 
+use App\Support\AdminLanguageOptions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -17,12 +18,7 @@ class TranslationsRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\Select::make('lang')
-                    ->options([
-                        'tr' => 'Turkce',
-                        'en' => 'English',
-                        'ru' => 'Russian',
-                        'ar' => 'Arabic',
-                    ])
+                    ->options(AdminLanguageOptions::options())
                     ->required(),
                 Forms\Components\RichEditor::make('content')
                     ->required()

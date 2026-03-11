@@ -24,7 +24,10 @@
     <meta name="twitter:description" content="{{ $seo['description'] ?? '' }}">
     <meta name="twitter:image" content="{{ $seo['image'] ?? asset('images/hero-straw.svg') }}">
     @php
-        $isHomeRoute = request()->routeIs('tr.home', 'en.home', 'ru.home', 'ar.home');
+        $homeRouteNames = collect(config('site.locales', ['tr', 'en']))
+            ->map(static fn (string $code): string => "{$code}.home")
+            ->all();
+        $isHomeRoute = request()->routeIs(...$homeRouteNames);
     @endphp
     @if($isHomeRoute)
         <link rel="preload" as="image" href="{{ asset('images/hero-bg.webp') }}" fetchpriority="high">
@@ -56,7 +59,10 @@
     @endforeach
     @php
         $breadcrumbSchema = null;
-        if (! in_array(request()->path(), ['/', 'en'], true)) {
+        $homePaths = collect(config('site.locales', ['tr', 'en']))
+            ->map(static fn (string $code): string => $code === 'tr' ? '/' : $code)
+            ->all();
+        if (! in_array(request()->path(), $homePaths, true)) {
             $breadcrumbSchema = [
                 '@context' => 'https://schema.org',
                 '@type' => 'BreadcrumbList',
@@ -130,6 +136,54 @@
             ],
         ];
         $legalLabels = $legalFooterLabels[$locale] ?? $legalFooterLabels['en'];
+
+        // Override locale maps from config to keep switcher extensible (TR/EN/RU/AR/ES+).
+        $supportedLocales = config('site.locales', ['tr', 'en']);
+        $alternateLinks = $seo['alternates'] ?? [];
+        $languageLinks = [];
+
+        foreach ($supportedLocales as $supportedLocale) {
+            $defaultPath = $supportedLocale === 'tr' ? '/' : '/' . $supportedLocale;
+            $hreflang = $supportedLocale === 'tr' ? 'tr-TR' : $supportedLocale;
+
+            $languageLinks[$supportedLocale] = isset($alternateLinks[$hreflang])
+                ? (parse_url((string) $alternateLinks[$hreflang], PHP_URL_PATH) ?: $defaultPath)
+                : $defaultPath;
+        }
+
+        $legalFooterLabels = [
+            'tr' => [
+                'kvkk' => 'KVKK',
+                'privacy' => 'Gizlilik Politikası',
+                'cookie' => 'Çerez Politikası',
+                'terms' => 'Kullanım Şartları',
+            ],
+            'en' => [
+                'kvkk' => 'KVKK / Privacy Notice',
+                'privacy' => 'Privacy Policy',
+                'cookie' => 'Cookie Policy',
+                'terms' => 'Terms of Use',
+            ],
+            'ru' => [
+                'kvkk' => 'Уведомление о защите данных',
+                'privacy' => 'Политика конфиденциальности',
+                'cookie' => 'Политика cookie',
+                'terms' => 'Условия использования',
+            ],
+            'ar' => [
+                'kvkk' => 'إشعار حماية البيانات',
+                'privacy' => 'سياسة الخصوصية',
+                'cookie' => 'سياسة ملفات تعريف الارتباط',
+                'terms' => 'شروط الاستخدام',
+            ],
+            'es' => [
+                'kvkk' => 'Aviso de Privacidad (KVKK)',
+                'privacy' => 'Política de Privacidad',
+                'cookie' => 'Política de Cookies',
+                'terms' => 'Términos de Uso',
+            ],
+        ];
+        $legalLabels = $legalFooterLabels[$locale] ?? $legalFooterLabels['en'];
     @endphp
 
     <!-- Top Bar -->
@@ -157,10 +211,12 @@
                 </div>
 
                 <div class="ml-0 flex items-center gap-2 border-l-0 pl-0 sm:ml-3 sm:pl-3 sm:border-l sm:border-slate-700">
-                    <a href="{{ $languageLinks['tr'] }}" class="{{ $locale==='tr' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">TR</a>
-                    <a href="{{ $languageLinks['en'] }}" class="{{ $locale==='en' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">EN</a>
-                    <a href="{{ $languageLinks['ru'] }}" class="{{ $locale==='ru' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">RU</a>
-                    <a href="{{ $languageLinks['ar'] }}" class="{{ $locale==='ar' ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">AR</a>
+                    @foreach($supportedLocales as $supportedLocale)
+                        <a href="{{ $languageLinks[$supportedLocale] ?? ($supportedLocale === 'tr' ? '/' : '/'.$supportedLocale) }}"
+                           class="{{ $locale === $supportedLocale ? 'text-primary-yellow font-bold' : 'text-slate-400 hover:text-white' }} transition-colors">
+                            {{ strtoupper($supportedLocale) }}
+                        </a>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -225,10 +281,12 @@
 
                 <!-- Language Switcher -->
                 <div class="mt-8 flex gap-4">
-                    <a href="{{ $languageLinks['tr'] }}" class="{{ $locale==='tr' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">TR</a>
-                    <a href="{{ $languageLinks['en'] }}" class="{{ $locale==='en' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">EN</a>
-                    <a href="{{ $languageLinks['ru'] }}" class="{{ $locale==='ru' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">RU</a>
-                    <a href="{{ $languageLinks['ar'] }}" class="{{ $locale==='ar' ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">AR</a>
+                    @foreach($supportedLocales as $supportedLocale)
+                        <a href="{{ $languageLinks[$supportedLocale] ?? ($supportedLocale === 'tr' ? '/' : '/'.$supportedLocale) }}"
+                           class="{{ $locale === $supportedLocale ? 'bg-primary-yellow text-dark-charcoal' : 'bg-slate-700 text-white' }} px-4 py-2 font-bold transition-colors">
+                            {{ strtoupper($supportedLocale) }}
+                        </a>
+                    @endforeach
                 </div>
 
                 <!-- Mobile CTA -->

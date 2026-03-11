@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServiceItemTranslationResource\Pages;
 use App\Models\ServiceItemTranslation;
+use App\Support\AdminLanguageOptions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables;
@@ -28,12 +29,7 @@ class ServiceItemTranslationResource extends BaseResource
                     ->relationship('serviceItem', 'id')
                     ->required(),
                 Forms\Components\Select::make('lang')
-                    ->options([
-                        'tr' => 'Turkce',
-                        'en' => 'English',
-                        'ru' => 'Russian',
-                        'ar' => 'Arabic',
-                    ])
+                    ->options(AdminLanguageOptions::options())
                     ->required(),
                 Forms\Components\TextInput::make('title')
                     ->required(),

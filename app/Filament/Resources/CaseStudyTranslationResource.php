@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CaseStudyTranslationResource\Pages;
 use App\Models\CaseStudyTranslation;
+use App\Support\AdminLanguageOptions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables;
@@ -29,12 +30,7 @@ class CaseStudyTranslationResource extends BaseResource
                     ->relationship('caseStudy', 'client_name')
                     ->required(),
                 Forms\Components\Select::make('lang')
-                    ->options([
-                        'tr' => 'Turkce',
-                        'en' => 'English',
-                        'ru' => 'Russian',
-                        'ar' => 'Arabic',
-                    ])
+                    ->options(AdminLanguageOptions::options())
                     ->required(),
                 Forms\Components\TextInput::make('title')
                     ->required()

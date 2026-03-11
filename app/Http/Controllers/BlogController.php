@@ -20,29 +20,26 @@ class BlogController extends Controller
             ->latest('published_at')
             ->paginate(9);
 
-        // SEO-optimized for blog listing
         $seoTitles = [
             'tr' => 'Blog | Ambalaj Trendleri ve B2B Çözümler | Lunar Ambalaj',
             'en' => 'Blog | Packaging Trends & B2B Solutions | Lunar Packaging',
-            'ru' => 'Блог | Тренды упаковки и решения B2B | Lunar Packaging',
+            'ru' => 'Блог | Тренды упаковки и B2B решения | Lunar Packaging',
             'ar' => 'المدونة | اتجاهات التعبئة وحلول B2B | Lunar Packaging',
+            'es' => 'Blog | Tendencias de Empaque y Soluciones B2B | Lunar Ambalaj',
         ];
-
         $seoDescs = [
-            'tr' => 'Ambalaj sektörü, baskı planlama, MOQ yönetimi, kategori seçimi rehberleri. B2B tedarik ve sipariş operasyonları için içerikler.',
-            'en' => 'Packaging industry insights, print planning, MOQ management, category selection guides. Content for B2B supply and order operations.',
-            'ru' => 'Аналитика упаковочной индустрии, планирование печати, управление MOQ, руководства по выбору категорий. Контент для операций поставки и заказа B2B.',
-            'ar' => 'رؤى صناعة التعبئة وتخطيط الطباعة وإدارة الحد الأدنى للطلب وأدلة اختيار الفئات. محتوى لعمليات توريد وطلب B2B.',
+            'tr' => 'Ambalaj sektörü, baskı planlama, MOQ yönetimi ve kategori seçimi rehberleri. B2B tedarik operasyonları için içerikler.',
+            'en' => 'Packaging insights, print planning, MOQ management and category selection guides for B2B supply operations.',
+            'ru' => 'Аналитика упаковки, планирование печати, управление MOQ и выбор категорий для B2B-поставок.',
+            'ar' => 'محتوى عن قطاع التعبئة وتخطيط الطباعة وإدارة MOQ واختيار الفئات لعمليات توريد B2B.',
+            'es' => 'Contenidos sobre tendencias de empaque, planificación de impresión, gestión de MOQ y selección de categorías para operaciones B2B.',
         ];
-
-        $seoTitle = $seoTitles[$lang] ?? $seoTitles['en'];
-        $seoDesc = $seoDescs[$lang] ?? $seoDescs['en'];
 
         return view('blog.index', [
             'posts' => $posts,
             'seo' => $this->seo(
-                $seoTitle,
-                $seoDesc,
+                $seoTitles[$lang] ?? $seoTitles['en'],
+                $seoDescs[$lang] ?? $seoDescs['en'],
                 LocaleUrls::abs(config("site.route_translations.blog.{$lang}")),
                 LocaleUrls::static('blog'),
             ),
@@ -53,11 +50,25 @@ class BlogController extends Controller
     {
         $lang = app()->getLocale();
 
-        $translation = PostTranslation::query()
-            ->where('lang', $lang)
-            ->where('slug', $slug)
-            ->with('post.translations')
-            ->firstOrFail();
+        $lookupLocales = collect([$lang, config('app.fallback_locale', 'en'), 'tr', 'en'])
+            ->filter()
+            ->unique()
+            ->values();
+
+        $translation = null;
+        foreach ($lookupLocales as $lookupLocale) {
+            $translation = PostTranslation::query()
+                ->where('lang', (string) $lookupLocale)
+                ->where('slug', $slug)
+                ->with('post.translations')
+                ->first();
+
+            if ($translation !== null) {
+                break;
+            }
+        }
+
+        abort_if($translation === null, 404);
 
         $post = $translation->post;
         $paths = [
@@ -65,21 +76,24 @@ class BlogController extends Controller
             'en' => '/en/blog/' . (optional($post->translations->firstWhere('lang', 'en'))->slug ?: ''),
             'ru' => '/ru/blog/' . (optional($post->translations->firstWhere('lang', 'ru'))->slug ?: ''),
             'ar' => '/ar/blog/' . (optional($post->translations->firstWhere('lang', 'ar'))->slug ?: ''),
+            'es' => '/es/blog/' . (optional($post->translations->firstWhere('lang', 'es'))->slug ?: ''),
         ];
 
         foreach ($paths as $locale => $path) {
-            if (str_ends_with($path, '/')) {
-                $paths[$locale] = match ($locale) {
-                    'tr' => '/blog',
-                    'en' => '/en/blog',
-                    'ru' => '/ru/blog',
-                    'ar' => '/ar/blog',
-                    default => '/blog',
-                };
+            if (!str_ends_with($path, '/')) {
+                continue;
             }
+
+            $paths[$locale] = match ($locale) {
+                'tr' => '/blog',
+                'en' => '/en/blog',
+                'ru' => '/ru/blog',
+                'ar' => '/ar/blog',
+                'es' => '/es/blog',
+                default => '/blog',
+            };
         }
 
-        // Get related posts from same category or latest posts
         $relatedPosts = Post::query()
             ->where('is_active', true)
             ->whereNotNull('published_at')
@@ -90,7 +104,6 @@ class BlogController extends Controller
             ->limit(3)
             ->get();
 
-        // BlogPosting schema markup
         $jsonLd = [[
             '@context' => 'https://schema.org',
             '@type' => 'BlogPosting',
@@ -117,20 +130,18 @@ class BlogController extends Controller
             ],
         ]];
 
-        // SEO-optimized title and description
         $seoTitle = $translation->seo_title ?: mb_substr($translation->title . ' | Lunar Ambalaj Blog', 0, 60);
-
         $seoDescription = $translation->seo_desc;
         if (!$seoDescription) {
             $bodyPreview = strip_tags($translation->body);
             $readMoreTexts = [
-                'tr' => ' Detaylı bilgi için blog yazımızı okuyun.',
-                'en' => ' Read our blog post for details.',
-                'ru' => ' Читайте нашу запись в блоге для получения подробной информации.',
-                'ar' => ' اقرأ مقالتنا للحصول على التفاصيل.',
+                'tr' => ' Detaylı bilgi için yazıyı okuyun.',
+                'en' => ' Read our article for more details.',
+                'ru' => ' Прочитайте статью для подробностей.',
+                'ar' => ' اقرأ المقال للمزيد من التفاصيل.',
+                'es' => ' Lee el artículo para más detalles.',
             ];
-            $readMoreText = $readMoreTexts[$lang] ?? $readMoreTexts['en'];
-            $seoDescription = mb_substr($bodyPreview . $readMoreText, 0, 160);
+            $seoDescription = mb_substr($bodyPreview . ($readMoreTexts[$lang] ?? $readMoreTexts['en']), 0, 160);
         }
 
         return view('blog.show', [
@@ -146,6 +157,7 @@ class BlogController extends Controller
                     'en' => LocaleUrls::abs($paths['en']),
                     'ru' => LocaleUrls::abs($paths['ru']),
                     'ar' => LocaleUrls::abs($paths['ar']),
+                    'es' => LocaleUrls::abs($paths['es']),
                     'x-default' => LocaleUrls::abs($paths['tr']),
                 ],
                 $jsonLd,

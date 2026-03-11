@@ -22,7 +22,8 @@ class SeoEndpointsTest extends TestCase
             ->assertHeader('Content-Type', 'application/xml')
             ->assertSee('<?xml', false)
             ->assertSee('/ru', false)
-            ->assertSee('/ar', false);
+            ->assertSee('/ar', false)
+            ->assertSee('/es', false);
     }
 
     public function test_robots_is_accessible(): void
@@ -48,6 +49,7 @@ class SeoEndpointsTest extends TestCase
             ->assertSee('hreflang="en"', false)
             ->assertSee('hreflang="ru"', false)
             ->assertSee('hreflang="ar"', false)
+            ->assertSee('hreflang="es"', false)
             ->assertSee('hreflang="x-default"', false);
     }
 }

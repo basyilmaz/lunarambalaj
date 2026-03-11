@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
         Language::query()->updateOrCreate(['code' => 'en'], ['name' => 'English', 'is_default' => false]);
         Language::query()->updateOrCreate(['code' => 'ru'], ['name' => 'Русский', 'is_default' => false]);
         Language::query()->updateOrCreate(['code' => 'ar'], ['name' => 'العربية', 'is_default' => false]);
+        Language::query()->updateOrCreate(['code' => 'es'], ['name' => 'Espanol', 'is_default' => false]);
 
         $pages = [
             'about' => [
@@ -779,6 +780,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(LegalPolicyContentSeeder::class);
         $this->call(CustomerCatalogRevisionSeeder::class);
+        $this->call(SpanishContentSeeder::class);
     }
 
     private function resetSeedTablesForLocal(): void

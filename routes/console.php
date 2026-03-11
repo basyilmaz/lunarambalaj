@@ -46,28 +46,43 @@ Artisan::command('ops:db-health {--expect-seeded : Validate minimum seed counts}
         ];
     };
 
+    $connectionOk = true;
     try {
         DB::connection()->getPdo();
         $pushCheck('connection', true, 'Database connection established.');
     } catch (\Throwable $e) {
+        $connectionOk = false;
         $pushCheck('connection', false, 'Database connection failed.', ['error' => $e->getMessage()]);
     }
 
     $missingTables = [];
-    foreach ($requiredTables as $table) {
-        if (!Schema::hasTable($table)) {
-            $missingTables[] = $table;
+    if ($connectionOk) {
+        try {
+            foreach ($requiredTables as $table) {
+                if (!Schema::hasTable($table)) {
+                    $missingTables[] = $table;
+                }
+            }
+
+            $pushCheck(
+                'required_tables',
+                count($missingTables) === 0,
+                count($missingTables) === 0 ? 'All required tables exist.' : 'Missing required tables detected.',
+                ['missing' => $missingTables]
+            );
+        } catch (\Throwable $e) {
+            $pushCheck('required_tables', false, 'Required table checks failed.', ['error' => $e->getMessage()]);
         }
+    } else {
+        $pushCheck(
+            'required_tables',
+            false,
+            'Required table checks skipped because DB connection failed.',
+            ['missing' => $requiredTables]
+        );
     }
 
-    $pushCheck(
-        'required_tables',
-        count($missingTables) === 0,
-        count($missingTables) === 0 ? 'All required tables exist.' : 'Missing required tables detected.',
-        ['missing' => $missingTables]
-    );
-
-    if ($this->option('expect-seeded') && count($missingTables) === 0) {
+    if ($this->option('expect-seeded') && $connectionOk && count($missingTables) === 0) {
         $seedBaselines = [
             'languages' => 4,
             'settings' => 1,
@@ -93,6 +108,20 @@ Artisan::command('ops:db-health {--expect-seeded : Validate minimum seed counts}
             count($insufficient) === 0,
             count($insufficient) === 0 ? 'Seed baseline requirements satisfied.' : 'Seed baseline requirements failed.',
             ['insufficient' => $insufficient]
+        );
+    } elseif ($this->option('expect-seeded') && !$connectionOk) {
+        $pushCheck(
+            'seed_baseline',
+            false,
+            'Seed baseline check skipped because DB connection failed.',
+            ['reason' => 'connection_failed']
+        );
+    } elseif ($this->option('expect-seeded') && count($missingTables) > 0) {
+        $pushCheck(
+            'seed_baseline',
+            false,
+            'Seed baseline check skipped because required tables are missing.',
+            ['missing' => $missingTables]
         );
     }
 

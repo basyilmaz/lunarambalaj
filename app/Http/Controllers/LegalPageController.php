@@ -45,7 +45,7 @@ class LegalPageController extends Controller
             ->firstOrFail();
 
         $translation = $page->translation($locale) ?: $page->translation(config('site.default_locale', 'tr'));
-        abort_if(! $translation, 404);
+        abort_if(!$translation, 404);
 
         $canonical = LocaleUrls::abs(config("site.route_translations.{$routeKey}.{$locale}"));
 
@@ -68,12 +68,17 @@ class LegalPageController extends Controller
     {
         return match ($locale) {
             'tr' => 'Bu metin bilgilendirme amaçlı bir taslaktır. Nihai kullanım öncesinde hukuki danışman incelemesi önerilir.',
+            'en' => 'This text is a draft for informational purposes only. Legal review is recommended before final use.',
             'ru' => 'Этот текст является информационным проектом. Перед окончательным использованием рекомендуется юридическая проверка.',
             'ar' => 'هذا النص مسودة لأغراض معلوماتية فقط، ويُنصح بمراجعته من قبل مستشار قانوني قبل الاستخدام النهائي.',
+            'es' => 'Este texto es un borrador con fines informativos. Se recomienda una revisión legal antes del uso final.',
             default => 'This text is a draft for informational purposes only. Legal review is recommended before final use.',
         };
     }
 
+    /**
+     * @return array<int, array{route:string,label:string}>
+     */
     private function legalLinks(string $locale): array
     {
         return [
@@ -116,9 +121,15 @@ class LegalPageController extends Controller
                 'distance-sales' => 'عقد البيع عن بُعد',
                 'terms' => 'شروط الاستخدام',
             ],
+            'es' => [
+                'kvkk' => 'Aviso de Privacidad (KVKK)',
+                'privacy' => 'Política de Privacidad',
+                'cookie' => 'Política de Cookies',
+                'distance-sales' => 'Contrato de Venta a Distancia',
+                'terms' => 'Términos de Uso',
+            ],
         ];
 
         return $labels[$locale][$key] ?? $labels['en'][$key];
     }
 }
-

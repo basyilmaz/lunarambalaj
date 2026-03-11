@@ -27,19 +27,20 @@ class ContactController extends Controller
     {
         $lang = app()->getLocale();
 
-        // SEO-optimized contact page
         $seoTitles = [
             'tr' => 'İletişim | 24 Saatte Yanıt | Lunar Ambalaj',
             'en' => 'Contact | 24h Response | Lunar Packaging',
-            'ru' => 'Контакт | Ответ за 24 часа | Lunar Packaging',
+            'ru' => 'Контакты | Ответ за 24 часа | Lunar Packaging',
             'ar' => 'اتصل بنا | رد خلال 24 ساعة | Lunar Packaging',
+            'es' => 'Contacto | Respuesta en 24h | Lunar Packaging',
         ];
 
         $seoDescs = [
-            'tr' => 'Ambalaj ürün teklifi, sipariş detayları, baskı planlama için bizimle iletişime geçin. 24 saat içinde yanıt veriyoruz. Telefon, email, WhatsApp.',
-            'en' => 'Contact us for packaging quotes, order details, print planning. We respond within 24 hours. Phone, email, WhatsApp available.',
-            'ru' => 'Свяжитесь с нами для получения предложений по упаковке, деталей заказа, планирования печати. Мы отвечаем в течение 24 часов. Телефон, email, WhatsApp.',
-            'ar' => 'اتصل بنا للحصول على عروض أسعار التعبئة وتفاصيل الطلب وتخطيط الطباعة. نحن نرد خلال 24 ساعة. الهاتف والبريد الإلكتروني وواتساب متاحة.',
+            'tr' => 'Ambalaj ürün teklifi, sipariş detayları, baskı planlama için bizimle iletişime geçin. 24 saat içinde yanıt veriyoruz. Telefon, e-posta, WhatsApp.',
+            'en' => 'Contact us for packaging quotes, order details and print planning. We respond within 24 hours. Phone, email and WhatsApp available.',
+            'ru' => 'Свяжитесь с нами по вопросам расчёта, заказа и печати. Отвечаем в течение 24 часов. Телефон, email и WhatsApp доступны.',
+            'ar' => 'اتصل بنا للحصول على عروض أسعار التعبئة وتفاصيل الطلب وتخطيط الطباعة. نرد خلال 24 ساعة. الهاتف والبريد الإلكتروني وواتساب متاحة.',
+            'es' => 'Contáctanos para cotización, detalles de pedido y planificación de impresión. Respondemos en 24 horas. Teléfono, correo y WhatsApp disponibles.',
         ];
 
         $seoTitle = $seoTitles[$lang] ?? $seoTitles['en'];
@@ -68,7 +69,7 @@ class ContactController extends Controller
         RateLimiter::hit($key, 60);
         RateLimiter::hit($emailKey, 600);
 
-        if (!$this->formSpamGuard->validateSubmission($request, 'contact')) {
+        if (! $this->formSpamGuard->validateSubmission($request, 'contact')) {
             return back()->withErrors(['form' => __('security.bot_check_failed')])->withInput();
         }
 
@@ -112,6 +113,7 @@ class ContactController extends Controller
             'en' => 'Your message has been received.',
             'ru' => 'Ваше сообщение получено.',
             'ar' => 'تم استلام رسالتك.',
+            'es' => 'Hemos recibido tu mensaje.',
         ];
 
         return back()->with('success', $successMessages[app()->getLocale()] ?? $successMessages['en'])
@@ -119,3 +121,4 @@ class ContactController extends Controller
             ->with('lead_type', 'contact');
     }
 }
+

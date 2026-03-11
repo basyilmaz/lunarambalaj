@@ -33,6 +33,10 @@ class Page extends Model
 
     public function translation(string $lang): ?PageTranslation
     {
-        return $this->translations->firstWhere('lang', $lang);
+        return $this->translations->firstWhere('lang', $lang)
+            ?? $this->translations->firstWhere('lang', (string) config('app.fallback_locale'))
+            ?? $this->translations->firstWhere('lang', 'tr')
+            ?? $this->translations->firstWhere('lang', 'en')
+            ?? $this->translations->first();
     }
 }
