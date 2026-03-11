@@ -8,10 +8,11 @@
         @foreach($products as $product)
             @php $t = $product->translation(app()->getLocale()); @endphp
             @if($t)
+                @php $galleryImage = \App\Support\AssetVariant::optimized($product->image, 'images/product-printed.svg'); @endphp
                 <figure class="rounded-xl border border-slate-200 bg-white p-5">
                     <img
                         loading="lazy"
-                        src="{{ asset($product->image ?: 'images/product-printed.svg') }}"
+                        src="{{ asset($galleryImage) }}"
                         alt="{{ $t->name }}"
                         class="mb-3 h-40 w-full rounded-lg object-cover"
                         width="640"

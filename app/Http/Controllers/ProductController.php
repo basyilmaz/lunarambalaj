@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductTranslation;
+use App\Support\AssetVariant;
 use App\Support\LocaleUrls;
 use Illuminate\Http\Request;
 
@@ -121,7 +122,7 @@ class ProductController extends Controller
                 'name' => 'Lunar Ambalaj',
             ],
             'category' => optional($product->category->translation($lang))->name,
-            'image' => $product->image ? asset($product->image) : asset('images/category-straws.svg'),
+            'image' => asset(AssetVariant::optimized($product->image, 'images/category-straws.svg')),
             'offers' => [
                 '@type' => 'Offer',
                 'availability' => 'https://schema.org/InStock',

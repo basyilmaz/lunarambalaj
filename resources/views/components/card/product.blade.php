@@ -2,6 +2,7 @@
 
 @php
     $translation = $product->translation($locale);
+    $optimizedProductImage = \App\Support\AssetVariant::optimized($product->image, 'images/category-straws.svg');
 @endphp
 
 @if($translation)
@@ -10,7 +11,7 @@
    data-aos="fade-up">
     <div class="relative h-64 overflow-hidden bg-slate-100">
         <img
-            src="{{ asset($product->image) }}"
+            src="{{ asset($optimizedProductImage) }}"
             alt="{{ $translation->name }}"
             loading="lazy"
             width="960"

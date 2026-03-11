@@ -87,57 +87,6 @@
     @php
         $locale = app()->getLocale();
         $menu = __('site.menu');
-        $defaultLanguageLinks = [
-            'tr' => '/',
-            'en' => '/en',
-            'ru' => '/ru',
-            'ar' => '/ar',
-        ];
-        $languageLinks = $defaultLanguageLinks;
-        $alternateLinks = $seo['alternates'] ?? [];
-
-        if (isset($alternateLinks['tr-TR'])) {
-            $languageLinks['tr'] = parse_url((string) $alternateLinks['tr-TR'], PHP_URL_PATH) ?: '/';
-        }
-        if (isset($alternateLinks['en'])) {
-            $languageLinks['en'] = parse_url((string) $alternateLinks['en'], PHP_URL_PATH) ?: '/en';
-        }
-        if (isset($alternateLinks['ru'])) {
-            $languageLinks['ru'] = parse_url((string) $alternateLinks['ru'], PHP_URL_PATH) ?: '/ru';
-        }
-        if (isset($alternateLinks['ar'])) {
-            $languageLinks['ar'] = parse_url((string) $alternateLinks['ar'], PHP_URL_PATH) ?: '/ar';
-        }
-
-        $legalFooterLabels = [
-            'tr' => [
-                'kvkk' => 'KVKK',
-                'privacy' => 'Gizlilik Politikası',
-                'cookie' => 'Çerez Politikası',
-                'terms' => 'Kullanım Şartları',
-            ],
-            'en' => [
-                'kvkk' => 'KVKK / Privacy Notice',
-                'privacy' => 'Privacy Policy',
-                'cookie' => 'Cookie Policy',
-                'terms' => 'Terms of Use',
-            ],
-            'ru' => [
-                'kvkk' => 'Уведомление о защите данных',
-                'privacy' => 'Политика конфиденциальности',
-                'cookie' => 'Политика cookie',
-                'terms' => 'Условия использования',
-            ],
-            'ar' => [
-                'kvkk' => 'إشعار حماية البيانات',
-                'privacy' => 'سياسة الخصوصية',
-                'cookie' => 'سياسة ملفات تعريف الارتباط',
-                'terms' => 'شروط الاستخدام',
-            ],
-        ];
-        $legalLabels = $legalFooterLabels[$locale] ?? $legalFooterLabels['en'];
-
-        // Override locale maps from config to keep switcher extensible (TR/EN/RU/AR/ES+).
         $supportedLocales = config('site.locales', ['tr', 'en']);
         $alternateLinks = $seo['alternates'] ?? [];
         $languageLinks = [];
@@ -154,9 +103,9 @@
         $legalFooterLabels = [
             'tr' => [
                 'kvkk' => 'KVKK',
-                'privacy' => 'Gizlilik Politikası',
-                'cookie' => 'Çerez Politikası',
-                'terms' => 'Kullanım Şartları',
+                'privacy' => 'Gizlilik Politikas?',
+                'cookie' => '?erez Politikas?',
+                'terms' => 'Kullan?m ?artlar?',
             ],
             'en' => [
                 'kvkk' => 'KVKK / Privacy Notice',
@@ -165,22 +114,22 @@
                 'terms' => 'Terms of Use',
             ],
             'ru' => [
-                'kvkk' => 'Уведомление о защите данных',
-                'privacy' => 'Политика конфиденциальности',
-                'cookie' => 'Политика cookie',
-                'terms' => 'Условия использования',
+                'kvkk' => '??????????? ? ?????? ??????',
+                'privacy' => '???????? ??????????????????',
+                'cookie' => '???????? cookie',
+                'terms' => '??????? ?????????????',
             ],
             'ar' => [
-                'kvkk' => 'إشعار حماية البيانات',
-                'privacy' => 'سياسة الخصوصية',
-                'cookie' => 'سياسة ملفات تعريف الارتباط',
-                'terms' => 'شروط الاستخدام',
+                'kvkk' => '????? ????? ????????',
+                'privacy' => '????? ????????',
+                'cookie' => '????? ????? ????? ????????',
+                'terms' => '???? ?????????',
             ],
             'es' => [
                 'kvkk' => 'Aviso de Privacidad (KVKK)',
-                'privacy' => 'Política de Privacidad',
-                'cookie' => 'Política de Cookies',
-                'terms' => 'Términos de Uso',
+                'privacy' => 'Pol?tica de Privacidad',
+                'cookie' => 'Pol?tica de Cookies',
+                'terms' => 'T?rminos de Uso',
             ],
         ];
         $legalLabels = $legalFooterLabels[$locale] ?? $legalFooterLabels['en'];

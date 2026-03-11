@@ -72,7 +72,7 @@
             <!-- Product Image -->
             <div class="relative">
                 <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden">
-                    <img src="{{ asset($product->image ?: 'images/category-straws.svg') }}"
+                    <img src="{{ asset(\App\Support\AssetVariant::optimized($product->image, 'images/category-straws.svg')) }}"
                          alt="{{ $translation->name }}"
                          class="w-full h-full object-cover"
                          loading="eager"

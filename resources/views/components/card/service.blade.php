@@ -14,13 +14,14 @@ if (!$imagePath) {
         default => 'images/hero-bg.webp',
     };
 }
+$resolvedImagePath = \App\Support\AssetVariant::optimized($imagePath, 'images/hero-bg.webp');
 @endphp
 
 @if($translation)
 <article class="group overflow-hidden bg-white shadow-sm border-b-4 border-transparent hover:border-primary-yellow transition-all duration-300" data-aos="fade-up">
     <div class="relative h-52 overflow-hidden bg-slate-100">
         <img
-            src="{{ asset($imagePath) }}"
+            src="{{ asset($resolvedImagePath) }}"
             alt="{{ $translation->title }}"
             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             loading="lazy"

@@ -2,13 +2,14 @@
 
 @php
     $translation = $post->translation($locale);
+    $optimizedCover = \App\Support\AssetVariant::optimized($post->cover, 'images/hero-bg.webp');
 @endphp
 
 @if($translation)
 <article class="group flex h-full flex-col overflow-hidden bg-white shadow-sm transition-all duration-300 hover:shadow-xl" data-aos="fade-up">
     <div class="relative h-56 overflow-hidden bg-slate-100">
         <img
-            src="{{ $post->cover ? asset($post->cover) : asset('images/hero-bg.webp') }}"
+            src="{{ asset($optimizedCover) }}"
             alt="{{ $translation->title }}"
             loading="lazy"
             width="960"

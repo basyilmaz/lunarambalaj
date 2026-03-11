@@ -6,9 +6,10 @@
 <section class="relative bg-slate-900 min-h-[500px] flex items-end overflow-hidden">
     <!-- Background Image -->
     <div class="absolute inset-0">
+        @php $optimizedCover = \App\Support\AssetVariant::optimized($post->cover, 'images/hero-bg.webp'); @endphp
         @if($post->cover)
             <img
-                src="{{ asset($post->cover) }}"
+                src="{{ asset($optimizedCover) }}"
                 alt="{{ $translation->title }}"
                 class="w-full h-full object-cover opacity-40"
                 width="1920"

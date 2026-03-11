@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,20 +20,14 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        static $settingsTableExists = null;
-        if ($settingsTableExists === null) {
-            try {
-                $settingsTableExists = Schema::hasTable('settings');
-            } catch (\Throwable $e) {
-                $settingsTableExists = false;
-            }
-        }
-
         $setting = null;
-        if ($settingsTableExists) {
+        try {
             $setting = Cache::remember('site:settings:first', now()->addMinutes(10), function () {
                 return Setting::query()->first();
             });
+        } catch (\Throwable $e) {
+            // During first bootstrap/migration window the settings table may not exist yet.
+            $setting = null;
         }
 
         view()->share('siteSetting', $setting);

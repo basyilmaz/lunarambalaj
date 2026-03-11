@@ -124,10 +124,16 @@
             @endphp
 
             @foreach($solutions as $solution)
+                @php
+                    $solutionImage = \App\Support\AssetVariant::optimized(
+                        $bgImages[$solution['key']] ?? 'images/lifestyle-drinks.webp',
+                        'images/lifestyle-drinks.webp'
+                    );
+                @endphp
                 <article class="group flex h-full flex-col overflow-hidden rounded-lg border-l-4 border-transparent bg-white transition-all duration-300 hover:border-primary-yellow hover:shadow-2xl" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                     <div class="relative h-56 overflow-hidden bg-slate-200">
                         <img
-                            src="{{ asset($bgImages[$solution['key']] ?? 'images/lifestyle-drinks.webp') }}"
+                            src="{{ asset($solutionImage) }}"
                             alt="Lunar Ambalaj Solution"
                             class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                             width="896"

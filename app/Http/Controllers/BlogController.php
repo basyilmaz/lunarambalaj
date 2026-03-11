@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\PostTranslation;
+use App\Support\AssetVariant;
 use App\Support\LocaleUrls;
 
 class BlogController extends Controller
@@ -109,7 +110,7 @@ class BlogController extends Controller
             '@type' => 'BlogPosting',
             'headline' => $translation->title,
             'description' => $translation->short_desc ?: mb_substr(strip_tags($translation->body), 0, 200),
-            'image' => $post->cover ? asset($post->cover) : asset('images/hero-bg.png'),
+            'image' => asset(AssetVariant::optimized($post->cover, 'images/hero-bg.webp')),
             'author' => [
                 '@type' => 'Organization',
                 'name' => 'Lunar Ambalaj',
@@ -162,7 +163,7 @@ class BlogController extends Controller
                 ],
                 $jsonLd,
                 'article',
-                $post->cover,
+                AssetVariant::optimized($post->cover, 'images/hero-bg.webp'),
             ),
         ]);
     }
