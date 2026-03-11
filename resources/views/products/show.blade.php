@@ -23,6 +23,24 @@
         'related_subtitle' => ['tr' => 'Benzer Ürünler', 'en' => 'Related Products', 'ru' => 'Похожие продукты', 'ar' => 'منتجات مشابهة', 'es' => 'Productos Relacionados'],
         'related_title' => ['tr' => 'Aynı Kategoriden Diğer Ürünler', 'en' => 'Other Products from Same Category', 'ru' => 'Другие продукты из этой категории', 'ar' => 'منتجات أخرى من نفس الفئة', 'es' => 'Otros Productos de la Misma Categoría'],
     ];
+
+    $purchaseFlow = [
+        'title' => ['tr' => 'Satın Alma Akışı', 'en' => 'Procurement Flow', 'ru' => 'Процесс закупки', 'ar' => 'مسار الشراء', 'es' => 'Flujo de Compra'],
+        'steps' => [
+            [
+                'label' => ['tr' => 'Teklif', 'en' => 'Quote', 'ru' => 'Расчет', 'ar' => 'عرض السعر', 'es' => 'Cotizacion'],
+                'value' => ['tr' => '24 Saat', 'en' => '24 Hours', 'ru' => '24 часа', 'ar' => '24 ساعة', 'es' => '24 Horas'],
+            ],
+            [
+                'label' => ['tr' => 'Termin', 'en' => 'Lead Time', 'ru' => 'Срок', 'ar' => 'المدة', 'es' => 'Plazo'],
+                'value' => ['tr' => $leadTimeDisplay, 'en' => $leadTimeDisplay, 'ru' => $leadTimeDisplay, 'ar' => $leadTimeDisplay, 'es' => $leadTimeDisplay],
+            ],
+            [
+                'label' => ['tr' => 'Paketleme', 'en' => 'Packaging', 'ru' => 'Упаковка', 'ar' => 'التعبئة', 'es' => 'Empaque'],
+                'value' => ['tr' => 'Jelatinli / Jelatinsiz', 'en' => 'Wrapped / Unwrapped', 'ru' => 'С оберткой / Без', 'ar' => 'مغلف / غير مغلف', 'es' => 'Con envoltura / Sin envoltura'],
+            ],
+        ],
+    ];
 @endphp
 
 <!-- Product Hero -->
@@ -113,6 +131,28 @@
                     </x-button>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-dark-charcoal py-10">
+    <div class="mx-auto max-w-7xl px-4">
+        <div class="flex flex-wrap items-end justify-between gap-6">
+            <h2 class="text-2xl font-bold uppercase text-white">
+                {{ $purchaseFlow['title'][$locale] ?? $purchaseFlow['title']['en'] }}
+            </h2>
+            <a href="{{ route(app()->getLocale() . '.quote') }}" class="inline-flex items-center gap-2 bg-primary-yellow px-5 py-3 text-xs font-bold uppercase tracking-wide text-dark-charcoal">
+                {{ $ui['cta_quote'][$locale] ?? $ui['cta_quote']['en'] }}
+            </a>
+        </div>
+
+        <div class="mt-6 grid gap-4 md:grid-cols-3">
+            @foreach($purchaseFlow['steps'] as $step)
+                <article class="border border-slate-700 bg-slate-800/60 p-5">
+                    <p class="text-xs font-bold uppercase tracking-wide text-slate-300">{{ $step['label'][$locale] ?? $step['label']['en'] }}</p>
+                    <p class="mt-2 text-xl font-bold text-primary-yellow">{{ $step['value'][$locale] ?? $step['value']['en'] }}</p>
+                </article>
+            @endforeach
         </div>
     </div>
 </section>

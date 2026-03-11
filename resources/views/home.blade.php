@@ -25,6 +25,33 @@
         'cta_title' => ['tr' => 'Ambalaj İhtiyacınız İçin Hemen Teklif Alın', 'en' => 'Get Your Quote for Packaging Needs Now', 'ru' => 'Получите расчет для ваших упаковочных задач', 'ar' => 'احصل على عرض سعر لاحتياجات التعبئة الآن', 'es' => 'Solicita Ahora tu Cotización de Empaque'],
         'cta_desc' => ['tr' => '24 saat içinde özel fiyat teklifi ve hızlı termin bilgisi', 'en' => 'Get custom pricing and fast lead time information within 24 hours', 'ru' => 'Индивидуальный расчет и сроки в течение 24 часов', 'ar' => 'سعر مخصص ومعلومات المدة خلال 24 ساعة', 'es' => 'Precio personalizado y plazo en 24 horas'],
     ];
+
+    $leadPanel = [
+        'subtitle' => ['tr' => 'Satın Alma Özeti', 'en' => 'Procurement Snapshot', 'ru' => 'Сводка закупки', 'ar' => 'ملخص الشراء', 'es' => 'Resumen de Compra'],
+        'title' => ['tr' => 'Tekliften Teslime Net Operasyon Çerçevesi', 'en' => 'Clear Flow from Quote to Delivery', 'ru' => 'Понятный процесс от расчета до поставки', 'ar' => 'مسار واضح من العرض حتى التسليم', 'es' => 'Flujo Claro de Cotizacion a Entrega'],
+        'cards' => [
+            [
+                'value' => ['tr' => '24 Saat', 'en' => '24 Hours', 'ru' => '24 часа', 'ar' => '24 ساعة', 'es' => '24 Horas'],
+                'title' => ['tr' => 'Teklif Dönüşü', 'en' => 'Quote SLA', 'ru' => 'SLA расчета', 'ar' => 'زمن عرض السعر', 'es' => 'SLA de Cotizacion'],
+                'desc' => ['tr' => 'Kategori, adet ve baskı detayına göre hızlı fiyat dönüşü.', 'en' => 'Fast response based on category, volume and print scope.', 'ru' => 'Быстрый расчет по категории, объему и печати.', 'ar' => 'رد سريع حسب الفئة والكمية ونطاق الطباعة.', 'es' => 'Respuesta rapida segun categoria, volumen y alcance de impresion.'],
+            ],
+            [
+                'value' => ['tr' => '20 Gün', 'en' => '20 Days', 'ru' => '20 дней', 'ar' => '20 يومًا', 'es' => '20 Dias'],
+                'title' => ['tr' => 'Planlı Termin', 'en' => 'Planned Lead Time', 'ru' => 'Плановый срок', 'ar' => 'مدة تنفيذ مخططة', 'es' => 'Plazo Planificado'],
+                'desc' => ['tr' => 'Ürün grubuna göre planlanan standart üretim ve sevkiyat akışı.', 'en' => 'Standard production and dispatch flow planned by product group.', 'ru' => 'Стандартный план производства и отгрузки по продукту.', 'ar' => 'خطة إنتاج وشحن قياسية حسب مجموعة المنتج.', 'es' => 'Flujo estandar de produccion y despacho por categoria.'],
+            ],
+            [
+                'value' => ['tr' => 'Min. 5.000', 'en' => 'Min. 5,000', 'ru' => 'Мин. 5 000', 'ar' => 'حد أدنى 5,000', 'es' => 'Min. 5.000'],
+                'title' => ['tr' => 'MOQ Yönetimi', 'en' => 'MOQ Planning', 'ru' => 'План MOQ', 'ar' => 'تخطيط الحد الأدنى', 'es' => 'Plan de MOQ'],
+                'desc' => ['tr' => 'Ürün bazında değişen minimum adetlerle dengeli satın alma planı.', 'en' => 'Balanced planning with product-based minimum quantities.', 'ru' => 'Сбалансированная закупка с учетом MOQ по продукту.', 'ar' => 'تخطيط شراء متوازن وفق الحد الأدنى لكل منتج.', 'es' => 'Plan de compra equilibrado con minimos por producto.'],
+            ],
+            [
+                'value' => ['tr' => '5 Dil', 'en' => '5 Languages', 'ru' => '5 языков', 'ar' => '5 لغات', 'es' => '5 Idiomas'],
+                'title' => ['tr' => 'İhracat Uyumlu İletişim', 'en' => 'Export-Ready Communication', 'ru' => 'Экспортная коммуникация', 'ar' => 'تواصل جاهز للتصدير', 'es' => 'Comunicacion para Exportacion'],
+                'desc' => ['tr' => 'TR, EN, RU, AR ve ES içeriklerle çok pazarlı teklif akışı.', 'en' => 'Multi-market quotation flow with TR, EN, RU, AR and ES content.', 'ru' => 'Мультиязычный поток предложений: TR, EN, RU, AR, ES.', 'ar' => 'مسار عروض متعدد الأسواق بلغات TR وEN وRU وAR وES.', 'es' => 'Flujo comercial multilingue con contenido TR, EN, RU, AR y ES.'],
+            ],
+        ],
+    ];
 @endphp
 
 <!-- Hero Slider -->
@@ -107,6 +134,28 @@
 
 <!-- Statistics Counter -->
 <x-stats-counter :stats="$statistics" />
+
+<!-- Procurement Snapshot -->
+<section class="bg-slate-900 py-20">
+    <div class="mx-auto max-w-7xl px-4">
+        <x-section-header
+            :subtitle="$leadPanel['subtitle'][$locale] ?? $leadPanel['subtitle']['en']"
+            :title="$leadPanel['title'][$locale] ?? $leadPanel['title']['en']"
+            align="left"
+            class="!text-white [&_h2]:!text-white [&_span]:!text-primary-yellow [&_p]:!text-slate-300"
+        />
+
+        <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            @foreach($leadPanel['cards'] as $card)
+                <article class="border border-slate-700 bg-slate-800/60 p-6">
+                    <p class="text-3xl font-bold text-primary-yellow">{{ $card['value'][$locale] ?? $card['value']['en'] }}</p>
+                    <h3 class="mt-3 text-sm font-bold uppercase tracking-wide text-white">{{ $card['title'][$locale] ?? $card['title']['en'] }}</h3>
+                    <p class="mt-3 text-sm leading-relaxed text-slate-300">{{ $card['desc'][$locale] ?? $card['desc']['en'] }}</p>
+                </article>
+            @endforeach
+        </div>
+    </div>
+</section>
 
 <!-- Product Categories -->
 <section class="cv-auto py-24 bg-white">

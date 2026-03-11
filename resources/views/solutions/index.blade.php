@@ -51,6 +51,25 @@
             'desc' => ['tr' => 'Teslimat sonrası destek ve stok yönetimi.', 'en' => 'Post-delivery support and stock continuity.', 'ru' => 'Поддержка после поставки и управление запасом.', 'ar' => 'دعم ما بعد التسليم واستمرارية المخزون.', 'es' => 'Soporte post-entrega y continuidad de stock.'],
         ],
     ];
+
+    $opsCards = [
+        [
+            'value' => ['tr' => '24 Saat', 'en' => '24 Hours', 'ru' => '24 часа', 'ar' => '24 ساعة', 'es' => '24 Horas'],
+            'title' => ['tr' => 'Teklif Yanıt Süresi', 'en' => 'Quote Response SLA', 'ru' => 'SLA расчета', 'ar' => 'زمن عرض السعر', 'es' => 'SLA de Cotizacion'],
+        ],
+        [
+            'value' => ['tr' => '20 Gün', 'en' => '20 Days', 'ru' => '20 дней', 'ar' => '20 يومًا', 'es' => '20 Dias'],
+            'title' => ['tr' => 'Standart Termin', 'en' => 'Standard Lead Time', 'ru' => 'Стандартный срок', 'ar' => 'مدة قياسية', 'es' => 'Plazo Estandar'],
+        ],
+        [
+            'value' => ['tr' => 'MOQ', 'en' => 'MOQ', 'ru' => 'MOQ', 'ar' => 'MOQ', 'es' => 'MOQ'],
+            'title' => ['tr' => 'Ürün Bazlı Planlama', 'en' => 'Product-Based Planning', 'ru' => 'План по продукту', 'ar' => 'تخطيط حسب المنتج', 'es' => 'Plan por Producto'],
+        ],
+        [
+            'value' => ['tr' => '5 Dil', 'en' => '5 Languages', 'ru' => '5 языков', 'ar' => '5 لغات', 'es' => '5 Idiomas'],
+            'title' => ['tr' => 'Çok Pazarlı İletişim', 'en' => 'Multi-Market Communication', 'ru' => 'Мультиязычная коммуникация', 'ar' => 'تواصل متعدد الأسواق', 'es' => 'Comunicacion Multi-Mercado'],
+        ],
+    ];
 @endphp
 
 <section class="relative flex min-h-[450px] items-center overflow-hidden bg-gradient-to-br from-primary-yellow via-amber-400 to-yellow-500">
@@ -68,6 +87,19 @@
         <p class="max-w-3xl text-xl font-light leading-relaxed text-dark-charcoal/80">
             {{ $ui['hero_desc'][$locale] ?? $ui['hero_desc']['en'] }}
         </p>
+    </div>
+</section>
+
+<section class="bg-dark-charcoal py-10">
+    <div class="mx-auto max-w-7xl px-4">
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            @foreach($opsCards as $card)
+                <article class="border border-slate-700 bg-slate-800/60 p-4">
+                    <p class="text-2xl font-bold text-primary-yellow">{{ $card['value'][$locale] ?? $card['value']['en'] }}</p>
+                    <p class="mt-2 text-xs font-bold uppercase tracking-wide text-white">{{ $card['title'][$locale] ?? $card['title']['en'] }}</p>
+                </article>
+            @endforeach
+        </div>
     </div>
 </section>
 

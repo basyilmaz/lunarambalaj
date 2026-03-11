@@ -781,6 +781,7 @@ class DatabaseSeeder extends Seeder
         $this->call(LegalPolicyContentSeeder::class);
         $this->call(CustomerCatalogRevisionSeeder::class);
         $this->call(SpanishContentSeeder::class);
+        $this->call(BlogCatalogExpansionSeeder::class);
     }
 
     private function resetSeedTablesForLocal(): void
