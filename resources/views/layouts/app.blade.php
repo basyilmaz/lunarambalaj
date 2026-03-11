@@ -103,9 +103,9 @@
         $legalFooterLabels = [
             'tr' => [
                 'kvkk' => 'KVKK',
-                'privacy' => 'Gizlilik Politikas?',
-                'cookie' => '?erez Politikas?',
-                'terms' => 'Kullan?m ?artlar?',
+                'privacy' => 'Gizlilik Politikası',
+                'cookie' => 'Çerez Politikası',
+                'terms' => 'Kullanım Şartları',
             ],
             'en' => [
                 'kvkk' => 'KVKK / Privacy Notice',
@@ -114,22 +114,22 @@
                 'terms' => 'Terms of Use',
             ],
             'ru' => [
-                'kvkk' => '??????????? ? ?????? ??????',
-                'privacy' => '???????? ??????????????????',
-                'cookie' => '???????? cookie',
-                'terms' => '??????? ?????????????',
+                'kvkk' => 'Уведомление о защите данных',
+                'privacy' => 'Политика конфиденциальности',
+                'cookie' => 'Политика cookie',
+                'terms' => 'Условия использования',
             ],
             'ar' => [
-                'kvkk' => '????? ????? ????????',
-                'privacy' => '????? ????????',
-                'cookie' => '????? ????? ????? ????????',
-                'terms' => '???? ?????????',
+                'kvkk' => 'إشعار حماية البيانات',
+                'privacy' => 'سياسة الخصوصية',
+                'cookie' => 'سياسة ملفات تعريف الارتباط',
+                'terms' => 'شروط الاستخدام',
             ],
             'es' => [
                 'kvkk' => 'Aviso de Privacidad (KVKK)',
-                'privacy' => 'Pol?tica de Privacidad',
-                'cookie' => 'Pol?tica de Cookies',
-                'terms' => 'T?rminos de Uso',
+                'privacy' => 'Política de Privacidad',
+                'cookie' => 'Política de Cookies',
+                'terms' => 'Términos de Uso',
             ],
         ];
         $legalLabels = $legalFooterLabels[$locale] ?? $legalFooterLabels['en'];
