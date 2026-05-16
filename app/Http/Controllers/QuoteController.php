@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Setting;
 use App\Support\AttributionLogger;
+use App\Support\EnhancedConversionData;
 use App\Support\FormSpamGuard;
 use App\Support\LocaleUrls;
 use App\Support\TrackingEventLogger;
@@ -97,6 +98,7 @@ class QuoteController extends Controller
             'company' => $request->input('company') ?: null,
             'phone' => $request->input('phone'),
             'email' => $request->input('email'),
+            'gclid' => $attributionPayload['gclid'] ?? null,
             'message' => $request->input('message') ?: null,
             'meta' => [
                 'locale' => app()->getLocale(),
@@ -163,6 +165,9 @@ class QuoteController extends Controller
             ->with('warning', $warning)
             ->with('lead_submitted', true)
             ->with('lead_type', 'quote')
+            ->with('lead_id', $lead->id)
+            ->with('lead_email_normalized', EnhancedConversionData::normalizeEmail($request->input('email')))
+            ->with('lead_phone_e164', EnhancedConversionData::normalizePhone($request->input('phone')))
             ->with('lead_payload', [
                 'product_category' => $request->input('product_category'),
                 'quantity' => $quantity,

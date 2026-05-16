@@ -24,9 +24,11 @@ class Lead extends Model
         'company',
         'phone',
         'email',
+        'gclid',
         'assigned_to',
         'message',
         'notes',
+        'estimated_value',
         'meta',
         'created_at',
     ];
@@ -36,6 +38,7 @@ class Lead extends Model
         return [
             'meta' => 'array',
             'assigned_to' => 'integer',
+            'estimated_value' => 'decimal:2',
             'created_at' => 'datetime',
             'deleted_at' => 'datetime',
         ];

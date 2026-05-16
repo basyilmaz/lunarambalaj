@@ -4,10 +4,20 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 
 class CaptureAttribution
 {
+    /**
+     * Cookie names mirroring the click identifiers we persist across sessions.
+     */
+    public const COOKIE_KEYS = ['gclid', 'fbclid'];
+
+    public const COOKIE_NAME_PREFIX = '_la_';
+
+    public const COOKIE_TTL_MINUTES = 90 * 24 * 60;
+
     /**
      * Persist attribution params in session for later lead attribution.
      */
@@ -56,6 +66,25 @@ class CaptureAttribution
             $request->session()->put('attribution', $sessionData);
         }
 
-        return $next($request);
+        $response = $next($request);
+
+        foreach (self::COOKIE_KEYS as $cookieKey) {
+            $value = $captured[$cookieKey] ?? null;
+            if ($value !== null) {
+                $response->headers->setCookie(Cookie::create(
+                    self::COOKIE_NAME_PREFIX . $cookieKey,
+                    $value,
+                    now()->addMinutes(self::COOKIE_TTL_MINUTES)->getTimestamp(),
+                    '/',
+                    null,
+                    $request->isSecure(),
+                    false,
+                    false,
+                    'lax'
+                ));
+            }
+        }
+
+        return $response;
     }
 }

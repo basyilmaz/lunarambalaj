@@ -6,6 +6,7 @@ use App\Http\Requests\StoreContactRequest;
 use App\Mail\LeadReceivedMail;
 use App\Models\Lead;
 use App\Support\AttributionLogger;
+use App\Support\EnhancedConversionData;
 use App\Support\FormSpamGuard;
 use App\Support\LocaleUrls;
 use App\Support\TrackingEventLogger;
@@ -84,6 +85,7 @@ class ContactController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'phone' => $request->input('phone') ?: null,
+            'gclid' => $attributionPayload['gclid'] ?? null,
             'message' => $request->input('message'),
             'meta' => [
                 'locale' => app()->getLocale(),
@@ -118,7 +120,10 @@ class ContactController extends Controller
 
         return back()->with('success', $successMessages[app()->getLocale()] ?? $successMessages['en'])
             ->with('lead_submitted', true)
-            ->with('lead_type', 'contact');
+            ->with('lead_type', 'contact')
+            ->with('lead_id', $lead->id)
+            ->with('lead_email_normalized', EnhancedConversionData::normalizeEmail($request->input('email')))
+            ->with('lead_phone_e164', EnhancedConversionData::normalizePhone($request->input('phone')));
     }
 }
 
