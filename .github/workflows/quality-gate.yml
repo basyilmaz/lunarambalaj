@@ -23,7 +23,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-          extensions: mbstring, sqlite, pdo_sqlite, curl, dom, fileinfo, openssl
+          extensions: mbstring, sqlite, pdo_sqlite, curl, dom, fileinfo, openssl, intl
           tools: composer:v2
 
       - name: Setup Node
