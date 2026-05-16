@@ -9,6 +9,7 @@ use App\Jobs\ExportOfflineConversionsJob;
 use App\Jobs\SyncAdsCampaignSnapshotsJob;
 use App\Services\Ads\AdsSyncService;
 use App\Services\Ads\OfflineConversionExportService;
+use App\Services\Ads\UploadClickConversionsService;
 use Carbon\CarbonImmutable;
 
 Artisan::command('inspire', function () {
@@ -198,10 +199,37 @@ Artisan::command('ads:export-offline-conversions {--platform=} {--from=} {--to=}
     }
 })->purpose('Export offline conversion CSV for Google Ads / Meta Ads mappings');
 
+Artisan::command('ads:upload-click-conversions {--from=} {--to=}', function (UploadClickConversionsService $service) {
+    $from = CarbonImmutable::parse((string) ($this->option('from') ?: now()->subDay()->toDateString()))->startOfDay();
+    $to = CarbonImmutable::parse((string) ($this->option('to') ?: now()->toDateString()))->endOfDay();
+
+    try {
+        $result = $service->uploadForRange($from, $to);
+    } catch (\Throwable $e) {
+        $this->error(sprintf('Upload click conversions failed: %s', $e->getMessage()));
+        return 1;
+    }
+
+    $this->info(sprintf(
+        'Upload click conversions | status=%s sent=%d received=%d failed=%d msg=%s',
+        $result['status'],
+        $result['sent'],
+        $result['received'],
+        $result['failed'],
+        $result['message']
+    ));
+
+    return 0;
+})->purpose('Push back-office conversions (qualified leads, won deals) to Google Ads via uploadClickConversions');
+
 Schedule::command('ads:sync-campaign-snapshots --queue')
     ->hourly()
     ->withoutOverlapping();
 
 Schedule::command('ads:export-offline-conversions --queue')
     ->dailyAt('03:30')
+    ->withoutOverlapping();
+
+Schedule::command('ads:upload-click-conversions')
+    ->dailyAt('02:00')
     ->withoutOverlapping();

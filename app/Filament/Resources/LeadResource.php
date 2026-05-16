@@ -4,8 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LeadResource\Pages;
 use App\Models\Lead;
+use App\Support\LeadConversion;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -40,6 +42,9 @@ class LeadResource extends BaseResource
                         'new' => 'Yeni',
                         'read' => 'Okundu',
                         'replied' => 'Yanitlandi',
+                        'qualified' => 'Nitelikli',
+                        'won' => 'Kazanildi',
+                        'lost' => 'Kaybedildi',
                         'archived' => 'Arsiv',
                     ])
                     ->required(),
@@ -59,6 +64,16 @@ class LeadResource extends BaseResource
                     ->relationship('assignee', 'name')
                     ->searchable()
                     ->preload(),
+                Forms\Components\TextInput::make('estimated_value')
+                    ->label('Tahmini deger (TRY)')
+                    ->numeric()
+                    ->step(0.01)
+                    ->minValue(0)
+                    ->helperText('Bu lead anlasmaya donerse beklenen TRY tutari. ads:upload-click-conversions komutu won_deal sinyalini bu deger ile Google Ads e gonderir.'),
+                Forms\Components\TextInput::make('gclid')
+                    ->label('GCLID')
+                    ->disabled()
+                    ->helperText('Google Ads tiklamasinin kimligi. won_deal upload icin gerekli.'),
                 Forms\Components\Textarea::make('message')
                     ->disabled()
                     ->rows(4)
@@ -88,7 +103,10 @@ class LeadResource extends BaseResource
                     ->color(fn (string $state): string => match ($state) {
                         'new' => 'warning',
                         'read' => 'info',
-                        'replied' => 'success',
+                        'replied' => 'primary',
+                        'qualified' => 'info',
+                        'won' => 'success',
+                        'lost' => 'danger',
                         'archived' => 'gray',
                         default => 'gray',
                     }),
@@ -118,8 +136,12 @@ class LeadResource extends BaseResource
                         'new' => 'Yeni',
                         'read' => 'Okundu',
                         'replied' => 'Yanitlandi',
+                        'qualified' => 'Nitelikli',
+                        'won' => 'Kazanildi',
+                        'lost' => 'Kaybedildi',
                         'archived' => 'Arsiv',
-                    ]),
+                    ])
+                    ->multiple(),
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
                         'quote' => 'Teklif',
@@ -135,8 +157,54 @@ class LeadResource extends BaseResource
                 Tables\Actions\ForceDeleteAction::make(),
                 Tables\Actions\Action::make('mark_replied')
                     ->label('Yanitlandi')
-                    ->color('success')
+                    ->color('primary')
                     ->action(fn (Lead $record) => $record->update(['status' => 'replied'])),
+                Tables\Actions\Action::make('mark_qualified')
+                    ->label('Nitelikli')
+                    ->icon('heroicon-o-check-badge')
+                    ->color('info')
+                    ->requiresConfirmation()
+                    ->action(function (Lead $record): void {
+                        $record->update(['status' => 'qualified']);
+                        LeadConversion::recordEvent($record, 'qualified_lead');
+                        Notification::make()
+                            ->title('Lead nitelikli olarak isaretlendi')
+                            ->body('qualified_lead etkinligi kaydedildi; gece bu lead in gclid si Google Ads e gonderilecek.')
+                            ->success()
+                            ->send();
+                    }),
+                Tables\Actions\Action::make('mark_won')
+                    ->label('Kazanildi')
+                    ->icon('heroicon-o-trophy')
+                    ->color('success')
+                    ->form([
+                        Forms\Components\TextInput::make('estimated_value')
+                            ->label('Anlasma tutari (TRY)')
+                            ->numeric()
+                            ->step(0.01)
+                            ->minValue(0)
+                            ->required()
+                            ->default(fn (Lead $record): ?string => $record->estimated_value ? (string) $record->estimated_value : null)
+                            ->helperText('Bu tutar won_deal etkinligi ile Google Ads e gonderilir.'),
+                    ])
+                    ->action(function (Lead $record, array $data): void {
+                        $record->update([
+                            'status' => 'won',
+                            'estimated_value' => $data['estimated_value'],
+                        ]);
+                        LeadConversion::recordEvent($record, 'won_deal');
+                        Notification::make()
+                            ->title('Lead kazanildi olarak isaretlendi')
+                            ->body('won_deal etkinligi kaydedildi; gece bu lead in gclid si Google Ads e gonderilecek (deger ' . $data['estimated_value'] . ' TRY).')
+                            ->success()
+                            ->send();
+                    }),
+                Tables\Actions\Action::make('mark_lost')
+                    ->label('Kaybedildi')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->action(fn (Lead $record) => $record->update(['status' => 'lost'])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
