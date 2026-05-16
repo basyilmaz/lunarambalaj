@@ -20,10 +20,10 @@
         <input type="hidden" name="fbclid" value="{{ old('fbclid', request('fbclid', $attribution['fbclid'] ?? '')) }}">
 
         <div class="grid gap-4 md:grid-cols-2">
-            <input class="w-full rounded border border-slate-300 px-3 py-2" name="name" placeholder="{{ __('site.quote.name') }}" value="{{ old('name') }}" required>
-            <input class="w-full rounded border border-slate-300 px-3 py-2" name="company" placeholder="{{ __('site.quote.company') }}" value="{{ old('company') }}">
-            <input class="w-full rounded border border-slate-300 px-3 py-2" name="phone" placeholder="{{ __('site.quote.phone') }}" value="{{ old('phone') }}" required>
-            <input class="w-full rounded border border-slate-300 px-3 py-2" name="email" type="email" placeholder="{{ __('site.quote.email') }}" value="{{ old('email') }}" required>
+            <input class="w-full rounded border border-slate-300 px-3 py-2" name="name" placeholder="{{ __('site.quote.name') }}" value="{{ old('name') }}" autocomplete="name" required>
+            <input class="w-full rounded border border-slate-300 px-3 py-2" name="company" placeholder="{{ __('site.quote.company') }}" value="{{ old('company') }}" autocomplete="organization">
+            <input class="w-full rounded border border-slate-300 px-3 py-2" name="phone" type="tel" inputmode="tel" placeholder="{{ __('site.quote.phone') }}" value="{{ old('phone') }}" autocomplete="tel" required>
+            <input class="w-full rounded border border-slate-300 px-3 py-2" name="email" type="email" inputmode="email" placeholder="{{ __('site.quote.email') }}" value="{{ old('email') }}" autocomplete="email">
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">
@@ -51,8 +51,8 @@
                 @endforeach
             </select>
 
-            <input class="w-full rounded border border-slate-300 px-3 py-2" name="quantity" type="number" min="1" value="{{ old('quantity', 5000) }}" placeholder="{{ __('site.quote.quantity') }}" required>
-            <input class="w-full rounded border border-slate-300 px-3 py-2" name="delivery_city" value="{{ old('delivery_city') }}" placeholder="{{ __('site.quote.delivery_city') }}" required>
+            <input class="w-full rounded border border-slate-300 px-3 py-2" name="quantity" type="number" inputmode="numeric" min="1" value="{{ old('quantity', 5000) }}" placeholder="{{ __('site.quote.quantity') }}">
+            <input class="w-full rounded border border-slate-300 px-3 py-2" name="delivery_city" value="{{ old('delivery_city') }}" placeholder="{{ __('site.quote.delivery_city') }}" autocomplete="address-level2">
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">
@@ -98,7 +98,26 @@
             <span>{!! $kvkkConsentText[$locale] ?? $kvkkConsentText['en'] !!}</span>
         </label>
 
-        <button class="rounded-md bg-amber-500 px-4 py-2 font-semibold text-white">{{ __('site.quote.submit') }}</button>
+        <div class="pt-2">
+            <button class="w-full rounded-md bg-amber-500 px-4 py-3 text-base font-bold text-white shadow-sm transition-colors hover:bg-amber-600 sm:w-auto sm:px-8">
+                {{ __('site.quote.submit') }}
+            </button>
+            @php
+                $trustLines = [
+                    'tr' => ['24 saat içinde dönüş', 'Ücretsiz teklif', 'KVKK uyumlu'],
+                    'en' => ['Response within 24h', 'Free quote', 'KVKK compliant'],
+                    'ru' => ['Ответ за 24 часа', 'Бесплатный расчёт', 'Соответствие KVKK'],
+                    'ar' => ['رد خلال 24 ساعة', 'عرض سعر مجاني', 'متوافق مع KVKK'],
+                    'es' => ['Respuesta en 24h', 'Cotización gratis', 'Cumple con KVKK'],
+                ];
+                $lines = $trustLines[app()->getLocale()] ?? $trustLines['en'];
+            @endphp
+            <p class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
+                @foreach($lines as $line)
+                    <span class="inline-flex items-center gap-1"><span class="text-success-green">✓</span> {{ $line }}</span>
+                @endforeach
+            </p>
+        </div>
     </form>
 </section>
 @endsection

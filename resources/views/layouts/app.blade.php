@@ -4,6 +4,12 @@
     @php
         $gtmId = $siteSetting?->gtm_id ?: env('GTM_ID');
         $metaPixelId = $siteSetting?->meta_pixel_id ?: env('META_PIXEL_ID');
+        $awConversionId = config('services.google_ads.conversion_id');
+        $awLabels = config('services.google_ads.labels', []);
+        $ga4Id = config('services.ga4.measurement_id');
+        $trackingEnvOk = app()->environment(['production', 'staging']);
+        $loadAwTag = $trackingEnvOk && $awConversionId;
+        $loadGa4 = $trackingEnvOk && $ga4Id;
     @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,7 +39,22 @@
         <link rel="preload" as="image" href="{{ asset('images/hero-bg.webp') }}" fetchpriority="high">
     @endif
 
-    @if(app()->environment('production') && $gtmId)
+    @if($loadAwTag || $loadGa4)
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $loadAwTag ? $awConversionId : $ga4Id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        @if($loadAwTag)
+            gtag('config', '{{ $awConversionId }}');
+        @endif
+        @if($loadGa4)
+            gtag('config', '{{ $ga4Id }}');
+        @endif
+    </script>
+    @endif
+
+    @if($trackingEnvOk && $gtmId)
     <script>
         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
         var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -42,7 +63,7 @@
     </script>
     @endif
 
-    @if(app()->environment('production') && $metaPixelId)
+    @if($trackingEnvOk && $metaPixelId)
     <script>
         !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
         n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
@@ -80,7 +101,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-50 text-slate-900 overflow-x-hidden">
-    @if(app()->environment('production') && $gtmId)
+    @if($trackingEnvOk && $gtmId)
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtmId }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     @endif
 
@@ -379,12 +400,14 @@
         </div>
     </footer>
 
-    <!-- WhatsApp Float Button -->
+    <x-mobile-cta-bar :siteSetting="$siteSetting" />
+
+    <!-- WhatsApp Float Button (desktop only; mobile uses sticky CTA bar) -->
     @if($siteSetting?->whatsapp)
         <a href="https://wa.me/{{ $siteSetting->whatsapp }}?text={{ urlencode(__('site.common.whatsapp_message')) }}"
            target="_blank"
            data-track="whatsapp"
-           class="fixed bottom-8 right-8 z-30 bg-success-green text-white p-4 rounded-full shadow-lg hover:bg-success-green/90 hover:scale-110 transition-all duration-300 animate-pulse hover:animate-none"
+           class="fixed bottom-8 right-8 z-30 hidden bg-success-green text-white p-4 rounded-full shadow-lg hover:bg-success-green/90 hover:scale-110 transition-all duration-300 animate-pulse hover:animate-none lg:block"
            aria-label="WhatsApp">
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
@@ -396,6 +419,15 @@
         window.dataLayer = window.dataLayer || [];
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
         const currentPath = '{{ request()->getPathInfo() }}';
+        const awConversionId = @json($loadAwTag ? $awConversionId : null);
+        const awLabels = @json($loadAwTag ? array_filter($awLabels) : (object)[]);
+
+        function fireAwConversion(labelKey, params) {
+            if (!awConversionId || !awLabels[labelKey] || typeof gtag !== 'function') return;
+            gtag('event', 'conversion', Object.assign({
+                send_to: awConversionId + '/' + awLabels[labelKey]
+            }, params || {}));
+        }
 
         function sendServerEvent(eventKey, payload = {}) {
             try {
@@ -419,17 +451,37 @@
         }
 
         @if(session('lead_submitted'))
-            @php $leadPayload = session('lead_payload', []); @endphp
+            @php
+                $leadPayload = session('lead_payload', []);
+                $leadId = session('lead_id');
+                $leadEmailHash = session('lead_email_normalized');
+                $leadPhoneHash = session('lead_phone_e164');
+            @endphp
+            @if($loadAwTag && ($leadEmailHash || $leadPhoneHash))
+                if (typeof gtag === 'function') {
+                    gtag('set', 'user_data', {
+                        @if($leadEmailHash) email: @json($leadEmailHash), @endif
+                        @if($leadPhoneHash) phone_number: @json($leadPhoneHash), @endif
+                    });
+                }
+            @endif
             window.dataLayer.push({
                 event: 'lead_submit',
                 lead_type: '{{ session('lead_type') }}',
+                lead_id: @json($leadId),
                 product_category: @json($leadPayload['product_category'] ?? null),
                 quantity: @json($leadPayload['quantity'] ?? null),
                 locale: '{{ app()->getLocale() }}',
                 page_path: '{{ request()->getPathInfo() }}'
             });
+            fireAwConversion('lead', {
+                value: 1.0,
+                currency: 'TRY',
+                transaction_id: @json((string) ($leadId ?? ''))
+            });
             sendServerEvent('lead_submit', {
                 lead_type: '{{ session('lead_type') }}',
+                lead_id: @json($leadId),
                 product_category: @json($leadPayload['product_category'] ?? null),
                 quantity: @json($leadPayload['quantity'] ?? null),
                 locale: '{{ app()->getLocale() }}'
@@ -445,6 +497,7 @@
         document.querySelectorAll('[data-track="phone"]').forEach(function (el) {
             el.addEventListener('click', function () {
                 window.dataLayer.push({event: 'click_phone'});
+                fireAwConversion('phone');
                 sendServerEvent('click_phone', { location: 'site' });
             });
         });
@@ -452,6 +505,7 @@
         document.querySelectorAll('[data-track="whatsapp"]').forEach(function (el) {
             el.addEventListener('click', function () {
                 window.dataLayer.push({event: 'click_whatsapp'});
+                fireAwConversion('whatsapp');
                 sendServerEvent('click_whatsapp', { location: 'site' });
             });
         });
@@ -459,6 +513,7 @@
         document.querySelectorAll('[data-track="cta_quote"]').forEach(function (el) {
             el.addEventListener('click', function () {
                 window.dataLayer.push({event: 'click_quote_cta', page_path: '{{ request()->getPathInfo() }}'});
+                fireAwConversion('quote', { page_path: currentPath });
                 sendServerEvent('click_quote_cta', { page_path: currentPath });
             });
         });

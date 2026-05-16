@@ -43,6 +43,7 @@ class AdsSyncService
 
         try {
             $client = $this->clientFactory->make($platform);
+            $fetched = $client->fetchCampaignSnapshots($integration, $from, $to);
         } catch (Throwable $exception) {
             $integration->forceFill([
                 'last_sync_status' => 'failed',
@@ -63,7 +64,7 @@ class AdsSyncService
             return ['platform' => $platform, 'fetched' => 0, 'upserted' => 0];
         }
 
-        $rows = collect($client->fetchCampaignSnapshots($integration, $from, $to))
+        $rows = collect($fetched)
             ->filter(fn ($row): bool => is_array($row) && ! empty($row['campaign_id']))
             ->map(function (array $row) use ($platform): array {
                 return [

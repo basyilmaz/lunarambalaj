@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Http\Middleware\CaptureAttribution;
 use App\Models\AttributionLog;
 use App\Models\Lead;
 use Illuminate\Http\Request;
@@ -94,6 +95,13 @@ class AttributionLogger
 
         if (is_string($sessionValue) && trim($sessionValue) !== '') {
             return trim($sessionValue);
+        }
+
+        if (in_array($key, CaptureAttribution::COOKIE_KEYS, true)) {
+            $cookieValue = $request->cookie(CaptureAttribution::COOKIE_NAME_PREFIX . $key);
+            if (is_string($cookieValue) && trim($cookieValue) !== '') {
+                return trim($cookieValue);
+            }
         }
 
         return null;

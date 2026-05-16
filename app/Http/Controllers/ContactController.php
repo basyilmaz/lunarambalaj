@@ -6,6 +6,7 @@ use App\Http\Requests\StoreContactRequest;
 use App\Mail\LeadReceivedMail;
 use App\Models\Lead;
 use App\Support\AttributionLogger;
+use App\Support\EnhancedConversionData;
 use App\Support\FormSpamGuard;
 use App\Support\LocaleUrls;
 use App\Support\TrackingEventLogger;
@@ -69,6 +70,12 @@ class ContactController extends Controller
         RateLimiter::hit($key, 60);
         RateLimiter::hit($emailKey, 600);
 
+        // Honeypot: bots fill hidden fields. Return success silently so they think
+        // they got through, but skip DB persistence and conversion-pixel flashes.
+        if ($request->filled('website')) {
+            return back()->with('success', $this->successMessageForLocale());
+        }
+
         if (! $this->formSpamGuard->validateSubmission($request, 'contact')) {
             return back()->withErrors(['form' => __('security.bot_check_failed')])->withInput();
         }
@@ -84,6 +91,7 @@ class ContactController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'phone' => $request->input('phone') ?: null,
+            'gclid' => $attributionPayload['gclid'] ?? null,
             'message' => $request->input('message'),
             'meta' => [
                 'locale' => app()->getLocale(),
@@ -108,7 +116,17 @@ class ContactController extends Controller
 
         Mail::to(config('mail.from.address'))->send(new LeadReceivedMail($lead));
 
-        $successMessages = [
+        return back()->with('success', $this->successMessageForLocale())
+            ->with('lead_submitted', true)
+            ->with('lead_type', 'contact')
+            ->with('lead_id', $lead->id)
+            ->with('lead_email_normalized', EnhancedConversionData::normalizeEmail($request->input('email')))
+            ->with('lead_phone_e164', EnhancedConversionData::normalizePhone($request->input('phone')));
+    }
+
+    protected function successMessageForLocale(): string
+    {
+        $messages = [
             'tr' => 'Mesajınız alındı.',
             'en' => 'Your message has been received.',
             'ru' => 'Ваше сообщение получено.',
@@ -116,9 +134,7 @@ class ContactController extends Controller
             'es' => 'Hemos recibido tu mensaje.',
         ];
 
-        return back()->with('success', $successMessages[app()->getLocale()] ?? $successMessages['en'])
-            ->with('lead_submitted', true)
-            ->with('lead_type', 'contact');
+        return $messages[app()->getLocale()] ?? $messages['en'];
     }
 }
 

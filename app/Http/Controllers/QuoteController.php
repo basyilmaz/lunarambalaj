@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Setting;
 use App\Support\AttributionLogger;
+use App\Support\EnhancedConversionData;
 use App\Support\FormSpamGuard;
 use App\Support\LocaleUrls;
 use App\Support\TrackingEventLogger;
@@ -73,6 +74,13 @@ class QuoteController extends Controller
         RateLimiter::hit($key, 60);
         RateLimiter::hit($emailKey, 600);
 
+        // Honeypot: bots fill hidden fields. Redirect to the thank-you page
+        // (so they think they succeeded) but skip DB persistence and the
+        // conversion-pixel flashes so Google Ads stays clean.
+        if ($request->filled('website')) {
+            return redirect()->route($this->thankYouRouteForLocale());
+        }
+
         if (!$this->formSpamGuard->validateSubmission($request, 'quote')) {
             return back()->withErrors(['form' => __('security.bot_check_failed')])->withInput();
         }
@@ -97,6 +105,7 @@ class QuoteController extends Controller
             'company' => $request->input('company') ?: null,
             'phone' => $request->input('phone'),
             'email' => $request->input('email'),
+            'gclid' => $attributionPayload['gclid'] ?? null,
             'message' => $request->input('message') ?: null,
             'meta' => [
                 'locale' => app()->getLocale(),
@@ -149,24 +158,29 @@ class QuoteController extends Controller
             ? str_replace(':min', (string) $minOrder, $warningTemplates[app()->getLocale()] ?? $warningTemplates['en'])
             : null;
 
-        $thankYouRoute = match (app()->getLocale()) {
-            'tr' => 'tr.quote.thankyou',
+        return redirect()->route($this->thankYouRouteForLocale())
+            ->with('success', $successMessages[app()->getLocale()] ?? $successMessages['en'])
+            ->with('warning', $warning)
+            ->with('lead_submitted', true)
+            ->with('lead_type', 'quote')
+            ->with('lead_id', $lead->id)
+            ->with('lead_email_normalized', EnhancedConversionData::normalizeEmail($request->input('email')))
+            ->with('lead_phone_e164', EnhancedConversionData::normalizePhone($request->input('phone')))
+            ->with('lead_payload', [
+                'product_category' => $request->input('product_category'),
+                'quantity' => $quantity,
+            ]);
+    }
+
+    protected function thankYouRouteForLocale(): string
+    {
+        return match (app()->getLocale()) {
             'en' => 'en.quote.thankyou',
             'ru' => 'ru.quote.thankyou',
             'ar' => 'ar.quote.thankyou',
             'es' => 'es.quote.thankyou',
             default => 'tr.quote.thankyou',
         };
-
-        return redirect()->route($thankYouRoute)
-            ->with('success', $successMessages[app()->getLocale()] ?? $successMessages['en'])
-            ->with('warning', $warning)
-            ->with('lead_submitted', true)
-            ->with('lead_type', 'quote')
-            ->with('lead_payload', [
-                'product_category' => $request->input('product_category'),
-                'quantity' => $quantity,
-            ]);
     }
 
     public function thankyou()

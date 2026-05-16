@@ -23,7 +23,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-          extensions: mbstring, sqlite, pdo_sqlite, curl, dom, fileinfo, openssl
+          extensions: mbstring, sqlite, pdo_sqlite, curl, dom, fileinfo, openssl, intl, zip, gd, bcmath
           tools: composer:v2
 
       - name: Setup Node
@@ -35,8 +35,11 @@ jobs:
       - name: Install Dependencies
         shell: pwsh
         run: |
+          $ErrorActionPreference = 'Stop'
           composer install --no-interaction --prefer-dist --no-progress
+          if ($LASTEXITCODE -ne 0) { throw "composer install failed" }
           npm ci
+          if ($LASTEXITCODE -ne 0) { throw "npm ci failed" }
 
       - name: Prepare App
         shell: pwsh

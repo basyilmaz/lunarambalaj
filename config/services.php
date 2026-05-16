@@ -38,7 +38,22 @@ return [
     'google_ads' => [
         'api_token' => env('GOOGLE_ADS_API_TOKEN'),
         'customer_id' => env('GOOGLE_ADS_CUSTOMER_ID'),
+        'login_customer_id' => env('GOOGLE_ADS_LOGIN_CUSTOMER_ID'),
         'developer_token' => env('GOOGLE_ADS_DEVELOPER_TOKEN'),
+        'client_id' => env('GOOGLE_ADS_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_ADS_CLIENT_SECRET'),
+        'refresh_token' => env('GOOGLE_ADS_REFRESH_TOKEN'),
+        'conversion_id' => env('GOOGLE_ADS_CONVERSION_ID'),
+        'labels' => [
+            'lead' => env('GOOGLE_ADS_LEAD_LABEL'),
+            'phone' => env('GOOGLE_ADS_PHONE_LABEL'),
+            'whatsapp' => env('GOOGLE_ADS_WHATSAPP_LABEL'),
+            'quote' => env('GOOGLE_ADS_QUOTE_LABEL'),
+        ],
+    ],
+
+    'ga4' => [
+        'measurement_id' => env('GA4_MEASUREMENT_ID'),
     ],
 
     'meta_ads' => [
