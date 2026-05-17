@@ -34,7 +34,7 @@ class GoogleAdsClient implements AdsPlatformClientInterface
                 'Content-Type' => 'application/json',
             ]))
             ->timeout(25)
-            ->post("https://googleads.googleapis.com/v18/customers/{$customerId}/googleAds:searchStream", [
+            ->post("https://googleads.googleapis.com/v20/customers/{$customerId}/googleAds:searchStream", [
                 'query' => sprintf(
                     "SELECT campaign.id, campaign.name, metrics.cost_micros, metrics.clicks, metrics.impressions, metrics.conversions, segments.date FROM campaign WHERE segments.date BETWEEN '%s' AND '%s'",
                     $from->toDateString(),
