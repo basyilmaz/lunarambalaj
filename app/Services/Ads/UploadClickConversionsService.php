@@ -74,7 +74,7 @@ class UploadClickConversionsService
                 'Content-Type' => 'application/json',
             ]))
             ->timeout(30)
-            ->post("https://googleads.googleapis.com/v18/customers/{$customerId}:uploadClickConversions", [
+            ->post("https://googleads.googleapis.com/v20/customers/{$customerId}:uploadClickConversions", [
                 'conversions' => $clickConversions->all(),
                 'partialFailure' => true,
             ]);
